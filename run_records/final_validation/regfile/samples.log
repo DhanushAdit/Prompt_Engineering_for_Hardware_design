@@ -1,0 +1,14 @@
+DUT:     /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/rtl_and_testbenches/final/regfile.sv
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/regfile/vectors/sample/regfile_sample.txt
+============================================================
+Assignment 1 RV32I Register File Testbench
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/regfile/vectors/sample/regfile_sample.txt
+============================================================
+------------------------------------------------------------
+Passed: 39
+Failed: 0
+Total : 39
+Score : 100.00%
+------------------------------------------------------------
+PASS
+>>> RESULT: PASS

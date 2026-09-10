@@ -1,0 +1,10 @@
+RTL:       /tmp/a1-final-i7bah1gv/final_rtl.sv
+Testbench: /tmp/a1-final-i7bah1gv/controller_tb.sv
+/tmp/a1-final-i7bah1gv/final_rtl.sv:22: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').
+/tmp/a1-final-i7bah1gv/final_rtl.sv:23: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').
+/tmp/a1-final-i7bah1gv/final_rtl.sv:24: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').
+/tmp/a1-final-i7bah1gv/final_rtl.sv:39: vvp.tgt sorry: Case unique/unique0 qualities are ignored.
+SUMMARY checks=597 failures=0
+PASS
+/tmp/a1-final-i7bah1gv/controller_tb.sv:392: $finish called at 68000 (1ps)
+>>> RESULT: PASS

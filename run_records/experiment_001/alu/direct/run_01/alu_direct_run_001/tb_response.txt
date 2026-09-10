@@ -1,0 +1,232 @@
+`timescale 1ns/1ps
+
+module alu_tb;
+
+  logic [31:0] A;
+  logic [31:0] B;
+  logic [2:0]  ALUSelect;
+  logic        SubArith;
+  logic [31:0] ALUResult;
+  logic [31:0] Sum;
+
+  integer checks;
+  integer failures;
+  integer done;
+
+  alu dut (
+    .A(A),
+    .B(B),
+    .ALUSelect(ALUSelect),
+    .SubArith(SubArith),
+    .ALUResult(ALUResult),
+    .Sum(Sum)
+  );
+
+  task automatic do_check(
+    input logic [31:0] tA,
+    input logic [31:0] tB,
+    input logic [2:0]  tSel,
+    input logic        tSub,
+    input logic        check_res,
+    input logic [31:0] exp_res,
+    input logic [31:0] exp_sum,
+    input [255:0]      tag
+  );
+    logic [31:0] act_res;
+    logic [31:0] act_sum;
+    begin
+      A = tA;
+      B = tB;
+      ALUSelect = tSel;
+      SubArith = tSub;
+      #1;
+      act_res = ALUResult;
+      act_sum = Sum;
+
+      checks = checks + 1;
+      if (act_sum !== exp_sum) begin
+        failures = failures + 1;
+        $display("MISMATCH %0s SUM A=%08h B=%08h ALUSelect=%03b SubArith=%0b actual=%08h expected=%08h",
+                 tag, tA, tB, tSel, tSub, act_sum, exp_sum);
+      end
+
+      if (check_res) begin
+        checks = checks + 1;
+        if (act_res !== exp_res) begin
+          failures = failures + 1;
+          $display("MISMATCH %0s ALUResult A=%08h B=%08h ALUSelect=%03b SubArith=%0b actual=%08h expected=%08h",
+                   tag, tA, tB, tSel, tSub, act_res, exp_res);
+        end
+      end
+    end
+  endtask
+
+  task automatic check_specified(
+    input logic [31:0] tA,
+    input logic [31:0] tB,
+    input logic [2:0]  tSel,
+    input logic        tSub,
+    input [255:0]      tag
+  );
+    logic [31:0] exp_sum;
+    logic [31:0] exp_res;
+    logic        check_res;
+    logic signed [31:0] sA;
+    logic signed [31:0] sB;
+    logic [4:0] shamt;
+    begin
+      sA = tA;
+      sB = tB;
+      shamt = tB[4:0];
+      if (tSub) exp_sum = tA - tB;
+      else      exp_sum = tA + tB;
+
+      check_res = 1'b1;
+      exp_res = 32'h00000000;
+
+      case (tSel)
+        3'b000: exp_res = exp_sum;
+        3'b001: begin
+          if (tSub == 1'b0) exp_res = tA << shamt;
+          else check_res = 1'b0;
+        end
+        3'b010: begin
+          if (tSub == 1'b1) exp_res = ($signed(sA) < $signed(sB)) ? 32'h00000001 : 32'h00000000;
+          else check_res = 1'b0;
+        end
+        3'b011: begin
+          if (tSub == 1'b1) exp_res = (tA < tB) ? 32'h00000001 : 32'h00000000;
+          else check_res = 1'b0;
+        end
+        3'b100: begin
+          if (tSub == 1'b0) exp_res = tA ^ tB;
+          else check_res = 1'b0;
+        end
+        3'b101: begin
+          if (tSub == 1'b0) exp_res = tA >> shamt;
+          else exp_res = $unsigned($signed(sA) >>> shamt);
+        end
+        3'b110: begin
+          if (tSub == 1'b0) exp_res = tA | tB;
+          else check_res = 1'b0;
+        end
+        3'b111: begin
+          if (tSub == 1'b0) exp_res = tA & tB;
+          else check_res = 1'b0;
+        end
+        default: check_res = 1'b0;
+      endcase
+
+      do_check(tA, tB, tSel, tSub, check_res, exp_res, exp_sum, tag);
+    end
+  endtask
+
+  integer i;
+  integer j;
+  logic [31:0] vals [0:9];
+  logic [31:0] shv;
+  logic [31:0] patA;
+  logic [31:0] patB;
+
+  initial begin
+    checks = 0;
+    failures = 0;
+    done = 0;
+
+    A = 32'h00000000;
+    B = 32'h00000000;
+    ALUSelect = 3'b000;
+    SubArith = 1'b0;
+
+    vals[0] = 32'h00000000;
+    vals[1] = 32'h00000001;
+    vals[2] = 32'hFFFFFFFF;
+    vals[3] = 32'h7FFFFFFF;
+    vals[4] = 32'h80000000;
+    vals[5] = 32'h0000001F;
+    vals[6] = 32'h00000020;
+    vals[7] = 32'h55555555;
+    vals[8] = 32'hAAAAAAAA;
+    vals[9] = 32'h12345678;
+
+    // Sample usage and core operation checks
+    check_specified(32'h0000000A, 32'h00000003, 3'b000, 1'b0, "ADD sample");
+    check_specified(32'h0000000A, 32'h00000003, 3'b000, 1'b1, "SUB sample");
+    check_specified(32'hFFFFFFFF, 32'h00000001, 3'b010, 1'b1, "SLT sample");
+    check_specified(32'hFFFFFFFF, 32'h00000001, 3'b011, 1'b1, "SLTU sample");
+    check_specified(32'h80000000, 32'h00000001, 3'b101, 1'b1, "SRA sample");
+    check_specified(32'h0000000F, 32'h0000001F, 3'b001, 1'b0, "SLL sample");
+
+    // Arithmetic wraparound and Sum independence
+    check_specified(32'hFFFFFFFF, 32'h00000001, 3'b000, 1'b0, "ADD wrap");
+    check_specified(32'h00000000, 32'h00000001, 3'b000, 1'b1, "SUB wrap");
+    check_specified(32'h12345678, 32'h11111111, 3'b100, 1'b0, "XOR sum add");
+    check_specified(32'h12345678, 32'h11111111, 3'b101, 1'b1, "SRA sum sub");
+    check_specified(32'hAAAAAAAA, 32'h55555555, 3'b110, 1'b0, "OR sum add");
+    check_specified(32'hAAAAAAAA, 32'h55555555, 3'b010, 1'b1, "SLT sum sub");
+
+    // Boundary comparisons signed/unsigned
+    check_specified(32'h80000000, 32'h00000000, 3'b010, 1'b1, "SLT minint < 0");
+    check_specified(32'h7FFFFFFF, 32'h80000000, 3'b010, 1'b1, "SLT maxint < minint false");
+    check_specified(32'h00000000, 32'hFFFFFFFF, 3'b011, 1'b1, "SLTU 0 < all1");
+    check_specified(32'hFFFFFFFF, 32'h00000000, 3'b011, 1'b1, "SLTU all1 < 0 false");
+    check_specified(32'h80000000, 32'hFFFFFFFF, 3'b010, 1'b1, "SLT minint < -1");
+    check_specified(32'h80000000, 32'h7FFFFFFF, 3'b011, 1'b1, "SLTU highbit > maxpos");
+
+    // Shift amount behavior uses only B[4:0]
+    for (i = 0; i < 32; i = i + 1) begin
+      shv = i[31:0];
+      check_specified(32'h00000001, shv, 3'b001, 1'b0, "SLL shamt 0..31");
+      check_specified(32'h80000000, shv, 3'b101, 1'b0, "SRL shamt 0..31");
+      check_specified(32'h80000001, shv, 3'b101, 1'b1, "SRA shamt 0..31");
+    end
+    check_specified(32'h00000001, 32'h00000020, 3'b001, 1'b0, "SLL shamt 32->0");
+    check_specified(32'h00000001, 32'h0000003F, 3'b001, 1'b0, "SLL shamt 63->31");
+    check_specified(32'h80000000, 32'h00000020, 3'b101, 1'b0, "SRL shamt 32->0");
+    check_specified(32'h80000000, 32'h0000003F, 3'b101, 1'b1, "SRA shamt 63->31");
+    check_specified(32'hF0000000, 32'hFFFFFFE1, 3'b101, 1'b1, "SRA high bits B ignored except [4:0]");
+
+    // Logical/arithmetic ops over boundary patterns
+    for (i = 0; i < 10; i = i + 1) begin
+      for (j = 0; j < 10; j = j + 1) begin
+        patA = vals[i];
+        patB = vals[j];
+        check_specified(patA, patB, 3'b000, 1'b0, "ADD matrix");
+        check_specified(patA, patB, 3'b000, 1'b1, "SUB matrix");
+        check_specified(patA, patB, 3'b010, 1'b1, "SLT matrix");
+        check_specified(patA, patB, 3'b011, 1'b1, "SLTU matrix");
+        check_specified(patA, patB, 3'b100, 1'b0, "XOR matrix");
+        check_specified(patA, patB, 3'b110, 1'b0, "OR matrix");
+        check_specified(patA, patB, 3'b111, 1'b0, "AND matrix");
+      end
+    end
+
+    // Unspecified ALUResult combinations: verify only Sum
+    check_specified(32'h11111111, 32'h22222222, 3'b001, 1'b1, "unspec SLL with SubArith=1");
+    check_specified(32'h11111111, 32'h22222222, 3'b010, 1'b0, "unspec SLT with SubArith=0");
+    check_specified(32'h11111111, 32'h22222222, 3'b011, 1'b0, "unspec SLTU with SubArith=0");
+    check_specified(32'h11111111, 32'h22222222, 3'b100, 1'b1, "unspec XOR with SubArith=1");
+    check_specified(32'h11111111, 32'h22222222, 3'b110, 1'b1, "unspec OR with SubArith=1");
+    check_specified(32'h11111111, 32'h22222222, 3'b111, 1'b1, "unspec AND with SubArith=1");
+
+    done = 1;
+    $display("SUMMARY checks=%0d failures=%0d", checks, failures);
+    if (checks > 0 && failures == 0) begin
+      $display("PASS");
+      $finish;
+    end
+    else begin
+      $display("FAIL");
+      $fatal(1, "verification failed");
+    end
+  end
+
+  initial begin
+    #50000;
+    if (!done) begin
+      $display("FAIL");
+      $fatal(1, "timeout");
+    end
+  end
+
+endmodule

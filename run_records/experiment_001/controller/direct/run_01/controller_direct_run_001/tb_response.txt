@@ -1,0 +1,333 @@
+`timescale 1ns/1ps
+
+module controller_tb;
+
+  logic [31:0] InstrD;
+  logic        RegWriteD;
+  logic [2:0]  ImmSrcD;
+  logic        ALUSrcAD;
+  logic        ALUSrcBD;
+  logic [1:0]  MemRWD;
+  logic [2:0]  ResultSrcD;
+  logic        BranchD;
+  logic        JumpD;
+  logic        ALUResultSrcD;
+  logic [2:0]  ALUSelectD;
+  logic        SubArithD;
+  logic        IllegalInstrD;
+
+  integer checks;
+  integer failures;
+  integer done;
+
+  controller dut (
+    .InstrD(InstrD),
+    .RegWriteD(RegWriteD),
+    .ImmSrcD(ImmSrcD),
+    .ALUSrcAD(ALUSrcAD),
+    .ALUSrcBD(ALUSrcBD),
+    .MemRWD(MemRWD),
+    .ResultSrcD(ResultSrcD),
+    .BranchD(BranchD),
+    .JumpD(JumpD),
+    .ALUResultSrcD(ALUResultSrcD),
+    .ALUSelectD(ALUSelectD),
+    .SubArithD(SubArithD),
+    .IllegalInstrD(IllegalInstrD)
+  );
+
+  localparam [6:0] OPC_LOAD   = 7'b0000011;
+  localparam [6:0] OPC_ITYPE  = 7'b0010011;
+  localparam [6:0] OPC_AUIPC  = 7'b0010111;
+  localparam [6:0] OPC_STORE  = 7'b0100011;
+  localparam [6:0] OPC_RTYPE  = 7'b0110011;
+  localparam [6:0] OPC_LUI    = 7'b0110111;
+  localparam [6:0] OPC_BRANCH = 7'b1100011;
+  localparam [6:0] OPC_JALR   = 7'b1100111;
+  localparam [6:0] OPC_JAL    = 7'b1101111;
+
+  task automatic add_check_bit;
+    input logic actual;
+    input logic expected;
+    input [8*24-1:0] name;
+    input [31:0] instr;
+    begin
+      checks = checks + 1;
+      if (actual !== expected) begin
+        failures = failures + 1;
+        $display("MISMATCH %0s instr=%08h actual=%0b expected=%0b", name, instr, actual, expected);
+      end
+    end
+  endtask
+
+  task automatic add_check_vec2;
+    input logic [1:0] actual;
+    input logic [1:0] expected;
+    input [8*24-1:0] name;
+    input [31:0] instr;
+    begin
+      checks = checks + 1;
+      if (actual !== expected) begin
+        failures = failures + 1;
+        $display("MISMATCH %0s instr=%08h actual=%02b expected=%02b", name, instr, actual, expected);
+      end
+    end
+  endtask
+
+  task automatic add_check_vec3;
+    input logic [2:0] actual;
+    input logic [2:0] expected;
+    input [8*24-1:0] name;
+    input [31:0] instr;
+    begin
+      checks = checks + 1;
+      if (actual !== expected) begin
+        failures = failures + 1;
+        $display("MISMATCH %0s instr=%08h actual=%03b expected=%03b", name, instr, actual, expected);
+      end
+    end
+  endtask
+
+  task automatic check_case;
+    input logic [31:0] instr;
+    input logic        exp_RegWriteD;     input logic chk_RegWriteD;
+    input logic [2:0]  exp_ImmSrcD;       input logic chk_ImmSrcD;
+    input logic        exp_ALUSrcAD;      input logic chk_ALUSrcAD;
+    input logic        exp_ALUSrcBD;      input logic chk_ALUSrcBD;
+    input logic [1:0]  exp_MemRWD;        input logic chk_MemRWD;
+    input logic [2:0]  exp_ResultSrcD;    input logic chk_ResultSrcD;
+    input logic        exp_BranchD;       input logic chk_BranchD;
+    input logic        exp_JumpD;         input logic chk_JumpD;
+    input logic        exp_ALUResultSrcD; input logic chk_ALUResultSrcD;
+    input logic [2:0]  exp_ALUSelectD;    input logic chk_ALUSelectD;
+    input logic        exp_SubArithD;     input logic chk_SubArithD;
+    input logic        exp_IllegalInstrD; input logic chk_IllegalInstrD;
+    begin
+      InstrD = instr;
+      #1;
+      if (chk_RegWriteD)     add_check_bit (RegWriteD,     exp_RegWriteD,     "RegWriteD",     instr);
+      if (chk_ImmSrcD)       add_check_vec3(ImmSrcD,       exp_ImmSrcD,       "ImmSrcD",       instr);
+      if (chk_ALUSrcAD)      add_check_bit (ALUSrcAD,      exp_ALUSrcAD,      "ALUSrcAD",      instr);
+      if (chk_ALUSrcBD)      add_check_bit (ALUSrcBD,      exp_ALUSrcBD,      "ALUSrcBD",      instr);
+      if (chk_MemRWD)        add_check_vec2(MemRWD,        exp_MemRWD,        "MemRWD",        instr);
+      if (chk_ResultSrcD)    add_check_vec3(ResultSrcD,    exp_ResultSrcD,    "ResultSrcD",    instr);
+      if (chk_BranchD)       add_check_bit (BranchD,       exp_BranchD,       "BranchD",       instr);
+      if (chk_JumpD)         add_check_bit (JumpD,         exp_JumpD,         "JumpD",         instr);
+      if (chk_ALUResultSrcD) add_check_bit (ALUResultSrcD, exp_ALUResultSrcD, "ALUResultSrcD", instr);
+      if (chk_ALUSelectD)    add_check_vec3(ALUSelectD,    exp_ALUSelectD,    "ALUSelectD",    instr);
+      if (chk_SubArithD)     add_check_bit (SubArithD,     exp_SubArithD,     "SubArithD",     instr);
+      if (chk_IllegalInstrD) add_check_bit (IllegalInstrD, exp_IllegalInstrD, "IllegalInstrD", instr);
+    end
+  endtask
+
+  function automatic [31:0] mk_r;
+    input [6:0] funct7;
+    input [4:0] rs2;
+    input [4:0] rs1;
+    input [2:0] funct3;
+    input [4:0] rd;
+    input [6:0] opcode;
+    begin
+      mk_r = {funct7, rs2, rs1, funct3, rd, opcode};
+    end
+  endfunction
+
+  function automatic [31:0] mk_i;
+    input [11:0] imm12;
+    input [4:0] rs1;
+    input [2:0] funct3;
+    input [4:0] rd;
+    input [6:0] opcode;
+    begin
+      mk_i = {imm12, rs1, funct3, rd, opcode};
+    end
+  endfunction
+
+  function automatic [31:0] mk_s;
+    input [11:0] imm12;
+    input [4:0] rs2;
+    input [4:0] rs1;
+    input [2:0] funct3;
+    input [6:0] opcode;
+    begin
+      mk_s = {imm12[11:5], rs2, rs1, funct3, imm12[4:0], opcode};
+    end
+  endfunction
+
+  function automatic [31:0] mk_b;
+    input [12:0] imm13;
+    input [4:0] rs2;
+    input [4:0] rs1;
+    input [2:0] funct3;
+    input [6:0] opcode;
+    begin
+      mk_b = {imm13[12], imm13[10:5], rs2, rs1, funct3, imm13[4:1], imm13[11], opcode};
+    end
+  endfunction
+
+  function automatic [31:0] mk_u;
+    input [19:0] imm20;
+    input [4:0] rd;
+    input [6:0] opcode;
+    begin
+      mk_u = {imm20, rd, opcode};
+    end
+  endfunction
+
+  function automatic [31:0] mk_j;
+    input [20:0] imm21;
+    input [4:0] rd;
+    input [6:0] opcode;
+    begin
+      mk_j = {imm21[20], imm21[10:1], imm21[11], imm21[19:12], rd, opcode};
+    end
+  endfunction
+
+  integer i;
+  logic [31:0] instr;
+  logic [4:0] shamt5;
+
+  initial begin
+    checks = 0;
+    failures = 0;
+    done = 0;
+    InstrD = 32'h00000000;
+
+    // Load class: all legal funct3 and illegal funct3
+    for (i = 0; i < 8; i = i + 1) begin
+      instr = mk_i(12'h000, 5'd2, i[2:0], 5'd1, OPC_LOAD);
+      if ((i == 3'b000) || (i == 3'b001) || (i == 3'b010) || (i == 3'b100) || (i == 3'b101)) begin
+        check_case(instr, 1,1, 3'b000,1, 0,1, 1,1, 2'b10,1, 3'b001,1, 0,1, 0,1, 0,1, 3'b000,1, 0,1, 0,1);
+      end else begin
+        check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+      end
+    end
+
+    // Store class: all legal funct3 and illegal funct3
+    for (i = 0; i < 8; i = i + 1) begin
+      instr = mk_s(12'hfff, 5'd1, 5'd2, i[2:0], OPC_STORE);
+      if ((i == 3'b000) || (i == 3'b001) || (i == 3'b010)) begin
+        check_case(instr, 0,1, 3'b001,1, 0,1, 1,1, 2'b01,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b000,1, 0,1, 0,1);
+      end else begin
+        check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+      end
+    end
+
+    // Branch class: all legal funct3 and illegal funct3, with boundary immediates
+    for (i = 0; i < 8; i = i + 1) begin
+      instr = mk_b(13'h0000, 5'd4, 5'd3, i[2:0], OPC_BRANCH);
+      if ((i == 3'b000) || (i == 3'b001) || (i == 3'b100) || (i == 3'b101) || (i == 3'b110) || (i == 3'b111)) begin
+        check_case(instr, 0,1, 3'b010,1, 1,1, 1,1, 2'b00,1, 3'b000,1, 1,1, 0,1, 0,1, 3'b000,1, 0,1, 0,1);
+      end else begin
+        check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+      end
+    end
+    instr = mk_b(13'h1ffe, 5'd31, 5'd0, 3'b000, OPC_BRANCH);
+    check_case(instr, 0,1, 3'b010,1, 1,1, 1,1, 2'b00,1, 3'b000,1, 1,1, 0,1, 0,1, 3'b000,1, 0,1, 0,1);
+    instr = mk_b(13'h1000, 5'd0, 5'd31, 3'b111, OPC_BRANCH);
+    check_case(instr, 0,1, 3'b010,1, 1,1, 1,1, 2'b00,1, 3'b000,1, 1,1, 0,1, 0,1, 3'b000,1, 0,1, 0,1);
+
+    // JALR legal and illegal funct3
+    instr = mk_i(12'h000, 5'd2, 3'b000, 5'd1, OPC_JALR);
+    check_case(instr, 1,1, 3'b000,1, 0,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 1,1, 1,1, 3'b000,1, 0,1, 0,1);
+    instr = mk_i(12'hfff, 5'd31, 3'b001, 5'd0, OPC_JALR);
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+
+    // JAL boundary immediates
+    instr = mk_j(21'h000000, 5'd1, OPC_JAL);
+    check_case(instr, 1,1, 3'b011,1, 1,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 1,1, 1,1, 3'b000,1, 0,1, 0,1);
+    instr = mk_j(21'h100000, 5'd31, OPC_JAL);
+    check_case(instr, 1,1, 3'b011,1, 1,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 1,1, 1,1, 3'b000,1, 0,1, 0,1);
+
+    // U-type classes
+    instr = mk_u(20'h00000, 5'd1, OPC_LUI);
+    check_case(instr, 1,1, 3'b100,1, 0,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 1,1, 3'b000,1, 0,1, 0,1);
+    instr = mk_u(20'hfffff, 5'd31, OPC_LUI);
+    check_case(instr, 1,1, 3'b100,1, 0,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 1,1, 3'b000,1, 0,1, 0,1);
+    instr = mk_u(20'h00000, 5'd1, OPC_AUIPC);
+    check_case(instr, 1,1, 3'b100,1, 1,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b000,1, 0,1, 0,1);
+    instr = mk_u(20'h80000, 5'd31, OPC_AUIPC);
+    check_case(instr, 1,1, 3'b100,1, 1,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b000,1, 0,1, 0,1);
+
+    // I-type ALU non-shifts
+    for (i = 0; i < 8; i = i + 1) begin
+      if (i != 3'b001 && i != 3'b101) begin
+        instr = mk_i(12'h800, 5'd2, i[2:0], 5'd1, OPC_ITYPE);
+        if ((i == 3'b000) || (i == 3'b010) || (i == 3'b011) || (i == 3'b100) || (i == 3'b110) || (i == 3'b111)) begin
+          check_case(instr, 1,1, 3'b000,1, 0,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, i[2:0],1,
+                     ((i == 3'b010) || (i == 3'b011)),1, 0,1);
+        end
+      end
+    end
+
+    // I-type shift immediates legal and illegal encodings
+    shamt5 = 5'd0;
+    instr = mk_i({7'b0000000, shamt5}, 5'd2, 3'b001, 5'd1, OPC_ITYPE);
+    check_case(instr, 1,1, 3'b000,1, 0,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b001,1, 0,1, 0,1);
+    shamt5 = 5'd31;
+    instr = mk_i({7'b0000000, shamt5}, 5'd2, 3'b001, 5'd1, OPC_ITYPE);
+    check_case(instr, 1,1, 3'b000,1, 0,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b001,1, 0,1, 0,1);
+    shamt5 = 5'd1;
+    instr = mk_i({7'b0000000, shamt5}, 5'd2, 3'b101, 5'd1, OPC_ITYPE);
+    check_case(instr, 1,1, 3'b000,1, 0,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b101,1, 0,1, 0,1);
+    shamt5 = 5'd31;
+    instr = mk_i({7'b0100000, shamt5}, 5'd2, 3'b101, 5'd1, OPC_ITYPE);
+    check_case(instr, 1,1, 3'b000,1, 0,1, 1,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b101,1, 1,1, 0,1);
+    shamt5 = 5'd4;
+    instr = mk_i({7'b0100000, shamt5}, 5'd2, 3'b001, 5'd1, OPC_ITYPE);
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+    shamt5 = 5'd4;
+    instr = mk_i({7'b0010000, shamt5}, 5'd2, 3'b101, 5'd1, OPC_ITYPE);
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+
+    // R-type ALU all funct3 with legal/illegal funct7
+    for (i = 0; i < 8; i = i + 1) begin
+      instr = mk_r(7'b0000000, 5'd3, 5'd2, i[2:0], 5'd1, OPC_RTYPE);
+      check_case(instr, 1,1, 3'b000,1, 0,1, 0,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, i[2:0],1,
+                 ((i == 3'b010) || (i == 3'b011)),1, 0,1);
+    end
+    instr = mk_r(7'b0100000, 5'd3, 5'd2, 3'b000, 5'd1, OPC_RTYPE);
+    check_case(instr, 1,1, 3'b000,1, 0,1, 0,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b000,1, 1,1, 0,1);
+    instr = mk_r(7'b0100000, 5'd3, 5'd2, 3'b101, 5'd1, OPC_RTYPE);
+    check_case(instr, 1,1, 3'b000,1, 0,1, 0,1, 2'b00,1, 3'b000,1, 0,1, 0,1, 0,1, 3'b101,1, 1,1, 0,1);
+    instr = mk_r(7'b0100000, 5'd3, 5'd2, 3'b001, 5'd1, OPC_RTYPE);
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+    instr = mk_r(7'b0000001, 5'd3, 5'd2, 3'b000, 5'd1, OPC_RTYPE);
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+
+    // Illegal opcodes / unsupported extensions / all-zero example
+    instr = 32'h00000000;
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+    instr = 32'h0000000f; // fence
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+    instr = 32'h0000100f; // fence.i
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+    instr = 32'h00000073; // ecall
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+    instr = 32'h00100073; // ebreak
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+    instr = 32'h00001073; // csrrw-ish opcode class
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+    instr = 32'hffffffff;
+    check_case(instr, 0,1, 3'b000,0, 0,0, 0,0, 2'b00,1, 3'b000,0, 0,1, 0,1, 0,0, 3'b000,0, 0,0, 1,1);
+
+    done = 1;
+    $display("SUMMARY checks=%0d failures=%0d", checks, failures);
+    if (checks > 0 && failures == 0) begin
+      $display("PASS");
+      $finish;
+    end else begin
+      $display("FAIL");
+      $fatal(1, "verification failed");
+    end
+  end
+
+  initial begin
+    #10000;
+    if (!done) begin
+      $display("FAIL");
+      $fatal(1, "timeout");
+    end
+  end
+
+endmodule

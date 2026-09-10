@@ -1,0 +1,168 @@
+Repair attempt 2/3.
+Repair only the RTL using the instructor sample diagnostics. Preserve the exact interface and all specified behavior. Generalize the correction across the input space; never hardcode test vectors. Where the spec permits implementation choices, use the sample expectations to select compatible defaults. Do not change the tests.
+SystemVerilog RTL rules you must follow:
+- Generate synthesizable SystemVerilog compatible with Icarus Verilog using -g2012.
+- Use the exact module signature from the specification. Do not add, remove, rename, or resize ports.
+- Prefer `logic` for internal data signals; use `int` for bounded loop indices when needed.
+- Give each signal a single driver. Do not drive a signal from multiple procedural blocks.
+- Use continuous `assign` statements for simple combinational expressions.
+- Use `always_comb` for combinational decision logic. Do not write manual sensitivity lists.
+- In every `always_comb` block, assign safe default values to every output or temporary written by that block before any `if` or `case`.
+- Use blocking assignments (`=`) only in combinational logic.
+- Use `always_ff` for clocked state. Use nonblocking assignments (`<=`) only in sequential logic.
+- Do not mix blocking and nonblocking assignments in the same procedural block.
+- Do not infer latches. Every output must receive a value for every valid input/control path.
+- Use `unique case` or `case` with a `default` branch for decoders and operation selects.
+- Do not use `casex`; avoid wildcard matching unless the spec requires it.
+- Use explicit-width numeric literals, such as `32'h0000_0000`, `1'b0`, or `3'b101`.
+- Avoid unsized constants in datapath expressions where width matters.
+- For signed comparisons or arithmetic shifts, cast operands explicitly with `$signed(...)`.
+- For logical right shifts use `>>`; for arithmetic right shifts use `>>>` with a signed left operand when needed.
+- For shift amounts, use only the exact shift bits required by the spec.
+- Keep purely combinational modules free of clocks, resets, initial blocks, delays, and state.
+- For clocked modules, implement reset behavior exactly as described in the spec, including edge sensitivity and priority.
+- Do not use `#` delays, `$display`, `$finish`, assertions, classes, randomization, DPI, interfaces, packages, macros, or non-synthesizable constructs in RTL.
+- Prefer clear, direct RTL over clever or highly compressed code.
+- The specification takes precedence over style preferences. Do not invent resets, bypasses, or unspecified features.
+- Derive behavior, priorities, and default values from the supplied specification; do not assume a processor architecture or infer semantics from signal names alone.
+- Check each specified operating mode and boundary condition against every affected output. Preserve explicitly unspecified behavior as implementation freedom, not an invented requirement.
+- Return only the complete SystemVerilog module text, with no Markdown fences and no explanation.
+
+Return the COMPLETE corrected file only. Keep it below 2500 tokens using compact tasks and loops. The response limit is unchanged.
+Generation diagnostic: No provider truncation indication.
+
+Original specification:
+alu:
+  description: >
+    Combinational 32-bit RV32I Arithmetic Logic Unit for the course processor.
+    Performs integer arithmetic, comparison, logical, and shift operations.
+    It has no state, clock, or reset. It also produces a separate Sum output
+    (A+B or A-B) reused by the datapath for address generation and comparisons.
+  tech_node: ASAP7 / SkyWater 130HD (course flow)
+  clock_period: combinational (no clock)
+  ports:
+    - {name: A,         direction: input,  type: "logic [31:0]", description: First operand}
+    - {name: B,         direction: input,  type: "logic [31:0]", description: Second operand}
+    - {name: ALUSelect, direction: input,  type: "logic [2:0]",  description: Selects the ALU operation}
+    - {name: SubArith,  direction: input,  type: "logic",        description: Selects subtraction / arithmetic behavior where applicable}
+    - {name: ALUResult, direction: output, type: "logic [31:0]", description: Result of the selected operation}
+    - {name: Sum,       direction: output, type: "logic [31:0]", description: A+B when SubArith=0, A-B when SubArith=1}
+  module_signature: |
+    module alu (
+        input  logic [31:0] A,
+        input  logic [31:0] B,
+        input  logic [2:0]  ALUSelect,
+        input  logic        SubArith,
+        output logic [31:0] ALUResult,
+        output logic [31:0] Sum
+    );
+  behavior:
+    operations: |
+      ALUSelect  SubArith  Operation  ALUResult
+      000        0         ADD        A + B
+      000        1         SUB        A - B
+      001        0         SLL        A << B[4:0]  (fill zeros)
+      010        1         SLT        (signed A < signed B) ? 1 : 0
+      011        1         SLTU       (unsigned A < unsigned B) ? 1 : 0
+      100        0         XOR        A ^ B
+      101        0         SRL        A >> B[4:0]  (logical, zero fill)
+      101        1         SRA        A >>> B[4:0] (arithmetic, replicate A[31])
+      110        0         OR         A | B
+      111        0         AND        A & B
+    comparison: >
+      SLT/SLTU return 32'h00000001 when true, 32'h00000000 when false.
+      SLT treats operands as signed two's-complement; SLTU as unsigned.
+    shift_amount: Only B[4:0] is used as the shift amount (0..31).
+    sum_output: >
+      Sum is independent of ALUResult. SubArith=0 -> Sum=A+B; SubArith=1 -> Sum=A-B.
+      For ADD/SUB, ALUResult and Sum are equal. All arithmetic is 32-bit modular
+      (wraparound, no overflow flag).
+    timing: >
+      Purely combinational; no latches, no clocked always_ff. Outputs respond to
+      input changes without a clock event. Synthesizable SystemVerilog.
+    out_of_scope: >
+      No mul/div, RV64 W-type, compressed, bit-manip, crypto, FP, saturation, or
+      status/exception logic.
+  sample_usage:
+    description: Representative and corner-case operations the design must satisfy.
+    cases:
+      - {A: "0x0000000A", B: "0x00000003", ALUSelect: "000", SubArith: 0, ALUResult: "0x0000000D", note: ADD}
+      - {A: "0x0000000A", B: "0x00000003", ALUSelect: "000", SubArith: 1, ALUResult: "0x00000007", note: SUB}
+      - {A: "0xFFFFFFFF", B: "0x00000001", ALUSelect: "010", SubArith: 1, ALUResult: "0x00000001", note: "SLT signed (-1 < 1)"}
+      - {A: "0xFFFFFFFF", B: "0x00000001", ALUSelect: "011", SubArith: 1, ALUResult: "0x00000000", note: "SLTU unsigned"}
+      - {A: "0x80000000", B: "0x00000001", ALUSelect: "101", SubArith: 1, ALUResult: "0xC0000000", note: "SRA of negative"}
+      - {A: "0x0000000F", B: "0x0000001F", ALUSelect: "001", SubArith: 0, ALUResult: "0x80000000", note: "SLL by 31"}
+
+
+Current rtl:
+module alu (
+    input  logic [31:0] A,
+    input  logic [31:0] B,
+    input  logic [2:0]  ALUSelect,
+    input  logic        SubArith,
+    output logic [31:0] ALUResult,
+    output logic [31:0] Sum
+);
+
+    assign Sum = SubArith ? (A - B) : (A + B);
+
+    always_comb begin
+        ALUResult = 32'h0000_0000;
+        case (ALUSelect)
+            3'b000: ALUResult = Sum;
+            3'b001: ALUResult = A << B[4:0];
+            3'b010: ALUResult = SubArith ? (($signed(A) < $signed(B)) ? 32'h0000_0001 : 32'h0000_0000) : 32'h0000_0000;
+            3'b011: ALUResult = SubArith ? ((A < B) ? 32'h0000_0001 : 32'h0000_0000) : 32'h0000_0000;
+            3'b100: ALUResult = A ^ B;
+            3'b101: ALUResult = SubArith ? (logic'($signed(A)) >>> B[4:0]) : (A >> B[4:0]);
+            3'b110: ALUResult = A | B;
+            3'b111: ALUResult = A & B;
+            default: ALUResult = 32'h0000_0000;
+        endcase
+    end
+
+endmodule
+
+
+Tool commands, exit codes, and full diagnostics:
+Stage: compile
+Command: ['iverilog', '-g2012', '-s', 'alu', '-o', '/tmp/a1-phase-c-nv1k0a82/rtl_1.vvp', '/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv']
+Exit code: 0
+Timed out: False
+
+Log:
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv:16: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+
+
+Stage: samples
+Command: ['bash', '/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/scripts/run_alu.sh', '/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv']
+Exit code: 1
+Timed out: False
+
+Log:
+DUT:     /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/vectors/sample/alu_sample.txt
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv:16: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_01/alu_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+============================================================
+Assignment 1 RV32I ALU Testbench
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/vectors/sample/alu_sample.txt
+============================================================
+FAIL test=23 category=4 select=101 sub=1 A=80000000 B=00000001 | ALUResult got=00000000 exp=c0000000 | Sum got=7fffffff exp=7fffffff
+FAIL test=25 category=4 select=101 sub=1 A=80000000 B=0000001f | ALUResult got=00000000 exp=ffffffff | Sum got=7fffffe1 exp=7fffffe1
+FAIL test=26 category=4 select=101 sub=1 A=70000000 B=00000004 | ALUResult got=00000000 exp=07000000 | Sum got=6ffffffc exp=6ffffffc
+FAIL test=28 category=4 select=101 sub=1 A=80000000 B=00000021 | ALUResult got=00000000 exp=c0000000 | Sum got=7fffffdf exp=7fffffdf
+FAIL test=39 category=7 select=101 sub=1 A=f1234567 B=abcdef03 | ALUResult got=00000000 exp=fe2468ac | Sum got=45555664 exp=45555664
+------------------------------------------------------------
+Passed: 35
+Failed: 5
+Total : 40
+Score : 87.50%
+------------------------------------------------------------
+FAIL
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/testbench/alu_tb.sv:116: $finish(1) called at 40000 (1ps)
+>>> RESULT: FAIL
+

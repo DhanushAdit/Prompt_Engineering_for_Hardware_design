@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 453,
+    "prompt_tokens": 1913,
+    "total_tokens": 2366,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 6,
+      "engine_ttft_ms": 107,
+      "engine_ttlt_ms": 2835,
+      "pre_inference_ms": 117,
+      "service_tbt_ms": 6,
+      "service_ttft_ms": 453,
+      "service_ttlt_ms": 3172,
+      "user_visible_ttft_ms": 335
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXPTaQu3qkq0mAouQMU6Mhp0UHCD",
+    "created": 1788802023,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "module alu (\n    input  logic [31:0] A,\n    input  logic [31:0] B,\n    input  logic [2:0]  ALUSelect,\n    input  logic        SubArith,\n    output logic [31:0] ALUResult,\n    output logic [31:0] Sum\n);\n\nassign Sum = SubArith ? (A - B) : (A + B);\n\nalways_comb begin\n    ALUResult = 32'h0000_0000;\n\n    unique case (ALUSelect)\n        3'b000: begin\n            ALUResult = Sum;\n        end\n        3'b001: begin\n            ALUResult = A << B[4:0];\n        end\n        3'b010: begin\n            if (SubArith) begin\n                ALUResult = ($signed(A) < $signed(B)) ? 32'h0000_0001 : 32'h0000_0000;\n            end else begin\n                ALUResult = 32'h0000_0000;\n            end\n        end\n        3'b011: begin\n            if (SubArith) begin\n                ALUResult = (A < B) ? 32'h0000_0001 : 32'h0000_0000;\n            end else begin\n                ALUResult = 32'h0000_0000;\n            end\n        end\n        3'b100: begin\n            ALUResult = A ^ B;\n        end\n        3'b101: begin\n            if (SubArith) begin\n                ALUResult = $signed(A) >>> B[4:0];\n            end else begin\n                ALUResult = A >> B[4:0];\n            end\n        end\n        3'b110: begin\n            ALUResult = A | B;\n        end\n        3'b111: begin\n            ALUResult = A & B;\n        end\n        default: begin\n            ALUResult = 32'h0000_0000;\n        end\n    endcase\nend\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 453,
+      "prompt_tokens": 1913,
+      "total_tokens": 2366,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 6,
+        "engine_ttft_ms": 107,
+        "engine_ttlt_ms": 2835,
+        "pre_inference_ms": 117,
+        "service_tbt_ms": 6,
+        "service_ttft_ms": 453,
+        "service_ttlt_ms": 3172,
+        "user_visible_ttft_ms": 335
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260817141218-8df7dac7-default-r2-dp0-default"
+    }
+  }
+}

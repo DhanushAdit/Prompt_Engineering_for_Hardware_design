@@ -1,0 +1,7 @@
+provider: tamu
+requested_model: gpt-5.4
+returned_model: gpt-5.4-2026-03-05
+settings: {'max_output_tokens': 8192}
+usage: {'completion_tokens': 2133, 'prompt_tokens': 1962, 'total_tokens': 4095, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}, 'latency_checkpoint': {'engine_tbt_ms': 7, 'engine_ttft_ms': 117, 'engine_ttlt_ms': 14429, 'pre_inference_ms': 175, 'service_tbt_ms': 7, 'service_ttft_ms': 577, 'service_ttlt_ms': 14883, 'user_visible_ttft_ms': 402}}
+prompt_style: template_fill
+run: 1

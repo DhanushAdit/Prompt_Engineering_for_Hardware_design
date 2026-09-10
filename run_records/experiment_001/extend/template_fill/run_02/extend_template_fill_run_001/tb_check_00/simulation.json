@@ -1,0 +1,10 @@
+{
+  "command": [
+    "vvp",
+    "/tmp/a1-phase-c-wkvljtjf/tb_0.vvp"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "SUMMARY checks=84 failures=0\nPASS\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/extend/template_fill/run_02/extend_template_fill_run_001/extend_initial_tb.sv:223: $finish called at 87000 (1ps)\n",
+  "tool_error": false
+}

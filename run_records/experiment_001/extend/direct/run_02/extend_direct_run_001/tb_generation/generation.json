@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 1987,
+    "prompt_tokens": 1538,
+    "total_tokens": 3525,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 8,
+      "engine_ttft_ms": 111,
+      "engine_ttlt_ms": 16654,
+      "pre_inference_ms": 80,
+      "service_tbt_ms": 8,
+      "service_ttft_ms": 319,
+      "service_ttlt_ms": 16858,
+      "user_visible_ttft_ms": 239
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXTv1xEteNIZ4pwpzY0LJcEra0Y8",
+    "created": 1788802299,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "`timescale 1ns/1ps\n\nmodule extend_tb;\n\n  logic [31:7] InstrD;\n  logic [2:0]  ImmSrcD;\n  logic [31:0] ImmExtD;\n\n  integer checks;\n  integer failures;\n  integer done;\n\n  extend dut (\n    .InstrD(InstrD),\n    .ImmSrcD(ImmSrcD),\n    .ImmExtD(ImmExtD)\n  );\n\n  function automatic [31:0] exp_imm(\n    input logic [31:7] instr,\n    input logic [2:0]  src\n  );\n    reg [31:0] r;\n    begin\n      r = 32'h00000000;\n      case (src)\n        3'b000: r = {{20{instr[31]}}, instr[31:20]};\n        3'b001: r = {{20{instr[31]}}, instr[31:25], instr[11:7]};\n        3'b010: r = {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0};\n        3'b011: r = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};\n        3'b100: r = {instr[31:12], 12'b0};\n        default: r = 32'hxxxxxxxx;\n      endcase\n      exp_imm = r;\n    end\n  endfunction\n\n  task automatic check_case(\n    input logic [31:7] instr,\n    input logic [2:0]  src,\n    input bit          do_check,\n    input [255:0]      name\n  );\n    reg [31:0] expected;\n    begin\n      InstrD = instr;\n      ImmSrcD = src;\n      #1;\n      if (do_check) begin\n        expected = exp_imm(instr, src);\n        checks = checks + 1;\n        if (ImmExtD !== expected) begin\n          failures = failures + 1;\n          $display(\"Mismatch %0s InstrD=%h ImmSrcD=%b actual=%h expected=%h\",\n                   name, instr, src, ImmExtD, expected);\n        end\n      end\n    end\n  endtask\n\n  task automatic test_i_imm(input integer sval);\n    reg signed [31:0] tmp;\n    reg [11:0] imm12;\n    reg [31:7] instr;\n    begin\n      tmp = sval;\n      imm12 = tmp[11:0];\n      instr = '0;\n      instr[31:20] = imm12;\n      check_case(instr, 3'b000, 1'b1, \"I\");\n    end\n  endtask\n\n  task automatic test_s_imm(input integer sval);\n    reg signed [31:0] tmp;\n    reg [11:0] imm12;\n    reg [31:7] instr;\n    begin\n      tmp = sval;\n      imm12 = tmp[11:0];\n      instr = '0;\n      instr[31:25] = imm12[11:5];\n      instr[11:7]  = imm12[4:0];\n      check_case(instr, 3'b001, 1'b1, \"S\");\n    end\n  endtask\n\n  task automatic test_b_imm(input integer sval);\n    reg signed [31:0] tmp;\n    reg [12:0] imm13;\n    reg [31:7] instr;\n    begin\n      tmp = sval;\n      imm13 = tmp[12:0];\n      instr = '0;\n      instr[31]    = imm13[12];\n      instr[7]     = imm13[11];\n      instr[30:25] = imm13[10:5];\n      instr[11:8]  = imm13[4:1];\n      check_case(instr, 3'b010, 1'b1, \"B\");\n    end\n  endtask\n\n  task automatic test_j_imm(input integer sval);\n    reg signed [31:0] tmp;\n    reg [20:0] imm21;\n    reg [31:7] instr;\n    begin\n      tmp = sval;\n      imm21 = tmp[20:0];\n      instr = '0;\n      instr[31]    = imm21[20];\n      instr[19:12] = imm21[19:12];\n      instr[20]    = imm21[11];\n      instr[30:21] = imm21[10:1];\n      check_case(instr, 3'b011, 1'b1, \"J\");\n    end\n  endtask\n\n  task automatic test_u_imm(input [19:0] upper20);\n    reg [31:7] instr;\n    begin\n      instr = '0;\n      instr[31:12] = upper20;\n      check_case(instr, 3'b100, 1'b1, \"U\");\n    end\n  endtask\n\n  integer i;\n  integer val;\n\n  initial begin\n    checks = 0;\n    failures = 0;\n    done = 0;\n    InstrD = '0;\n    ImmSrcD = 3'b000;\n\n    // I-type: examples, zero, extrema, sign boundaries\n    test_i_imm(0);\n    test_i_imm(1);\n    test_i_imm(-1);\n    test_i_imm(2047);\n    test_i_imm(-2048);\n    test_i_imm(1024);\n    test_i_imm(-1024);\n    test_i_imm(16);\n    test_i_imm(-16);\n\n    // S-type: zero, extrema, sign boundaries\n    test_s_imm(0);\n    test_s_imm(1);\n    test_s_imm(-1);\n    test_s_imm(2047);\n    test_s_imm(-2048);\n    test_s_imm(31);\n    test_s_imm(-32);\n    test_s_imm(1365);\n    test_s_imm(-1365);\n\n    // B-type: sample cases, zero, extrema, alignment/sign boundaries\n    test_b_imm(0);\n    test_b_imm(8);\n    test_b_imm(-4);\n    test_b_imm(2);\n    test_b_imm(-2);\n    test_b_imm(4094);\n    test_b_imm(-4096);\n    test_b_imm(256);\n    test_b_imm(-256);\n\n    // J-type: zero, small, extrema, sign boundaries\n    test_j_imm(0);\n    test_j_imm(2);\n    test_j_imm(-2);\n    test_j_imm(2048);\n    test_j_imm(-2048);\n    test_j_imm(1048574);\n    test_j_imm(-1048576);\n    test_j_imm(8);\n    test_j_imm(-4);\n\n    // U-type: zero and upper-field extrema/patterns\n    test_u_imm(20'h00000);\n    test_u_imm(20'h00001);\n    test_u_imm(20'h7FFFF);\n    test_u_imm(20'h80000);\n    test_u_imm(20'hFFFFF);\n    test_u_imm(20'hABCDE);\n    test_u_imm(20'h55555);\n    test_u_imm(20'hAAAAA);\n\n    // Systematic fragmented-field coverage for valid modes\n    for (i = 0; i < 8; i = i + 1) begin\n      val = i * 257 - 1024;\n      test_i_imm(val);\n      test_s_imm(val);\n    end\n\n    for (i = 0; i < 8; i = i + 1) begin\n      val = (i * 514) - 2048;\n      test_b_imm(val);\n    end\n\n    for (i = 0; i < 8; i = i + 1) begin\n      val = (i * 131072) - 524288;\n      test_j_imm(val);\n    end\n\n    for (i = 0; i < 8; i = i + 1) begin\n      test_u_imm((20'h13579 * i) ^ 20'hABCDE);\n    end\n\n    // Unused ImmSrcD values: drive but do not check unspecified outputs\n    check_case(25'h0000000, 3'b101, 1'b0, \"UNUSED\");\n    check_case(25'h1FFFFFF, 3'b110, 1'b0, \"UNUSED\");\n    check_case(25'h1555555, 3'b111, 1'b0, \"UNUSED\");\n\n    done = 1;\n    $display(\"SUMMARY checks=%0d failures=%0d\", checks, failures);\n    if (checks > 0 && failures == 0) begin\n      $display(\"PASS\");\n      $finish;\n    end else begin\n      $display(\"FAIL\");\n      $fatal(1, \"verification failed\");\n    end\n  end\n\n  initial begin\n    #10000;\n    if (!done) begin\n      $display(\"FAIL\");\n      $fatal(1, \"timeout\");\n    end\n  end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1987,
+      "prompt_tokens": 1538,
+      "total_tokens": 3525,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 8,
+        "engine_ttft_ms": 111,
+        "engine_ttlt_ms": 16654,
+        "pre_inference_ms": 80,
+        "service_tbt_ms": 8,
+        "service_ttft_ms": 319,
+        "service_ttlt_ms": 16858,
+        "user_visible_ttft_ms": 239
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260817141218-5101d8b2-default-r2-dp0-default"
+    }
+  }
+}

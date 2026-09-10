@@ -1,0 +1,3 @@
+SUMMARY checks=119 failures=0
+PASS
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/extend/direct/run_01/extend_direct_run_001/extend_initial_tb.sv:194: $finish called at 123000 (1ps)

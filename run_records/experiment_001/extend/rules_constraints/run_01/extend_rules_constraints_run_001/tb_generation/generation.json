@@ -1,0 +1,86 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 3457,
+    "prompt_tokens": 1538,
+    "total_tokens": 4995,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 7,
+      "engine_ttft_ms": 99,
+      "engine_ttlt_ms": 24780,
+      "pre_inference_ms": 79,
+      "service_tbt_ms": 7,
+      "service_ttft_ms": 350,
+      "service_ttlt_ms": 25041,
+      "user_visible_ttft_ms": 271
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXTgp8FhqiOeEOb2iH22JiG1pOGx",
+    "created": 1788802284,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "`timescale 1ns/1ps\n\nmodule extend_tb;\n\n  logic [31:7] InstrD;\n  logic [2:0]  ImmSrcD;\n  logic [31:0] ImmExtD;\n\n  integer checks;\n  integer failures;\n  integer done;\n\n  logic [31:0] expected;\n  logic        check_valid;\n\n  extend dut (\n    .InstrD(InstrD),\n    .ImmSrcD(ImmSrcD),\n    .ImmExtD(ImmExtD)\n  );\n\n  task automatic compute_expected(\n    input  logic [31:7] instr,\n    input  logic [2:0]  src,\n    output logic [31:0] exp,\n    output logic        valid\n  );\n    begin\n      valid = 1'b1;\n      case (src)\n        3'b000: exp = {{20{instr[31]}}, instr[31:20]};\n        3'b001: exp = {{20{instr[31]}}, instr[31:25], instr[11:7]};\n        3'b010: exp = {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0};\n        3'b011: exp = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};\n        3'b100: exp = {instr[31:12], 12'b0};\n        default: begin\n          exp   = 32'h00000000;\n          valid = 1'b0;\n        end\n      endcase\n    end\n  endtask\n\n  task automatic drive_and_check(\n    input logic [31:7] instr,\n    input logic [2:0]  src,\n    input [255:0]      name\n  );\n    logic [31:0] exp;\n    logic        valid;\n    begin\n      InstrD   = instr;\n      ImmSrcD  = src;\n      compute_expected(instr, src, exp, valid);\n      #1;\n      if (valid) begin\n        checks = checks + 1;\n        if (ImmExtD !== exp) begin\n          failures = failures + 1;\n          $display(\"MISMATCH %0s InstrD=%h ImmSrcD=%b actual=%h expected=%h\", name, InstrD, ImmSrcD, ImmExtD, exp);\n        end\n      end\n    end\n  endtask\n\n  initial begin : main\n    logic [31:7] instr;\n    integer i;\n    integer j;\n    logic signbit;\n    logic [11:0] iimm;\n    logic [11:0] simm;\n    logic [12:0] bimm;\n    logic [20:0] jimm;\n    logic [19:0] uimm;\n    logic [4:0]  tmp5;\n    logic [5:0]  tmp6;\n    logic [7:0]  tmp8;\n    logic [9:0]  tmp10;\n\n    checks = 0;\n    failures = 0;\n    done = 0;\n    InstrD = '0;\n    ImmSrcD = 3'b000;\n\n    #1;\n\n    // I-type: zero, extrema, sign boundaries, representative values\n    iimm = 12'h000; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, \"I zero\");\n    iimm = 12'h001; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, \"I +1\");\n    iimm = 12'h7FF; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, \"I maxpos\");\n    iimm = 12'h800; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, \"I minneg\");\n    iimm = 12'hFFF; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, \"I -1 sample\");\n    iimm = 12'hABC; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, \"I randomneg\");\n    iimm = 12'h123; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, \"I randompos\");\n\n    // S-type: split field and sign extension\n    simm = 12'h000; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, \"S zero\");\n    simm = 12'h001; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, \"S +1\");\n    simm = 12'h7FF; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, \"S maxpos\");\n    simm = 12'h800; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, \"S minneg\");\n    simm = 12'hFFF; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, \"S -1\");\n    simm = 12'hA55; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, \"S mixed\");\n    simm = 12'h124; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, \"S splitbits\");\n\n    // B-type: fragmented field, implicit bit0=0, sample +8 and -4, extrema\n    bimm = 13'h0000; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, \"B zero\");\n    bimm = 13'h0008; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, \"B +8 sample\");\n    bimm = 13'h0002; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, \"B +2 minstep\");\n    bimm = 13'h07FE; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, \"B maxpos\");\n    bimm = 13'h1800; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, \"B minneg\");\n    bimm = 13'h1FFC; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, \"B -4 sample\");\n    bimm = 13'h1554; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, \"B fragmented\");\n\n    // J-type: fragmented field, implicit bit0=0, sign extension\n    jimm = 21'h00000; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, \"J zero\");\n    jimm = 21'h00002; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, \"J +2 minstep\");\n    jimm = 21'h00008; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, \"J +8\");\n    jimm = 21'h0FFFFE; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, \"J maxpos\");\n    jimm = 21'h100000; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, \"J minneg\");\n    jimm = 21'h1FFFFE; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, \"J -2\");\n    jimm = 21'h155554; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, \"J fragmented\");\n\n    // U-type: upper immediate placement\n    uimm = 20'h00000; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, \"U zero\");\n    uimm = 20'h00001; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, \"U lowbit\");\n    uimm = 20'h7FFFF; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, \"U mid\");\n    uimm = 20'h80000; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, \"U signbitset\");\n    uimm = 20'hABCDE; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, \"U sample\");\n    uimm = 20'hFFFFF; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, \"U allones\");\n\n    // Interacting controls: same InstrD, different valid modes\n    instr = 25'h1ABCDE1;\n    for (i = 0; i <= 4; i = i + 1) begin\n      drive_and_check(instr, i[2:0], \"same_instr_all_modes\");\n    end\n\n    // Systematic valid-mode sweep with deterministic patterned instructions\n    for (j = 0; j < 16; j = j + 1) begin\n      signbit = j[0];\n      tmp10 = (j * 10) & 10'h3FF;\n      tmp8  = (j * 17) & 8'hFF;\n      tmp6  = (j * 9) & 6'h3F;\n      tmp5  = (j * 5) & 5'h1F;\n\n      // I\n      instr = '0;\n      instr[31] = signbit;\n      instr[30:21] = tmp10;\n      instr[20] = j[1];\n      drive_and_check(instr, 3'b000, \"loop_I\");\n\n      // S\n      instr = '0;\n      instr[31] = signbit;\n      instr[30:25] = tmp6;\n      instr[11:7] = tmp5;\n      drive_and_check(instr, 3'b001, \"loop_S\");\n\n      // B\n      instr = '0;\n      instr[31] = signbit;\n      instr[7] = j[1];\n      instr[30:25] = tmp6;\n      instr[11:8] = j[5:2];\n      drive_and_check(instr, 3'b010, \"loop_B\");\n\n      // J\n      instr = '0;\n      instr[31] = signbit;\n      instr[19:12] = tmp8;\n      instr[20] = j[2];\n      instr[30:21] = tmp10;\n      drive_and_check(instr, 3'b011, \"loop_J\");\n\n      // U\n      instr = '0;\n      instr[31:12] = {signbit, tmp8, j[2:0], tmp8[7:0]};\n      drive_and_check(instr, 3'b100, \"loop_U\");\n    end\n\n    // Unused control values: exercise but do not check output\n    instr = 25'h1234567;\n    ImmSrcD = 3'b101; InstrD = instr; #1;\n    ImmSrcD = 3'b110; InstrD = ~instr; #1;\n    ImmSrcD = 3'b111; InstrD = 25'h1FFFFFE; #1;\n\n    done = 1;\n\n    $display(\"SUMMARY checks=%0d failures=%0d\", checks, failures);\n    if (checks > 0 && failures == 0) begin\n      $display(\"PASS\");\n      $finish;\n    end\n    else begin\n      $display(\"FAIL\");\n      $fatal(1, \"verification failed\");\n    end\n  end\n\n  initial begin : watchdog\n    #10000;\n    if (!done) begin\n      $display(\"FAIL\");\n      $fatal(1, \"timeout\");\n    end\n  end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {}
+      }
+    ],
+    "usage": {
+      "completion_tokens": 3457,
+      "prompt_tokens": 1538,
+      "total_tokens": 4995,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 7,
+        "engine_ttft_ms": 99,
+        "engine_ttlt_ms": 24780,
+        "pre_inference_ms": 79,
+        "service_tbt_ms": 7,
+        "service_ttft_ms": 350,
+        "service_ttlt_ms": 25041,
+        "user_visible_ttft_ms": 271
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260817141218-be98d3e9-default-r1-dp0-default"
+    }
+  }
+}

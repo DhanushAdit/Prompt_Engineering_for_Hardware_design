@@ -1,0 +1,6 @@
+RTL:       /tmp/a1-final-_tb30ozg/final_rtl.sv
+Testbench: /tmp/a1-final-_tb30ozg/regfile_tb.sv
+SUMMARY checks=491 failures=0
+PASS
+/tmp/a1-final-_tb30ozg/regfile_tb.sv:281: $finish called at 336000 (1ps)
+>>> RESULT: PASS

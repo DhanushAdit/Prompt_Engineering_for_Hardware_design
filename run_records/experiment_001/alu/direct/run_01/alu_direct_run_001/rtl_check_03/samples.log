@@ -1,0 +1,20 @@
+DUT:     /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_01/alu_direct_run_001/rtl_repair_03/alu_rtl.sv
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/vectors/sample/alu_sample.txt
+============================================================
+Assignment 1 RV32I ALU Testbench
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/vectors/sample/alu_sample.txt
+============================================================
+FAIL test=23 category=4 select=101 sub=1 A=80000000 B=00000001 | ALUResult got=00000000 exp=c0000000 | Sum got=7fffffff exp=7fffffff
+FAIL test=25 category=4 select=101 sub=1 A=80000000 B=0000001f | ALUResult got=00000000 exp=ffffffff | Sum got=7fffffe1 exp=7fffffe1
+FAIL test=26 category=4 select=101 sub=1 A=70000000 B=00000004 | ALUResult got=00000000 exp=07000000 | Sum got=6ffffffc exp=6ffffffc
+FAIL test=28 category=4 select=101 sub=1 A=80000000 B=00000021 | ALUResult got=00000000 exp=c0000000 | Sum got=7fffffdf exp=7fffffdf
+FAIL test=39 category=7 select=101 sub=1 A=f1234567 B=abcdef03 | ALUResult got=00000000 exp=fe2468ac | Sum got=45555664 exp=45555664
+------------------------------------------------------------
+Passed: 35
+Failed: 5
+Total : 40
+Score : 87.50%
+------------------------------------------------------------
+FAIL
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/testbench/alu_tb.sv:116: $finish(1) called at 40000 (1ps)
+>>> RESULT: FAIL

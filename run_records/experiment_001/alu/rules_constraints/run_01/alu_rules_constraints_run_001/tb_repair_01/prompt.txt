@@ -1,0 +1,506 @@
+Repair attempt 1/3.
+Repair only the testbench. The supplied RTL passed instructor samples, which is evidence but not proof of correctness. Reconcile diagnostics with the specification and retain independent expected values, meaningful coverage, and checks for all specified behavior. Never disable a valid failing check or copy DUT outputs into expected values. If a real RTL/spec discrepancy remains, keep reporting it. Do not change RTL.
+Write a testbench named alu_tb for the hardware specified below.
+Instantiate alu with named port connections and preserve every port width
+and declared bit index. Use only Icarus Verilog -g2012 compatible constructs.
+
+Verification requirements:
+- Derive expected results independently from the specification, not from DUT
+  outputs or internal signals. Access the DUT only through its public ports.
+- Cover every specified operation/mode, examples, boundary values, and priorities.
+  Include zero, extrema, sign boundaries, and interacting controls when relevant.
+- Check all specified outputs. Do not assert an arbitrary value for an output
+  or input combination the specification leaves unspecified or permits to vary.
+- Track which expected outputs are specified for each case. Compare only those
+  outputs; do not turn an allowed implementation choice into an exact-value check.
+- Infer whether the design is combinational or stateful from the specification.
+  For combinational logic, allow a small nonzero settling delay before checking.
+  For stateful logic, initialize through the specified interface, track expected
+  state independently, drive away from active edges, and sample after nonblocking
+  updates settle. Test reset timing and priority exactly as specified, if present.
+- Use case inequality (!==) so unexpected X/Z values fail checks. Do not check
+  uninitialized state unless its initial value is specified.
+- Use deterministic bounded stimulus. Prefer directed cases plus systematic loops
+  or a fixed-seed sequence; do not depend on simulator-default random seeds.
+- Keep reference calculations explicit about widths and signedness. Account for
+  arithmetic wraparound and exact index ranges where the specification requires it.
+- Declare variables before statements in each scope. Avoid classes, packages,
+  interfaces, SVA, external files, and unsupported constrained randomization.
+- Never index a parenthesized arithmetic expression such as (i-1)[4:0].
+  Assign it to a correctly sized temporary or use an explicit sized cast.
+- For stateful tests, complete the specified initialization/reset event BEFORE
+  checking state. Prefer a manually stepped clock so extra read checks cannot
+  accidentally introduce unmodeled write/reset edges. Check before and after
+  active edges without changing stimulus on the sampling edge.
+- Include `timescale 1ns/1ps, initialize counters, and include an independent
+  watchdog initial block that prints FAIL and calls $fatal(1, "timeout") if the
+  main stimulus does not finish. Ensure the watchdog allows all planned tests.
+- Count checks and failures. Print a diagnostic with inputs, actual and expected
+  values for each mismatch. Print exactly SUMMARY checks=N failures=M on one
+  line, replacing N and M with the decimal check and failure counts.
+  Print a standalone PASS line only if checks > 0 and failures == 0, then $finish.
+  Otherwise print FAIL and call $fatal(1, "verification failed").
+- Include concise comments identifying the requirement groups being tested.
+- Target at most 2500 output tokens, including all declarations and endmodule.
+  Use compact reusable checking tasks and bounded loops instead of repeating
+  long calls. Budget space for stimulus, final reporting, and the watchdog.
+
+Required DUT interface:
+module alu (
+    input  logic [31:0] A,
+    input  logic [31:0] B,
+    input  logic [2:0]  ALUSelect,
+    input  logic        SubArith,
+    output logic [31:0] ALUResult,
+    output logic [31:0] Sum
+);
+
+Full specification:
+alu:
+  description: >
+    Combinational 32-bit RV32I Arithmetic Logic Unit for the course processor.
+    Performs integer arithmetic, comparison, logical, and shift operations.
+    It has no state, clock, or reset. It also produces a separate Sum output
+    (A+B or A-B) reused by the datapath for address generation and comparisons.
+  tech_node: ASAP7 / SkyWater 130HD (course flow)
+  clock_period: combinational (no clock)
+  ports:
+    - {name: A,         direction: input,  type: "logic [31:0]", description: First operand}
+    - {name: B,         direction: input,  type: "logic [31:0]", description: Second operand}
+    - {name: ALUSelect, direction: input,  type: "logic [2:0]",  description: Selects the ALU operation}
+    - {name: SubArith,  direction: input,  type: "logic",        description: Selects subtraction / arithmetic behavior where applicable}
+    - {name: ALUResult, direction: output, type: "logic [31:0]", description: Result of the selected operation}
+    - {name: Sum,       direction: output, type: "logic [31:0]", description: A+B when SubArith=0, A-B when SubArith=1}
+  module_signature: |
+    module alu (
+        input  logic [31:0] A,
+        input  logic [31:0] B,
+        input  logic [2:0]  ALUSelect,
+        input  logic        SubArith,
+        output logic [31:0] ALUResult,
+        output logic [31:0] Sum
+    );
+  behavior:
+    operations: |
+      ALUSelect  SubArith  Operation  ALUResult
+      000        0         ADD        A + B
+      000        1         SUB        A - B
+      001        0         SLL        A << B[4:0]  (fill zeros)
+      010        1         SLT        (signed A < signed B) ? 1 : 0
+      011        1         SLTU       (unsigned A < unsigned B) ? 1 : 0
+      100        0         XOR        A ^ B
+      101        0         SRL        A >> B[4:0]  (logical, zero fill)
+      101        1         SRA        A >>> B[4:0] (arithmetic, replicate A[31])
+      110        0         OR         A | B
+      111        0         AND        A & B
+    comparison: >
+      SLT/SLTU return 32'h00000001 when true, 32'h00000000 when false.
+      SLT treats operands as signed two's-complement; SLTU as unsigned.
+    shift_amount: Only B[4:0] is used as the shift amount (0..31).
+    sum_output: >
+      Sum is independent of ALUResult. SubArith=0 -> Sum=A+B; SubArith=1 -> Sum=A-B.
+      For ADD/SUB, ALUResult and Sum are equal. All arithmetic is 32-bit modular
+      (wraparound, no overflow flag).
+    timing: >
+      Purely combinational; no latches, no clocked always_ff. Outputs respond to
+      input changes without a clock event. Synthesizable SystemVerilog.
+    out_of_scope: >
+      No mul/div, RV64 W-type, compressed, bit-manip, crypto, FP, saturation, or
+      status/exception logic.
+  sample_usage:
+    description: Representative and corner-case operations the design must satisfy.
+    cases:
+      - {A: "0x0000000A", B: "0x00000003", ALUSelect: "000", SubArith: 0, ALUResult: "0x0000000D", note: ADD}
+      - {A: "0x0000000A", B: "0x00000003", ALUSelect: "000", SubArith: 1, ALUResult: "0x00000007", note: SUB}
+      - {A: "0xFFFFFFFF", B: "0x00000001", ALUSelect: "010", SubArith: 1, ALUResult: "0x00000001", note: "SLT signed (-1 < 1)"}
+      - {A: "0xFFFFFFFF", B: "0x00000001", ALUSelect: "011", SubArith: 1, ALUResult: "0x00000000", note: "SLTU unsigned"}
+      - {A: "0x80000000", B: "0x00000001", ALUSelect: "101", SubArith: 1, ALUResult: "0xC0000000", note: "SRA of negative"}
+      - {A: "0x0000000F", B: "0x0000001F", ALUSelect: "001", SubArith: 0, ALUResult: "0x80000000", note: "SLL by 31"}
+
+
+Return the COMPLETE corrected file only. Keep it below 2500 tokens using compact tasks and loops. The response limit is unchanged.
+Generation diagnostic: No provider truncation indication.
+
+Original specification:
+alu:
+  description: >
+    Combinational 32-bit RV32I Arithmetic Logic Unit for the course processor.
+    Performs integer arithmetic, comparison, logical, and shift operations.
+    It has no state, clock, or reset. It also produces a separate Sum output
+    (A+B or A-B) reused by the datapath for address generation and comparisons.
+  tech_node: ASAP7 / SkyWater 130HD (course flow)
+  clock_period: combinational (no clock)
+  ports:
+    - {name: A,         direction: input,  type: "logic [31:0]", description: First operand}
+    - {name: B,         direction: input,  type: "logic [31:0]", description: Second operand}
+    - {name: ALUSelect, direction: input,  type: "logic [2:0]",  description: Selects the ALU operation}
+    - {name: SubArith,  direction: input,  type: "logic",        description: Selects subtraction / arithmetic behavior where applicable}
+    - {name: ALUResult, direction: output, type: "logic [31:0]", description: Result of the selected operation}
+    - {name: Sum,       direction: output, type: "logic [31:0]", description: A+B when SubArith=0, A-B when SubArith=1}
+  module_signature: |
+    module alu (
+        input  logic [31:0] A,
+        input  logic [31:0] B,
+        input  logic [2:0]  ALUSelect,
+        input  logic        SubArith,
+        output logic [31:0] ALUResult,
+        output logic [31:0] Sum
+    );
+  behavior:
+    operations: |
+      ALUSelect  SubArith  Operation  ALUResult
+      000        0         ADD        A + B
+      000        1         SUB        A - B
+      001        0         SLL        A << B[4:0]  (fill zeros)
+      010        1         SLT        (signed A < signed B) ? 1 : 0
+      011        1         SLTU       (unsigned A < unsigned B) ? 1 : 0
+      100        0         XOR        A ^ B
+      101        0         SRL        A >> B[4:0]  (logical, zero fill)
+      101        1         SRA        A >>> B[4:0] (arithmetic, replicate A[31])
+      110        0         OR         A | B
+      111        0         AND        A & B
+    comparison: >
+      SLT/SLTU return 32'h00000001 when true, 32'h00000000 when false.
+      SLT treats operands as signed two's-complement; SLTU as unsigned.
+    shift_amount: Only B[4:0] is used as the shift amount (0..31).
+    sum_output: >
+      Sum is independent of ALUResult. SubArith=0 -> Sum=A+B; SubArith=1 -> Sum=A-B.
+      For ADD/SUB, ALUResult and Sum are equal. All arithmetic is 32-bit modular
+      (wraparound, no overflow flag).
+    timing: >
+      Purely combinational; no latches, no clocked always_ff. Outputs respond to
+      input changes without a clock event. Synthesizable SystemVerilog.
+    out_of_scope: >
+      No mul/div, RV64 W-type, compressed, bit-manip, crypto, FP, saturation, or
+      status/exception logic.
+  sample_usage:
+    description: Representative and corner-case operations the design must satisfy.
+    cases:
+      - {A: "0x0000000A", B: "0x00000003", ALUSelect: "000", SubArith: 0, ALUResult: "0x0000000D", note: ADD}
+      - {A: "0x0000000A", B: "0x00000003", ALUSelect: "000", SubArith: 1, ALUResult: "0x00000007", note: SUB}
+      - {A: "0xFFFFFFFF", B: "0x00000001", ALUSelect: "010", SubArith: 1, ALUResult: "0x00000001", note: "SLT signed (-1 < 1)"}
+      - {A: "0xFFFFFFFF", B: "0x00000001", ALUSelect: "011", SubArith: 1, ALUResult: "0x00000000", note: "SLTU unsigned"}
+      - {A: "0x80000000", B: "0x00000001", ALUSelect: "101", SubArith: 1, ALUResult: "0xC0000000", note: "SRA of negative"}
+      - {A: "0x0000000F", B: "0x0000001F", ALUSelect: "001", SubArith: 0, ALUResult: "0x80000000", note: "SLL by 31"}
+
+
+Current tb:
+`timescale 1ns/1ps
+
+module alu_tb;
+
+  logic [31:0] A;
+  logic [31:0] B;
+  logic [2:0]  ALUSelect;
+  logic        SubArith;
+  logic [31:0] ALUResult;
+  logic [31:0] Sum;
+
+  integer checks;
+  integer failures;
+  integer done;
+
+  alu dut (
+    .A(A),
+    .B(B),
+    .ALUSelect(ALUSelect),
+    .SubArith(SubArith),
+    .ALUResult(ALUResult),
+    .Sum(Sum)
+  );
+
+  task automatic check_case(
+    input [31:0] inA,
+    input [31:0] inB,
+    input [2:0]  inSel,
+    input        inSub,
+    input        check_result,
+    input [31:0] exp_result,
+    input [31:0] exp_sum
+  );
+    reg signed [31:0] sA;
+    reg signed [31:0] sB;
+    reg [4:0] shamt;
+    begin
+      A = inA;
+      B = inB;
+      ALUSelect = inSel;
+      SubArith = inSub;
+      #1;
+
+      checks = checks + 1;
+      if (Sum !== exp_sum) begin
+        failures = failures + 1;
+        $display("Mismatch Sum A=%h B=%h ALUSelect=%03b SubArith=%b actual=%h expected=%h", A, B, ALUSelect, SubArith, Sum, exp_sum);
+      end
+
+      if (check_result) begin
+        checks = checks + 1;
+        if (ALUResult !== exp_result) begin
+          failures = failures + 1;
+          $display("Mismatch ALUResult A=%h B=%h ALUSelect=%03b SubArith=%b actual=%h expected=%h", A, B, ALUSelect, SubArith, ALUResult, exp_result);
+        end
+      end
+
+      sA = inA;
+      sB = inB;
+      shamt = inB[4:0];
+      if (check_result) begin
+        case ({inSel,inSub})
+          4'b0000: if (exp_result !== (inA + inB)) begin failures = failures + 1; $display("TB internal expectation error ADD"); end
+          4'b0001: if (exp_result !== (inA - inB)) begin failures = failures + 1; $display("TB internal expectation error SUB"); end
+          4'b0010: if (exp_result !== (inA << shamt)) begin failures = failures + 1; $display("TB internal expectation error SLL"); end
+          4'b0101: if (exp_result !== ((sA < sB) ? 32'h00000001 : 32'h00000000)) begin failures = failures + 1; $display("TB internal expectation error SLT"); end
+          4'b0111: if (exp_result !== ((inA < inB) ? 32'h00000001 : 32'h00000000)) begin failures = failures + 1; $display("TB internal expectation error SLTU"); end
+          4'b1000: if (exp_result !== (inA ^ inB)) begin failures = failures + 1; $display("TB internal expectation error XOR"); end
+          4'b1010: if (exp_result !== (inA >> shamt)) begin failures = failures + 1; $display("TB internal expectation error SRL"); end
+          4'b1011: if (exp_result !== (sA >>> shamt)) begin failures = failures + 1; $display("TB internal expectation error SRA"); end
+          4'b1100: if (exp_result !== (inA | inB)) begin failures = failures + 1; $display("TB internal expectation error OR"); end
+          4'b1110: if (exp_result !== (inA & inB)) begin failures = failures + 1; $display("TB internal expectation error AND"); end
+          default: begin end
+        endcase
+      end
+      if (exp_sum !== (inSub ? (inA - inB) : (inA + inB))) begin
+        failures = failures + 1;
+        $display("TB internal expectation error Sum");
+      end
+    end
+  endtask
+
+  task automatic do_directed;
+    reg signed [31:0] sA;
+    reg signed [31:0] sB;
+    reg [31:0] exp_r;
+    reg [31:0] exp_s;
+    reg [31:0] vals [0:7];
+    reg [31:0] shifts [0:7];
+    integer i;
+    integer j;
+    begin
+      vals[0] = 32'h00000000;
+      vals[1] = 32'h00000001;
+      vals[2] = 32'hFFFFFFFF;
+      vals[3] = 32'h7FFFFFFF;
+      vals[4] = 32'h80000000;
+      vals[5] = 32'h0000000A;
+      vals[6] = 32'h00000003;
+      vals[7] = 32'h55555555;
+
+      shifts[0] = 32'h00000000;
+      shifts[1] = 32'h00000001;
+      shifts[2] = 32'h0000001F;
+      shifts[3] = 32'h00000020;
+      shifts[4] = 32'h0000003F;
+      shifts[5] = 32'h12345660;
+      shifts[6] = 32'h12345661;
+      shifts[7] = 32'h1234567F;
+
+      check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b0, 1'b1, 32'h0000000D, 32'h0000000D);
+      check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b1, 1'b1, 32'h00000007, 32'h00000007);
+      check_case(32'hFFFFFFFF, 32'h00000001, 3'b010, 1'b1, 1'b1, 32'h00000001, 32'hFFFFFFFE);
+      check_case(32'hFFFFFFFF, 32'h00000001, 3'b011, 1'b1, 1'b1, 32'h00000000, 32'hFFFFFFFE);
+      check_case(32'h80000000, 32'h00000001, 3'b101, 1'b1, 1'b1, 32'hC0000000, 32'h7FFFFFFF);
+      check_case(32'h0000000F, 32'h0000001F, 3'b001, 1'b0, 1'b1, 32'h80000000, 32'h0000002E);
+
+      for (i = 0; i < 8; i = i + 1) begin
+        for (j = 0; j < 8; j = j + 1) begin
+          exp_s = vals[i] + vals[j];
+          exp_r = vals[i] + vals[j];
+          check_case(vals[i], vals[j], 3'b000, 1'b0, 1'b1, exp_r, exp_s);
+
+          exp_s = vals[i] - vals[j];
+          exp_r = vals[i] - vals[j];
+          check_case(vals[i], vals[j], 3'b000, 1'b1, 1'b1, exp_r, exp_s);
+
+          exp_s = vals[i] + vals[j];
+          exp_r = vals[i] ^ vals[j];
+          check_case(vals[i], vals[j], 3'b100, 1'b0, 1'b1, exp_r, exp_s);
+
+          exp_s = vals[i] + vals[j];
+          exp_r = vals[i] | vals[j];
+          check_case(vals[i], vals[j], 3'b110, 1'b0, 1'b1, exp_r, exp_s);
+
+          exp_s = vals[i] + vals[j];
+          exp_r = vals[i] & vals[j];
+          check_case(vals[i], vals[j], 3'b111, 1'b0, 1'b1, exp_r, exp_s);
+
+          sA = vals[i];
+          sB = vals[j];
+          exp_s = vals[i] - vals[j];
+          exp_r = (sA < sB) ? 32'h1 : 32'h0;
+          check_case(vals[i], vals[j], 3'b010, 1'b1, 1'b1, exp_r, exp_s);
+
+          exp_s = vals[i] - vals[j];
+          exp_r = (vals[i] < vals[j]) ? 32'h1 : 32'h0;
+          check_case(vals[i], vals[j], 3'b011, 1'b1, 1'b1, exp_r, exp_s);
+        end
+      end
+
+      for (i = 0; i < 8; i = i + 1) begin
+        for (j = 0; j < 8; j = j + 1) begin
+          exp_s = vals[i] + shifts[j];
+          exp_r = vals[i] << shifts[j][4:0];
+          check_case(vals[i], shifts[j], 3'b001, 1'b0, 1'b1, exp_r, exp_s);
+
+          exp_s = vals[i] + shifts[j];
+          exp_r = vals[i] >> shifts[j][4:0];
+          check_case(vals[i], shifts[j], 3'b101, 1'b0, 1'b1, exp_r, exp_s);
+
+          sA = vals[i];
+          exp_s = vals[i] - shifts[j];
+          exp_r = sA >>> shifts[j][4:0];
+          check_case(vals[i], shifts[j], 3'b101, 1'b1, 1'b1, exp_r, exp_s);
+        end
+      end
+
+      exp_s = 32'hFFFFFFFF + 32'h00000001;
+      check_case(32'hFFFFFFFF, 32'h00000001, 3'b110, 1'b0, 1'b1, 32'hFFFFFFFF, exp_s);
+
+      exp_s = 32'h80000000 - 32'h00000001;
+      check_case(32'h80000000, 32'h00000001, 3'b111, 1'b1, 1'b0, 32'h00000000, exp_s);
+
+      exp_s = 32'h12345678 + 32'h9ABCDEF0;
+      check_case(32'h12345678, 32'h9ABCDEF0, 3'b010, 1'b0, 1'b0, 32'h00000000, exp_s);
+
+      exp_s = 32'h12345678 - 32'h9ABCDEF0;
+      check_case(32'h12345678, 32'h9ABCDEF0, 3'b001, 1'b1, 1'b0, 32'h00000000, exp_s);
+
+      exp_s = 32'hAAAAAAAA + 32'h55555555;
+      check_case(32'hAAAAAAAA, 32'h55555555, 3'b011, 1'b0, 1'b0, 32'h00000000, exp_s);
+
+      exp_s = 32'hAAAAAAAA - 32'h55555555;
+      check_case(32'hAAAAAAAA, 32'h55555555, 3'b100, 1'b1, 1'b0, 32'h00000000, exp_s);
+    end
+  endtask
+
+  initial begin
+    checks = 0;
+    failures = 0;
+    done = 0;
+    A = 32'h0;
+    B = 32'h0;
+    ALUSelect = 3'b000;
+    SubArith = 1'b0;
+
+    // Directed operation, boundary, shift amount, and independent Sum tests
+    do_directed();
+
+    done = 1;
+    $display("SUMMARY checks=%0d failures=%0d", checks, failures);
+    if (checks > 0 && failures == 0) begin
+      $display("PASS");
+      $finish;
+    end
+    else begin
+      $display("FAIL");
+      $fatal(1, "verification failed");
+    end
+  end
+
+  initial begin
+    #5000;
+    if (!done) begin
+      $display("FAIL");
+      $fatal(1, "timeout");
+    end
+  end
+
+endmodule
+
+
+Tool commands, exit codes, and full diagnostics:
+Stage: compile
+Command: ['iverilog', '-g2012', '-s', 'alu_tb', '-o', '/tmp/a1-phase-c-84h1w5ly/tb_0.vvp', '/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_01/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv', '/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_01/alu_rules_constraints_run_001/alu_initial_tb.sv']
+Exit code: 0
+Timed out: False
+
+Log:
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_01/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_01/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:41: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_01/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:43: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_01/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:15: vvp.tgt sorry: Case unique/unique0 qualities are ignored.
+
+
+Stage: simulation
+Command: ['vvp', '/tmp/a1-phase-c-84h1w5ly/tb_0.vvp']
+Exit code: 1
+Timed out: False
+Require exit 0, no timeout or failure diagnostics, standalone PASS, and exactly one SUMMARY checks=N failures=0 with N > 0.
+Log:
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+TB internal expectation error SRA
+SUMMARY checks=1299 failures=11
+FAIL
+FATAL: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_01/alu_rules_constraints_run_001/alu_initial_tb.sv:209: verification failed
+       Time: 652000  Scope: alu_tb
+
+
+Sample-passing RTL, for interface/timing diagnosis only:
+module alu (
+    input  logic [31:0] A,
+    input  logic [31:0] B,
+    input  logic [2:0]  ALUSelect,
+    input  logic        SubArith,
+    output logic [31:0] ALUResult,
+    output logic [31:0] Sum
+);
+
+assign Sum = SubArith ? (A - B) : (A + B);
+
+always_comb begin
+    ALUResult = 32'h0000_0000;
+
+    unique case (ALUSelect)
+        3'b000: begin
+            ALUResult = Sum;
+        end
+        3'b001: begin
+            ALUResult = A << B[4:0];
+        end
+        3'b010: begin
+            if (SubArith) begin
+                ALUResult = ($signed(A) < $signed(B)) ? 32'h0000_0001 : 32'h0000_0000;
+            end else begin
+                ALUResult = 32'h0000_0000;
+            end
+        end
+        3'b011: begin
+            if (SubArith) begin
+                ALUResult = (A < B) ? 32'h0000_0001 : 32'h0000_0000;
+            end else begin
+                ALUResult = 32'h0000_0000;
+            end
+        end
+        3'b100: begin
+            ALUResult = A ^ B;
+        end
+        3'b101: begin
+            if (SubArith) begin
+                ALUResult = $signed(A) >>> B[4:0];
+            end else begin
+                ALUResult = A >> B[4:0];
+            end
+        end
+        3'b110: begin
+            ALUResult = A | B;
+        end
+        3'b111: begin
+            ALUResult = A & B;
+        end
+        default: begin
+            ALUResult = 32'h0000_0000;
+        end
+    endcase
+end
+
+endmodule
+

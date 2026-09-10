@@ -1,0 +1,14 @@
+Using spec: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/specs/controller.yaml
+Top module: controller
+Model: gpt-5.4
+Suggested output directory: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/rules_constraints/run_01
+Generating run 1: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/rules_constraints/run_01/controller_rules_constraints_run_001
+Saved RTL prompt: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/rules_constraints/run_01/controller_rules_constraints_run_001/controller_rules_constraints_rtl_prompt.txt
+Saved initial RTL: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/rules_constraints/run_01/controller_rules_constraints_run_001/controller_rules_constraints_initial_rtl.sv
+Generating testbench: controller_tb
+Saved initial testbench: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/rules_constraints/run_01/controller_rules_constraints_run_001/controller_initial_tb.sv
+rtl attempt 0: FAIL
+Repairing rtl: attempt 1/3
+rtl attempt 1: PASS
+tb attempt 0: PASS
+Workflow PASS: controller; history: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/rules_constraints/run_01/controller_rules_constraints_run_001/phase_c.json

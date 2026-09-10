@@ -1,0 +1,408 @@
+`timescale 1ns/1ps
+
+module controller_tb;
+
+  logic [31:0] InstrD;
+  logic        RegWriteD;
+  logic [2:0]  ImmSrcD;
+  logic        ALUSrcAD;
+  logic        ALUSrcBD;
+  logic [1:0]  MemRWD;
+  logic [2:0]  ResultSrcD;
+  logic        BranchD;
+  logic        JumpD;
+  logic        ALUResultSrcD;
+  logic [2:0]  ALUSelectD;
+  logic        SubArithD;
+  logic        IllegalInstrD;
+
+  integer checks;
+  integer failures;
+  integer done;
+
+  controller dut (
+    .InstrD(InstrD),
+    .RegWriteD(RegWriteD),
+    .ImmSrcD(ImmSrcD),
+    .ALUSrcAD(ALUSrcAD),
+    .ALUSrcBD(ALUSrcBD),
+    .MemRWD(MemRWD),
+    .ResultSrcD(ResultSrcD),
+    .BranchD(BranchD),
+    .JumpD(JumpD),
+    .ALUResultSrcD(ALUResultSrcD),
+    .ALUSelectD(ALUSelectD),
+    .SubArithD(SubArithD),
+    .IllegalInstrD(IllegalInstrD)
+  );
+
+  task automatic cmp1(
+    input [255:0] tname,
+    input [127:0] sname,
+    input logic act,
+    input logic exp
+  );
+    begin
+      checks = checks + 1;
+      if (act !== exp) begin
+        failures = failures + 1;
+        $display("MISMATCH %0s %0s instr=%08h actual=%0b expected=%0b", tname, sname, InstrD, act, exp);
+      end
+    end
+  endtask
+
+  task automatic cmp2(
+    input [255:0] tname,
+    input [127:0] sname,
+    input logic [1:0] act,
+    input logic [1:0] exp
+  );
+    begin
+      checks = checks + 1;
+      if (act !== exp) begin
+        failures = failures + 1;
+        $display("MISMATCH %0s %0s instr=%08h actual=%0b expected=%0b", tname, sname, InstrD, act, exp);
+      end
+    end
+  endtask
+
+  task automatic cmp3(
+    input [255:0] tname,
+    input [127:0] sname,
+    input logic [2:0] act,
+    input logic [2:0] exp
+  );
+    begin
+      checks = checks + 1;
+      if (act !== exp) begin
+        failures = failures + 1;
+        $display("MISMATCH %0s %0s instr=%08h actual=%0b expected=%0b", tname, sname, InstrD, act, exp);
+      end
+    end
+  endtask
+
+  task automatic apply_and_check(
+    input [255:0] tname,
+    input logic [31:0] instr,
+    input logic chk_RegWriteD,     input logic exp_RegWriteD,
+    input logic chk_ImmSrcD,       input logic [2:0] exp_ImmSrcD,
+    input logic chk_ALUSrcAD,      input logic exp_ALUSrcAD,
+    input logic chk_ALUSrcBD,      input logic exp_ALUSrcBD,
+    input logic chk_MemRWD,        input logic [1:0] exp_MemRWD,
+    input logic chk_ResultSrcD,    input logic [2:0] exp_ResultSrcD,
+    input logic chk_BranchD,       input logic exp_BranchD,
+    input logic chk_JumpD,         input logic exp_JumpD,
+    input logic chk_ALUResultSrcD, input logic exp_ALUResultSrcD,
+    input logic chk_ALUSelectD,    input logic [2:0] exp_ALUSelectD,
+    input logic chk_SubArithD,     input logic exp_SubArithD,
+    input logic chk_IllegalInstrD, input logic exp_IllegalInstrD
+  );
+    begin
+      InstrD = instr;
+      #1;
+      if (chk_RegWriteD)     cmp1(tname, "RegWriteD",     RegWriteD,     exp_RegWriteD);
+      if (chk_ImmSrcD)       cmp3(tname, "ImmSrcD",       ImmSrcD,       exp_ImmSrcD);
+      if (chk_ALUSrcAD)      cmp1(tname, "ALUSrcAD",      ALUSrcAD,      exp_ALUSrcAD);
+      if (chk_ALUSrcBD)      cmp1(tname, "ALUSrcBD",      ALUSrcBD,      exp_ALUSrcBD);
+      if (chk_MemRWD)        cmp2(tname, "MemRWD",        MemRWD,        exp_MemRWD);
+      if (chk_ResultSrcD)    cmp3(tname, "ResultSrcD",    ResultSrcD,    exp_ResultSrcD);
+      if (chk_BranchD)       cmp1(tname, "BranchD",       BranchD,       exp_BranchD);
+      if (chk_JumpD)         cmp1(tname, "JumpD",         JumpD,         exp_JumpD);
+      if (chk_ALUResultSrcD) cmp1(tname, "ALUResultSrcD", ALUResultSrcD, exp_ALUResultSrcD);
+      if (chk_ALUSelectD)    cmp3(tname, "ALUSelectD",    ALUSelectD,    exp_ALUSelectD);
+      if (chk_SubArithD)     cmp1(tname, "SubArithD",     SubArithD,     exp_SubArithD);
+      if (chk_IllegalInstrD) cmp1(tname, "IllegalInstrD", IllegalInstrD, exp_IllegalInstrD);
+    end
+  endtask
+
+  function automatic logic [31:0] mk_r(
+    input logic [6:0] funct7,
+    input logic [4:0] rs2,
+    input logic [4:0] rs1,
+    input logic [2:0] funct3,
+    input logic [4:0] rd,
+    input logic [6:0] opcode
+  );
+    begin
+      mk_r = {funct7, rs2, rs1, funct3, rd, opcode};
+    end
+  endfunction
+
+  function automatic logic [31:0] mk_i(
+    input logic [11:0] imm12,
+    input logic [4:0] rs1,
+    input logic [2:0] funct3,
+    input logic [4:0] rd,
+    input logic [6:0] opcode
+  );
+    begin
+      mk_i = {imm12, rs1, funct3, rd, opcode};
+    end
+  endfunction
+
+  function automatic logic [31:0] mk_s(
+    input logic [11:0] imm12,
+    input logic [4:0] rs2,
+    input logic [4:0] rs1,
+    input logic [2:0] funct3,
+    input logic [6:0] opcode
+  );
+    begin
+      mk_s = {imm12[11:5], rs2, rs1, funct3, imm12[4:0], opcode};
+    end
+  endfunction
+
+  function automatic logic [31:0] mk_b(
+    input logic [12:0] imm13,
+    input logic [4:0] rs2,
+    input logic [4:0] rs1,
+    input logic [2:0] funct3,
+    input logic [6:0] opcode
+  );
+    begin
+      mk_b = {imm13[12], imm13[10:5], rs2, rs1, funct3, imm13[4:1], imm13[11], opcode};
+    end
+  endfunction
+
+  function automatic logic [31:0] mk_u(
+    input logic [19:0] imm20,
+    input logic [4:0] rd,
+    input logic [6:0] opcode
+  );
+    begin
+      mk_u = {imm20, rd, opcode};
+    end
+  endfunction
+
+  function automatic logic [31:0] mk_j(
+    input logic [20:0] imm21,
+    input logic [4:0] rd,
+    input logic [6:0] opcode
+  );
+    begin
+      mk_j = {imm21[20], imm21[10:1], imm21[11], imm21[19:12], rd, opcode};
+    end
+  endfunction
+
+  initial begin : stimulus
+    integer i;
+    logic [31:0] instr;
+    logic [4:0] shamt5;
+    checks = 0;
+    failures = 0;
+    done = 0;
+    InstrD = 32'h00000000;
+
+    // Load: legal funct3 including boundaries of immediates/regs
+    for (i = 0; i < 5; i = i + 1) begin
+      logic [2:0] f3;
+      logic [11:0] imm12;
+      logic [4:0] rdv;
+      logic [4:0] rs1v;
+      case (i)
+        0: begin f3 = 3'b000; imm12 = 12'h000; rdv = 5'd0;  rs1v = 5'd0;  end
+        1: begin f3 = 3'b001; imm12 = 12'h7ff; rdv = 5'd31; rs1v = 5'd31; end
+        2: begin f3 = 3'b010; imm12 = 12'h800; rdv = 5'd1;  rs1v = 5'd2;  end
+        3: begin f3 = 3'b100; imm12 = 12'h123; rdv = 5'd7;  rs1v = 5'd9;  end
+        default: begin f3 = 3'b101; imm12 = 12'hfff; rdv = 5'd13; rs1v = 5'd17; end
+      endcase
+      instr = mk_i(imm12, rs1v, f3, rdv, 7'b0000011);
+      apply_and_check({"load_",8'h30+i}, instr, 1,1, 1,3'b000, 1,0, 1,1, 1,2'b10, 1,3'b001,
+                      1,0, 1,0, 1,0, 1,3'b000, 0,1'b0, 1,1'b0);
+    end
+
+    // Illegal loads funct3
+    for (i = 0; i < 8; i = i + 1) begin
+      logic [2:0] f3i;
+      f3i = i[2:0];
+      if (!((f3i == 3'b000) || (f3i == 3'b001) || (f3i == 3'b010) || (f3i == 3'b100) || (f3i == 3'b101))) begin
+        instr = mk_i(12'h055, 5'd3, f3i, 5'd4, 7'b0000011);
+        apply_and_check({"ill_load_f3_",8'h30+i}, instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                        1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+      end
+    end
+
+    // Store: legal funct3
+    for (i = 0; i < 3; i = i + 1) begin
+      logic [2:0] f3s;
+      case (i)
+        0: f3s = 3'b000;
+        1: f3s = 3'b001;
+        default: f3s = 3'b010;
+      endcase
+      instr = mk_s(12'h800 + i, 5'd31-i, 5'd1+i, f3s, 7'b0100011);
+      apply_and_check({"store_",8'h30+i}, instr, 1,0, 1,3'b001, 1,0, 1,1, 1,2'b01, 1,3'b000,
+                      1,0, 1,0, 1,0, 1,3'b000, 0,0, 1,0);
+    end
+
+    // Illegal stores funct3
+    for (i = 0; i < 8; i = i + 1) begin
+      logic [2:0] f3si;
+      f3si = i[2:0];
+      if (!((f3si == 3'b000) || (f3si == 3'b001) || (f3si == 3'b010))) begin
+        instr = mk_s(12'h123, 5'd5, 5'd6, f3si, 7'b0100011);
+        apply_and_check({"ill_store_f3_",8'h30+i}, instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                        1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+      end
+    end
+
+    // Branch: legal funct3, all specified branch types
+    for (i = 0; i < 6; i = i + 1) begin
+      logic [2:0] f3b;
+      case (i)
+        0: f3b = 3'b000;
+        1: f3b = 3'b001;
+        2: f3b = 3'b100;
+        3: f3b = 3'b101;
+        4: f3b = 3'b110;
+        default: f3b = 3'b111;
+      endcase
+      instr = mk_b((i==0)?13'h0000:((i==1)?13'h1ffe:((i==2)?13'h1000:13'h0554)), 5'd2, 5'd1, f3b, 7'b1100011);
+      apply_and_check({"branch_",8'h30+i}, instr, 1,0, 1,3'b010, 1,1, 1,1, 1,2'b00, 1,3'b000,
+                      1,1, 1,0, 1,0, 1,3'b000, 0,0, 1,0);
+    end
+
+    // Illegal branch funct3
+    for (i = 0; i < 8; i = i + 1) begin
+      logic [2:0] f3bi;
+      f3bi = i[2:0];
+      if (!((f3bi == 3'b000) || (f3bi == 3'b001) || (f3bi == 3'b100) || (f3bi == 3'b101) || (f3bi == 3'b110) || (f3bi == 3'b111))) begin
+        instr = mk_b(13'h002, 5'd3, 5'd4, f3bi, 7'b1100011);
+        apply_and_check({"ill_branch_f3_",8'h30+i}, instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                        1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+      end
+    end
+
+    // JALR legal and illegal funct3
+    instr = mk_i(12'h000, 5'd2, 3'b000, 5'd1, 7'b1100111);
+    apply_and_check("jalr_legal", instr, 1,1, 1,3'b000, 1,0, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,1, 1,1, 1,3'b000, 1,0, 1,0);
+    for (i = 1; i < 8; i = i + 1) begin
+      instr = mk_i(12'hfff, 5'd2, i[2:0], 5'd1, 7'b1100111);
+      apply_and_check({"ill_jalr_f3_",8'h30+i}, instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                      1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    end
+
+    // JAL
+    instr = mk_j(21'h00000, 5'd0, 7'b1101111);
+    apply_and_check("jal_zero", instr, 1,1, 1,3'b011, 1,1, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,1, 1,1, 1,3'b000, 1,0, 1,0);
+    instr = mk_j(21'h100000, 5'd31, 7'b1101111);
+    apply_and_check("jal_sign", instr, 1,1, 1,3'b011, 1,1, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,1, 1,1, 1,3'b000, 1,0, 1,0);
+
+    // U-type AUIPC/LUI
+    instr = mk_u(20'h00000, 5'd1, 7'b0010111);
+    apply_and_check("auipc_zero", instr, 1,1, 1,3'b100, 1,1, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,0, 1,0, 1,3'b000, 0,0, 1,0);
+    instr = mk_u(20'hfffff, 5'd31, 7'b0110111);
+    apply_and_check("lui_max", instr, 1,1, 1,3'b100, 1,0, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,0, 1,1, 1,3'b000, 0,0, 1,0);
+
+    // I-type ALU non-shifts: all funct3 legal
+    for (i = 0; i < 8; i = i + 1) begin
+      logic [2:0] f3a;
+      f3a = i[2:0];
+      if ((f3a != 3'b001) && (f3a != 3'b101)) begin
+        logic exp_sub;
+        exp_sub = ((f3a == 3'b010) || (f3a == 3'b011));
+        instr = mk_i((i==0)?12'h000:12'h800, 5'd10, f3a, 5'd11, 7'b0010011);
+        apply_and_check({"itype_",8'h30+i}, instr, 1,1, 1,3'b000, 1,0, 1,1, 1,2'b00, 1,3'b000,
+                        1,0, 1,0, 1,0, 1,f3a, 1,exp_sub, 1,0);
+      end
+    end
+
+    // Shift-immediate legal/illegal encodings
+    shamt5 = 5'd0;
+    instr = mk_i({7'b0000000, shamt5}, 5'd1, 3'b001, 5'd2, 7'b0010011);
+    apply_and_check("slli_sh0", instr, 1,1, 1,3'b000, 1,0, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,0, 1,0, 1,3'b001, 1,0, 1,0);
+    shamt5 = 5'd31;
+    instr = mk_i({7'b0000000, shamt5}, 5'd3, 3'b001, 5'd4, 7'b0010011);
+    apply_and_check("slli_sh31", instr, 1,1, 1,3'b000, 1,0, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,0, 1,0, 1,3'b001, 1,0, 1,0);
+    instr = mk_i({7'b0000000, 5'd7}, 5'd5, 3'b101, 5'd6, 7'b0010011);
+    apply_and_check("srli", instr, 1,1, 1,3'b000, 1,0, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,0, 1,0, 1,3'b101, 1,0, 1,0);
+    instr = mk_i({7'b0100000, 5'd7}, 5'd5, 3'b101, 5'd6, 7'b0010011);
+    apply_and_check("srai", instr, 1,1, 1,3'b000, 1,0, 1,1, 1,2'b00, 1,3'b000,
+                    1,0, 1,0, 1,0, 1,3'b101, 1,1, 1,0);
+    instr = mk_i({7'b0100000, 5'd3}, 5'd1, 3'b001, 5'd2, 7'b0010011);
+    apply_and_check("ill_slli_f7", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = mk_i({7'b0010000, 5'd3}, 5'd1, 3'b101, 5'd2, 7'b0010011);
+    apply_and_check("ill_srxi_f7", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+
+    // R-type ALU all funct3 with legal funct7=0 and special 0x20 for SUB/SRA
+    for (i = 0; i < 8; i = i + 1) begin
+      logic [2:0] f3r;
+      logic exp_sub0;
+      f3r = i[2:0];
+      exp_sub0 = ((f3r == 3'b010) || (f3r == 3'b011));
+      instr = mk_r(7'b0000000, 5'd8, 5'd9, f3r, 5'd10, 7'b0110011);
+      apply_and_check({"rtype_f7_00_",8'h30+i}, instr, 1,1, 1,3'b000, 1,0, 1,0, 1,2'b00, 1,3'b000,
+                      1,0, 1,0, 1,0, 1,f3r, 1,exp_sub0, 1,0);
+    end
+    instr = mk_r(7'b0100000, 5'd3, 5'd2, 3'b000, 5'd1, 7'b0110011);
+    apply_and_check("sub", instr, 1,1, 1,3'b000, 1,0, 1,0, 1,2'b00, 1,3'b000,
+                    1,0, 1,0, 1,0, 1,3'b000, 1,1, 1,0);
+    instr = mk_r(7'b0100000, 5'd3, 5'd2, 3'b101, 5'd1, 7'b0110011);
+    apply_and_check("sra", instr, 1,1, 1,3'b000, 1,0, 1,0, 1,2'b00, 1,3'b000,
+                    1,0, 1,0, 1,0, 1,3'b101, 1,1, 1,0);
+
+    // Illegal R-type funct7 combinations
+    instr = mk_r(7'b0100000, 5'd3, 5'd2, 3'b001, 5'd1, 7'b0110011);
+    apply_and_check("ill_rtype_sll_20", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = mk_r(7'b0000001, 5'd3, 5'd2, 3'b000, 5'd1, 7'b0110011);
+    apply_and_check("ill_rtype_mext", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = mk_r(7'b0100000, 5'd3, 5'd2, 3'b010, 5'd1, 7'b0110011);
+    apply_and_check("ill_rtype_slt_20", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+
+    // Illegal opcodes / extensions / system / fence
+    instr = 32'h0000000f;
+    apply_and_check("illegal_fence", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = 32'h0000100f;
+    apply_and_check("illegal_fencei", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = 32'h00000073;
+    apply_and_check("illegal_ecall", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = 32'h00100073;
+    apply_and_check("illegal_ebreak", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = 32'h00001073;
+    apply_and_check("illegal_csr", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = 32'hffffffff;
+    apply_and_check("illegal_opcode_ff", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+    instr = 32'h00000000;
+    apply_and_check("illegal_opcode_00", instr, 1,0, 0,3'b000, 0,0, 0,0, 1,2'b00, 0,3'b000,
+                    1,0, 1,0, 0,0, 0,3'b000, 0,0, 1,1);
+
+    done = 1;
+    $display("SUMMARY checks=%0d failures=%0d", checks, failures);
+    if ((checks > 0) && (failures == 0)) begin
+      $display("PASS");
+      $finish;
+    end
+    else begin
+      $display("FAIL");
+      $fatal(1, "verification failed");
+    end
+  end
+
+  initial begin : watchdog
+    #10000;
+    if (!done) begin
+      $display("FAIL");
+      $fatal(1, "timeout");
+    end
+  end
+
+endmodule

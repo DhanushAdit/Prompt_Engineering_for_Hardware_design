@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 312,
+    "prompt_tokens": 1205,
+    "total_tokens": 1517,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 7,
+      "engine_ttft_ms": 110,
+      "engine_ttlt_ms": 2184,
+      "pre_inference_ms": 106,
+      "service_tbt_ms": 7,
+      "service_ttft_ms": 428,
+      "service_ttlt_ms": 2468,
+      "user_visible_ttft_ms": 322
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXPTsCHQOs2rFbwgfa3oEq9YhS4d",
+    "created": 1788802023,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "module alu (\n    input  logic [31:0] A,\n    input  logic [31:0] B,\n    input  logic [2:0]  ALUSelect,\n    input  logic        SubArith,\n    output logic [31:0] ALUResult,\n    output logic [31:0] Sum\n);\n\n    always_comb begin\n        if (SubArith) begin\n            Sum = A - B;\n        end else begin\n            Sum = A + B;\n        end\n\n        unique case (ALUSelect)\n            3'b000: ALUResult = Sum;\n            3'b001: ALUResult = A << B[4:0];\n            3'b010: ALUResult = ($signed(A) < $signed(B)) ? 32'h00000001 : 32'h00000000;\n            3'b011: ALUResult = (A < B) ? 32'h00000001 : 32'h00000000;\n            3'b100: ALUResult = A ^ B;\n            3'b101: ALUResult = SubArith ? ($signed(A) >>> B[4:0]) : (A >> B[4:0]);\n            3'b110: ALUResult = A | B;\n            3'b111: ALUResult = A & B;\n            default: ALUResult = 32'h00000000;\n        endcase\n    end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 312,
+      "prompt_tokens": 1205,
+      "total_tokens": 1517,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 7,
+        "engine_ttft_ms": 110,
+        "engine_ttlt_ms": 2184,
+        "pre_inference_ms": 106,
+        "service_tbt_ms": 7,
+        "service_ttft_ms": 428,
+        "service_ttlt_ms": 2468,
+        "user_visible_ttft_ms": 322
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260818051425-a331a3b5-default-r1-dp0-default"
+    }
+  }
+}

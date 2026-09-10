@@ -1,0 +1,23 @@
+DUT:     /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/vectors/sample/alu_sample.txt
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv:24: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv:24: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv:18: vvp.tgt sorry: Case unique/unique0 qualities are ignored.
+============================================================
+Assignment 1 RV32I ALU Testbench
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/vectors/sample/alu_sample.txt
+============================================================
+FAIL test=23 category=4 select=101 sub=1 A=80000000 B=00000001 | ALUResult got=40000000 exp=c0000000 | Sum got=7fffffff exp=7fffffff
+FAIL test=25 category=4 select=101 sub=1 A=80000000 B=0000001f | ALUResult got=00000001 exp=ffffffff | Sum got=7fffffe1 exp=7fffffe1
+FAIL test=28 category=4 select=101 sub=1 A=80000000 B=00000021 | ALUResult got=40000000 exp=c0000000 | Sum got=7fffffdf exp=7fffffdf
+FAIL test=39 category=7 select=101 sub=1 A=f1234567 B=abcdef03 | ALUResult got=1e2468ac exp=fe2468ac | Sum got=45555664 exp=45555664
+------------------------------------------------------------
+Passed: 36
+Failed: 4
+Total : 40
+Score : 90.00%
+------------------------------------------------------------
+FAIL
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/testbench/alu_tb.sv:116: $finish(1) called at 40000 (1ps)
+>>> RESULT: FAIL

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "bash",
+    "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/run_generated_tb.sh",
+    "regfile",
+    "/tmp/a1-final-_tb30ozg"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "RTL:       /tmp/a1-final-_tb30ozg/final_rtl.sv\nTestbench: /tmp/a1-final-_tb30ozg/regfile_tb.sv\nSUMMARY checks=491 failures=0\nPASS\n/tmp/a1-final-_tb30ozg/regfile_tb.sv:281: $finish called at 336000 (1ps)\n>>> RESULT: PASS\n",
+  "tool_error": false
+}

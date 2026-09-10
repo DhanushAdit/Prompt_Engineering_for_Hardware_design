@@ -1,0 +1,111 @@
+{
+  "max_repairs_per_artifact": 3,
+  "rtl": [
+    {
+      "attempt": 0,
+      "source": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_direct_initial_rtl.sv",
+      "passed": true,
+      "checks": {
+        "compile": {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "regfile",
+            "-o",
+            "/tmp/a1-phase-c-geucxjlw/rtl_0.vvp",
+            "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_direct_initial_rtl.sv"
+          ],
+          "timed_out": false,
+          "exit_code": 0,
+          "log": "",
+          "tool_error": false
+        },
+        "samples": {
+          "command": [
+            "bash",
+            "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/regfile/scripts/run_regfile.sh",
+            "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_direct_initial_rtl.sv"
+          ],
+          "timed_out": false,
+          "exit_code": 0,
+          "log": "DUT:     /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_direct_initial_rtl.sv\nVectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/regfile/vectors/sample/regfile_sample.txt\n============================================================\nAssignment 1 RV32I Register File Testbench\nVectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/regfile/vectors/sample/regfile_sample.txt\n============================================================\n------------------------------------------------------------\nPassed: 39\nFailed: 0\nTotal : 39\nScore : 100.00%\n------------------------------------------------------------\nPASS\n>>> RESULT: PASS\n",
+          "tool_error": false
+        }
+      }
+    }
+  ],
+  "tb": [
+    {
+      "attempt": 0,
+      "source": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_initial_tb.sv",
+      "passed": false,
+      "checks": {
+        "compile": {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "regfile_tb",
+            "-o",
+            "/tmp/a1-phase-c-geucxjlw/tb_0.vvp",
+            "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_direct_initial_rtl.sv",
+            "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_initial_tb.sv"
+          ],
+          "timed_out": false,
+          "exit_code": 0,
+          "log": "",
+          "tool_error": false
+        },
+        "simulation": {
+          "command": [
+            "vvp",
+            "/tmp/a1-phase-c-geucxjlw/tb_0.vvp"
+          ],
+          "timed_out": false,
+          "exit_code": 1,
+          "log": "MISMATCH ck x0 and current modeled x7 rd2 actual=xxxxxxxx expected=00000000 clk=1 reset=1 we3=1 a1=0 a2=7 a3=7 wd3=a5a5a5a5 rd1=00000000 rd2=xxxxxxxx\nSUMMARY checks=486 failures=1\nFAIL\nFATAL: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_initial_tb.sv:268: verification failed\n       Time: 333000  Scope: regfile_tb.main\n",
+          "tool_error": false,
+          "interpretation": "Require exit 0, no timeout or failure diagnostics, standalone PASS, and exactly one SUMMARY checks=N failures=0 with N > 0."
+        }
+      }
+    },
+    {
+      "attempt": 1,
+      "source": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/tb_repair_01/regfile_tb.sv",
+      "passed": true,
+      "checks": {
+        "compile": {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "regfile_tb",
+            "-o",
+            "/tmp/a1-phase-c-geucxjlw/tb_1.vvp",
+            "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_direct_initial_rtl.sv",
+            "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/tb_repair_01/regfile_tb.sv"
+          ],
+          "timed_out": false,
+          "exit_code": 0,
+          "log": "",
+          "tool_error": false
+        },
+        "simulation": {
+          "command": [
+            "vvp",
+            "/tmp/a1-phase-c-geucxjlw/tb_1.vvp"
+          ],
+          "timed_out": false,
+          "exit_code": 0,
+          "log": "SUMMARY checks=495 failures=0\nPASS\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/tb_repair_01/regfile_tb.sv:295: $finish called at 52100 (1ps)\n",
+          "tool_error": false
+        }
+      }
+    }
+  ],
+  "status": "PASS",
+  "sample_script": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/regfile/scripts/run_regfile.sh",
+  "verified_rtl": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/regfile_direct_initial_rtl.sv",
+  "verified_tb": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/regfile/direct/run_01/regfile_direct_run_001/tb_repair_01/regfile_tb.sv"
+}

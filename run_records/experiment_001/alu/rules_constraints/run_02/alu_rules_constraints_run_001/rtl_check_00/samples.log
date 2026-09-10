@@ -1,0 +1,18 @@
+DUT:     /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/vectors/sample/alu_sample.txt
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:32: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:64: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').
+/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:21: vvp.tgt sorry: Case unique/unique0 qualities are ignored.
+============================================================
+Assignment 1 RV32I ALU Testbench
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/alu/vectors/sample/alu_sample.txt
+============================================================
+------------------------------------------------------------
+Passed: 40
+Failed: 0
+Total : 40
+Score : 100.00%
+------------------------------------------------------------
+PASS
+>>> RESULT: PASS

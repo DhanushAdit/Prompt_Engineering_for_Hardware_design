@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 2767,
+    "prompt_tokens": 1918,
+    "total_tokens": 4685,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 1792
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 7,
+      "engine_ttft_ms": 105,
+      "engine_ttlt_ms": 18972,
+      "pre_inference_ms": 65,
+      "service_tbt_ms": 7,
+      "service_ttft_ms": 355,
+      "service_ttlt_ms": 19203,
+      "user_visible_ttft_ms": 290
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXPZDipovmYuKYI24SM7gderOXkw",
+    "created": 1788802029,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "`timescale 1ns/1ps\n\nmodule alu_tb;\n\n  logic [31:0] A;\n  logic [31:0] B;\n  logic [2:0]  ALUSelect;\n  logic        SubArith;\n  logic [31:0] ALUResult;\n  logic [31:0] Sum;\n\n  integer checks;\n  integer failures;\n  integer done;\n\n  alu dut (\n    .A(A),\n    .B(B),\n    .ALUSelect(ALUSelect),\n    .SubArith(SubArith),\n    .ALUResult(ALUResult),\n    .Sum(Sum)\n  );\n\n  task automatic check_case(\n    input [31:0] inA,\n    input [31:0] inB,\n    input [2:0]  inSel,\n    input        inSub,\n    input        check_result,\n    input [31:0] exp_result,\n    input [31:0] exp_sum\n  );\n    reg signed [31:0] sA;\n    reg signed [31:0] sB;\n    reg [4:0] shamt;\n    begin\n      A = inA;\n      B = inB;\n      ALUSelect = inSel;\n      SubArith = inSub;\n      #1;\n\n      checks = checks + 1;\n      if (Sum !== exp_sum) begin\n        failures = failures + 1;\n        $display(\"Mismatch Sum A=%h B=%h ALUSelect=%03b SubArith=%b actual=%h expected=%h\", A, B, ALUSelect, SubArith, Sum, exp_sum);\n      end\n\n      if (check_result) begin\n        checks = checks + 1;\n        if (ALUResult !== exp_result) begin\n          failures = failures + 1;\n          $display(\"Mismatch ALUResult A=%h B=%h ALUSelect=%03b SubArith=%b actual=%h expected=%h\", A, B, ALUSelect, SubArith, ALUResult, exp_result);\n        end\n      end\n\n      sA = inA;\n      sB = inB;\n      shamt = inB[4:0];\n      if (check_result) begin\n        case ({inSel,inSub})\n          4'b0000: if (exp_result !== (inA + inB)) begin failures = failures + 1; $display(\"TB internal expectation error ADD\"); end\n          4'b0001: if (exp_result !== (inA - inB)) begin failures = failures + 1; $display(\"TB internal expectation error SUB\"); end\n          4'b0010: if (exp_result !== (inA << shamt)) begin failures = failures + 1; $display(\"TB internal expectation error SLL\"); end\n          4'b0101: if (exp_result !== ((sA < sB) ? 32'h00000001 : 32'h00000000)) begin failures = failures + 1; $display(\"TB internal expectation error SLT\"); end\n          4'b0111: if (exp_result !== ((inA < inB) ? 32'h00000001 : 32'h00000000)) begin failures = failures + 1; $display(\"TB internal expectation error SLTU\"); end\n          4'b1000: if (exp_result !== (inA ^ inB)) begin failures = failures + 1; $display(\"TB internal expectation error XOR\"); end\n          4'b1010: if (exp_result !== (inA >> shamt)) begin failures = failures + 1; $display(\"TB internal expectation error SRL\"); end\n          4'b1011: if (exp_result !== (sA >>> shamt)) begin failures = failures + 1; $display(\"TB internal expectation error SRA\"); end\n          4'b1100: if (exp_result !== (inA | inB)) begin failures = failures + 1; $display(\"TB internal expectation error OR\"); end\n          4'b1110: if (exp_result !== (inA & inB)) begin failures = failures + 1; $display(\"TB internal expectation error AND\"); end\n          default: begin end\n        endcase\n      end\n      if (exp_sum !== (inSub ? (inA - inB) : (inA + inB))) begin\n        failures = failures + 1;\n        $display(\"TB internal expectation error Sum\");\n      end\n    end\n  endtask\n\n  task automatic do_directed;\n    reg signed [31:0] sA;\n    reg signed [31:0] sB;\n    reg [31:0] exp_r;\n    reg [31:0] exp_s;\n    reg [31:0] vals [0:7];\n    reg [31:0] shifts [0:7];\n    integer i;\n    integer j;\n    begin\n      vals[0] = 32'h00000000;\n      vals[1] = 32'h00000001;\n      vals[2] = 32'hFFFFFFFF;\n      vals[3] = 32'h7FFFFFFF;\n      vals[4] = 32'h80000000;\n      vals[5] = 32'h0000000A;\n      vals[6] = 32'h00000003;\n      vals[7] = 32'h55555555;\n\n      shifts[0] = 32'h00000000;\n      shifts[1] = 32'h00000001;\n      shifts[2] = 32'h0000001F;\n      shifts[3] = 32'h00000020;\n      shifts[4] = 32'h0000003F;\n      shifts[5] = 32'h12345660;\n      shifts[6] = 32'h12345661;\n      shifts[7] = 32'h1234567F;\n\n      check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b0, 1'b1, 32'h0000000D, 32'h0000000D);\n      check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b1, 1'b1, 32'h00000007, 32'h00000007);\n      check_case(32'hFFFFFFFF, 32'h00000001, 3'b010, 1'b1, 1'b1, 32'h00000001, 32'hFFFFFFFE);\n      check_case(32'hFFFFFFFF, 32'h00000001, 3'b011, 1'b1, 1'b1, 32'h00000000, 32'hFFFFFFFE);\n      check_case(32'h80000000, 32'h00000001, 3'b101, 1'b1, 1'b1, 32'hC0000000, 32'h7FFFFFFF);\n      check_case(32'h0000000F, 32'h0000001F, 3'b001, 1'b0, 1'b1, 32'h80000000, 32'h0000002E);\n\n      for (i = 0; i < 8; i = i + 1) begin\n        for (j = 0; j < 8; j = j + 1) begin\n          exp_s = vals[i] + vals[j];\n          exp_r = vals[i] + vals[j];\n          check_case(vals[i], vals[j], 3'b000, 1'b0, 1'b1, exp_r, exp_s);\n\n          exp_s = vals[i] - vals[j];\n          exp_r = vals[i] - vals[j];\n          check_case(vals[i], vals[j], 3'b000, 1'b1, 1'b1, exp_r, exp_s);\n\n          exp_s = vals[i] + vals[j];\n          exp_r = vals[i] ^ vals[j];\n          check_case(vals[i], vals[j], 3'b100, 1'b0, 1'b1, exp_r, exp_s);\n\n          exp_s = vals[i] + vals[j];\n          exp_r = vals[i] | vals[j];\n          check_case(vals[i], vals[j], 3'b110, 1'b0, 1'b1, exp_r, exp_s);\n\n          exp_s = vals[i] + vals[j];\n          exp_r = vals[i] & vals[j];\n          check_case(vals[i], vals[j], 3'b111, 1'b0, 1'b1, exp_r, exp_s);\n\n          sA = vals[i];\n          sB = vals[j];\n          exp_s = vals[i] - vals[j];\n          exp_r = (sA < sB) ? 32'h1 : 32'h0;\n          check_case(vals[i], vals[j], 3'b010, 1'b1, 1'b1, exp_r, exp_s);\n\n          exp_s = vals[i] - vals[j];\n          exp_r = (vals[i] < vals[j]) ? 32'h1 : 32'h0;\n          check_case(vals[i], vals[j], 3'b011, 1'b1, 1'b1, exp_r, exp_s);\n        end\n      end\n\n      for (i = 0; i < 8; i = i + 1) begin\n        for (j = 0; j < 8; j = j + 1) begin\n          exp_s = vals[i] + shifts[j];\n          exp_r = vals[i] << shifts[j][4:0];\n          check_case(vals[i], shifts[j], 3'b001, 1'b0, 1'b1, exp_r, exp_s);\n\n          exp_s = vals[i] + shifts[j];\n          exp_r = vals[i] >> shifts[j][4:0];\n          check_case(vals[i], shifts[j], 3'b101, 1'b0, 1'b1, exp_r, exp_s);\n\n          sA = vals[i];\n          exp_s = vals[i] - shifts[j];\n          exp_r = sA >>> shifts[j][4:0];\n          check_case(vals[i], shifts[j], 3'b101, 1'b1, 1'b1, exp_r, exp_s);\n        end\n      end\n\n      exp_s = 32'hFFFFFFFF + 32'h00000001;\n      check_case(32'hFFFFFFFF, 32'h00000001, 3'b110, 1'b0, 1'b1, 32'hFFFFFFFF, exp_s);\n\n      exp_s = 32'h80000000 - 32'h00000001;\n      check_case(32'h80000000, 32'h00000001, 3'b111, 1'b1, 1'b0, 32'h00000000, exp_s);\n\n      exp_s = 32'h12345678 + 32'h9ABCDEF0;\n      check_case(32'h12345678, 32'h9ABCDEF0, 3'b010, 1'b0, 1'b0, 32'h00000000, exp_s);\n\n      exp_s = 32'h12345678 - 32'h9ABCDEF0;\n      check_case(32'h12345678, 32'h9ABCDEF0, 3'b001, 1'b1, 1'b0, 32'h00000000, exp_s);\n\n      exp_s = 32'hAAAAAAAA + 32'h55555555;\n      check_case(32'hAAAAAAAA, 32'h55555555, 3'b011, 1'b0, 1'b0, 32'h00000000, exp_s);\n\n      exp_s = 32'hAAAAAAAA - 32'h55555555;\n      check_case(32'hAAAAAAAA, 32'h55555555, 3'b100, 1'b1, 1'b0, 32'h00000000, exp_s);\n    end\n  endtask\n\n  initial begin\n    checks = 0;\n    failures = 0;\n    done = 0;\n    A = 32'h0;\n    B = 32'h0;\n    ALUSelect = 3'b000;\n    SubArith = 1'b0;\n\n    // Directed operation, boundary, shift amount, and independent Sum tests\n    do_directed();\n\n    done = 1;\n    $display(\"SUMMARY checks=%0d failures=%0d\", checks, failures);\n    if (checks > 0 && failures == 0) begin\n      $display(\"PASS\");\n      $finish;\n    end\n    else begin\n      $display(\"FAIL\");\n      $fatal(1, \"verification failed\");\n    end\n  end\n\n  initial begin\n    #5000;\n    if (!done) begin\n      $display(\"FAIL\");\n      $fatal(1, \"timeout\");\n    end\n  end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2767,
+      "prompt_tokens": 1918,
+      "total_tokens": 4685,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 1792
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 7,
+        "engine_ttft_ms": 105,
+        "engine_ttlt_ms": 18972,
+        "pre_inference_ms": 65,
+        "service_tbt_ms": 7,
+        "service_ttft_ms": 355,
+        "service_ttlt_ms": 19203,
+        "user_visible_ttft_ms": 290
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260817141218-9c615ee5-default-r2-dp0-default"
+    }
+  }
+}

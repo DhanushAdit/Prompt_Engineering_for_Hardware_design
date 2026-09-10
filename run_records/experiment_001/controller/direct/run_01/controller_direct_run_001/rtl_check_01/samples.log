@@ -1,0 +1,14 @@
+DUT:     /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/direct/run_01/controller_direct_run_001/rtl_repair_01/controller_rtl.sv
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/controller/vectors/sample/controller_sample.txt
+============================================================
+Assignment 1 RV32I Controller Testbench
+Vectors: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/module_packages/controller/vectors/sample/controller_sample.txt
+============================================================
+------------------------------------------------------------
+Passed: 40
+Failed: 0
+Total : 40
+Score : 100.00%
+------------------------------------------------------------
+PASS
+>>> RESULT: PASS

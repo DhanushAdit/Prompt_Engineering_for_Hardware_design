@@ -1,0 +1,15 @@
+{
+  "command": [
+    "iverilog",
+    "-g2012",
+    "-s",
+    "alu",
+    "-o",
+    "/tmp/a1-phase-c-nv1k0a82/rtl_2.vvp",
+    "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_02/alu_rtl.sv"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_02/alu_rtl.sv:16: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_02/alu_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/direct/run_02/alu_direct_run_001/rtl_repair_02/alu_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n",
+  "tool_error": false
+}

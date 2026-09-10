@@ -1,0 +1,50 @@
+Write a testbench named {top_module}_tb for the hardware specified below.
+Instantiate {top_module} with named port connections and preserve every port width
+and declared bit index. Use only Icarus Verilog -g2012 compatible constructs.
+
+Verification requirements:
+- Derive expected results independently from the specification, not from DUT
+  outputs or internal signals. Access the DUT only through its public ports.
+- Cover every specified operation/mode, examples, boundary values, and priorities.
+  Include zero, extrema, sign boundaries, and interacting controls when relevant.
+- Check all specified outputs. Do not assert an arbitrary value for an output
+  or input combination the specification leaves unspecified or permits to vary.
+- Track which expected outputs are specified for each case. Compare only those
+  outputs; do not turn an allowed implementation choice into an exact-value check.
+- Infer whether the design is combinational or stateful from the specification.
+  For combinational logic, allow a small nonzero settling delay before checking.
+  For stateful logic, initialize through the specified interface, track expected
+  state independently, drive away from active edges, and sample after nonblocking
+  updates settle. Test reset timing and priority exactly as specified, if present.
+- Use case inequality (!==) so unexpected X/Z values fail checks. Do not check
+  uninitialized state unless its initial value is specified.
+- Use deterministic bounded stimulus. Prefer directed cases plus systematic loops
+  or a fixed-seed sequence; do not depend on simulator-default random seeds.
+- Keep reference calculations explicit about widths and signedness. Account for
+  arithmetic wraparound and exact index ranges where the specification requires it.
+- Declare variables before statements in each scope. Avoid classes, packages,
+  interfaces, SVA, external files, and unsupported constrained randomization.
+- Never index a parenthesized arithmetic expression such as (i-1)[4:0].
+  Assign it to a correctly sized temporary or use an explicit sized cast.
+- For stateful tests, complete the specified initialization/reset event BEFORE
+  checking state. Prefer a manually stepped clock so extra read checks cannot
+  accidentally introduce unmodeled write/reset edges. Check before and after
+  active edges without changing stimulus on the sampling edge.
+- Include `timescale 1ns/1ps, initialize counters, and include an independent
+  watchdog initial block that prints FAIL and calls $fatal(1, "timeout") if the
+  main stimulus does not finish. Ensure the watchdog allows all planned tests.
+- Count checks and failures. Print a diagnostic with inputs, actual and expected
+  values for each mismatch. Print exactly SUMMARY checks=N failures=M on one
+  line, replacing N and M with the decimal check and failure counts.
+  Print a standalone PASS line only if checks > 0 and failures == 0, then $finish.
+  Otherwise print FAIL and call $fatal(1, "verification failed").
+- Include concise comments identifying the requirement groups being tested.
+- Target at most 2500 output tokens, including all declarations and endmodule.
+  Use compact reusable checking tasks and bounded loops instead of repeating
+  long calls. Budget space for stimulus, final reporting, and the watchdog.
+
+Required DUT interface:
+{module_signature}
+
+Full specification:
+{spec_text}

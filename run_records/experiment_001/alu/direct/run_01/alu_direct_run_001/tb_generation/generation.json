@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 2921,
+    "prompt_tokens": 1918,
+    "total_tokens": 4839,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 7,
+      "engine_ttft_ms": 101,
+      "engine_ttlt_ms": 20753,
+      "pre_inference_ms": 198,
+      "service_tbt_ms": 7,
+      "service_ttft_ms": 586,
+      "service_ttlt_ms": 21232,
+      "user_visible_ttft_ms": 389
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXPZi2s7GmUB5hgRbQP9jkEYHRix",
+    "created": 1788802029,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "`timescale 1ns/1ps\n\nmodule alu_tb;\n\n  logic [31:0] A;\n  logic [31:0] B;\n  logic [2:0]  ALUSelect;\n  logic        SubArith;\n  logic [31:0] ALUResult;\n  logic [31:0] Sum;\n\n  integer checks;\n  integer failures;\n  integer done;\n\n  alu dut (\n    .A(A),\n    .B(B),\n    .ALUSelect(ALUSelect),\n    .SubArith(SubArith),\n    .ALUResult(ALUResult),\n    .Sum(Sum)\n  );\n\n  task automatic do_check(\n    input logic [31:0] tA,\n    input logic [31:0] tB,\n    input logic [2:0]  tSel,\n    input logic        tSub,\n    input logic        check_res,\n    input logic [31:0] exp_res,\n    input logic [31:0] exp_sum,\n    input [255:0]      tag\n  );\n    logic [31:0] act_res;\n    logic [31:0] act_sum;\n    begin\n      A = tA;\n      B = tB;\n      ALUSelect = tSel;\n      SubArith = tSub;\n      #1;\n      act_res = ALUResult;\n      act_sum = Sum;\n\n      checks = checks + 1;\n      if (act_sum !== exp_sum) begin\n        failures = failures + 1;\n        $display(\"MISMATCH %0s SUM A=%08h B=%08h ALUSelect=%03b SubArith=%0b actual=%08h expected=%08h\",\n                 tag, tA, tB, tSel, tSub, act_sum, exp_sum);\n      end\n\n      if (check_res) begin\n        checks = checks + 1;\n        if (act_res !== exp_res) begin\n          failures = failures + 1;\n          $display(\"MISMATCH %0s ALUResult A=%08h B=%08h ALUSelect=%03b SubArith=%0b actual=%08h expected=%08h\",\n                   tag, tA, tB, tSel, tSub, act_res, exp_res);\n        end\n      end\n    end\n  endtask\n\n  task automatic check_specified(\n    input logic [31:0] tA,\n    input logic [31:0] tB,\n    input logic [2:0]  tSel,\n    input logic        tSub,\n    input [255:0]      tag\n  );\n    logic [31:0] exp_sum;\n    logic [31:0] exp_res;\n    logic        check_res;\n    logic signed [31:0] sA;\n    logic signed [31:0] sB;\n    logic [4:0] shamt;\n    begin\n      sA = tA;\n      sB = tB;\n      shamt = tB[4:0];\n      if (tSub) exp_sum = tA - tB;\n      else      exp_sum = tA + tB;\n\n      check_res = 1'b1;\n      exp_res = 32'h00000000;\n\n      case (tSel)\n        3'b000: exp_res = exp_sum;\n        3'b001: begin\n          if (tSub == 1'b0) exp_res = tA << shamt;\n          else check_res = 1'b0;\n        end\n        3'b010: begin\n          if (tSub == 1'b1) exp_res = ($signed(sA) < $signed(sB)) ? 32'h00000001 : 32'h00000000;\n          else check_res = 1'b0;\n        end\n        3'b011: begin\n          if (tSub == 1'b1) exp_res = (tA < tB) ? 32'h00000001 : 32'h00000000;\n          else check_res = 1'b0;\n        end\n        3'b100: begin\n          if (tSub == 1'b0) exp_res = tA ^ tB;\n          else check_res = 1'b0;\n        end\n        3'b101: begin\n          if (tSub == 1'b0) exp_res = tA >> shamt;\n          else exp_res = $unsigned($signed(sA) >>> shamt);\n        end\n        3'b110: begin\n          if (tSub == 1'b0) exp_res = tA | tB;\n          else check_res = 1'b0;\n        end\n        3'b111: begin\n          if (tSub == 1'b0) exp_res = tA & tB;\n          else check_res = 1'b0;\n        end\n        default: check_res = 1'b0;\n      endcase\n\n      do_check(tA, tB, tSel, tSub, check_res, exp_res, exp_sum, tag);\n    end\n  endtask\n\n  integer i;\n  integer j;\n  logic [31:0] vals [0:9];\n  logic [31:0] shv;\n  logic [31:0] patA;\n  logic [31:0] patB;\n\n  initial begin\n    checks = 0;\n    failures = 0;\n    done = 0;\n\n    A = 32'h00000000;\n    B = 32'h00000000;\n    ALUSelect = 3'b000;\n    SubArith = 1'b0;\n\n    vals[0] = 32'h00000000;\n    vals[1] = 32'h00000001;\n    vals[2] = 32'hFFFFFFFF;\n    vals[3] = 32'h7FFFFFFF;\n    vals[4] = 32'h80000000;\n    vals[5] = 32'h0000001F;\n    vals[6] = 32'h00000020;\n    vals[7] = 32'h55555555;\n    vals[8] = 32'hAAAAAAAA;\n    vals[9] = 32'h12345678;\n\n    // Sample usage and core operation checks\n    check_specified(32'h0000000A, 32'h00000003, 3'b000, 1'b0, \"ADD sample\");\n    check_specified(32'h0000000A, 32'h00000003, 3'b000, 1'b1, \"SUB sample\");\n    check_specified(32'hFFFFFFFF, 32'h00000001, 3'b010, 1'b1, \"SLT sample\");\n    check_specified(32'hFFFFFFFF, 32'h00000001, 3'b011, 1'b1, \"SLTU sample\");\n    check_specified(32'h80000000, 32'h00000001, 3'b101, 1'b1, \"SRA sample\");\n    check_specified(32'h0000000F, 32'h0000001F, 3'b001, 1'b0, \"SLL sample\");\n\n    // Arithmetic wraparound and Sum independence\n    check_specified(32'hFFFFFFFF, 32'h00000001, 3'b000, 1'b0, \"ADD wrap\");\n    check_specified(32'h00000000, 32'h00000001, 3'b000, 1'b1, \"SUB wrap\");\n    check_specified(32'h12345678, 32'h11111111, 3'b100, 1'b0, \"XOR sum add\");\n    check_specified(32'h12345678, 32'h11111111, 3'b101, 1'b1, \"SRA sum sub\");\n    check_specified(32'hAAAAAAAA, 32'h55555555, 3'b110, 1'b0, \"OR sum add\");\n    check_specified(32'hAAAAAAAA, 32'h55555555, 3'b010, 1'b1, \"SLT sum sub\");\n\n    // Boundary comparisons signed/unsigned\n    check_specified(32'h80000000, 32'h00000000, 3'b010, 1'b1, \"SLT minint < 0\");\n    check_specified(32'h7FFFFFFF, 32'h80000000, 3'b010, 1'b1, \"SLT maxint < minint false\");\n    check_specified(32'h00000000, 32'hFFFFFFFF, 3'b011, 1'b1, \"SLTU 0 < all1\");\n    check_specified(32'hFFFFFFFF, 32'h00000000, 3'b011, 1'b1, \"SLTU all1 < 0 false\");\n    check_specified(32'h80000000, 32'hFFFFFFFF, 3'b010, 1'b1, \"SLT minint < -1\");\n    check_specified(32'h80000000, 32'h7FFFFFFF, 3'b011, 1'b1, \"SLTU highbit > maxpos\");\n\n    // Shift amount behavior uses only B[4:0]\n    for (i = 0; i < 32; i = i + 1) begin\n      shv = i[31:0];\n      check_specified(32'h00000001, shv, 3'b001, 1'b0, \"SLL shamt 0..31\");\n      check_specified(32'h80000000, shv, 3'b101, 1'b0, \"SRL shamt 0..31\");\n      check_specified(32'h80000001, shv, 3'b101, 1'b1, \"SRA shamt 0..31\");\n    end\n    check_specified(32'h00000001, 32'h00000020, 3'b001, 1'b0, \"SLL shamt 32->0\");\n    check_specified(32'h00000001, 32'h0000003F, 3'b001, 1'b0, \"SLL shamt 63->31\");\n    check_specified(32'h80000000, 32'h00000020, 3'b101, 1'b0, \"SRL shamt 32->0\");\n    check_specified(32'h80000000, 32'h0000003F, 3'b101, 1'b1, \"SRA shamt 63->31\");\n    check_specified(32'hF0000000, 32'hFFFFFFE1, 3'b101, 1'b1, \"SRA high bits B ignored except [4:0]\");\n\n    // Logical/arithmetic ops over boundary patterns\n    for (i = 0; i < 10; i = i + 1) begin\n      for (j = 0; j < 10; j = j + 1) begin\n        patA = vals[i];\n        patB = vals[j];\n        check_specified(patA, patB, 3'b000, 1'b0, \"ADD matrix\");\n        check_specified(patA, patB, 3'b000, 1'b1, \"SUB matrix\");\n        check_specified(patA, patB, 3'b010, 1'b1, \"SLT matrix\");\n        check_specified(patA, patB, 3'b011, 1'b1, \"SLTU matrix\");\n        check_specified(patA, patB, 3'b100, 1'b0, \"XOR matrix\");\n        check_specified(patA, patB, 3'b110, 1'b0, \"OR matrix\");\n        check_specified(patA, patB, 3'b111, 1'b0, \"AND matrix\");\n      end\n    end\n\n    // Unspecified ALUResult combinations: verify only Sum\n    check_specified(32'h11111111, 32'h22222222, 3'b001, 1'b1, \"unspec SLL with SubArith=1\");\n    check_specified(32'h11111111, 32'h22222222, 3'b010, 1'b0, \"unspec SLT with SubArith=0\");\n    check_specified(32'h11111111, 32'h22222222, 3'b011, 1'b0, \"unspec SLTU with SubArith=0\");\n    check_specified(32'h11111111, 32'h22222222, 3'b100, 1'b1, \"unspec XOR with SubArith=1\");\n    check_specified(32'h11111111, 32'h22222222, 3'b110, 1'b1, \"unspec OR with SubArith=1\");\n    check_specified(32'h11111111, 32'h22222222, 3'b111, 1'b1, \"unspec AND with SubArith=1\");\n\n    done = 1;\n    $display(\"SUMMARY checks=%0d failures=%0d\", checks, failures);\n    if (checks > 0 && failures == 0) begin\n      $display(\"PASS\");\n      $finish;\n    end\n    else begin\n      $display(\"FAIL\");\n      $fatal(1, \"verification failed\");\n    end\n  end\n\n  initial begin\n    #50000;\n    if (!done) begin\n      $display(\"FAIL\");\n      $fatal(1, \"timeout\");\n    end\n  end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2921,
+      "prompt_tokens": 1918,
+      "total_tokens": 4839,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 7,
+        "engine_ttft_ms": 101,
+        "engine_ttlt_ms": 20753,
+        "pre_inference_ms": 198,
+        "service_tbt_ms": 7,
+        "service_ttft_ms": 586,
+        "service_ttlt_ms": 21232,
+        "user_visible_ttft_ms": 389
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260817141218-9c615ee5-default-r2-dp0-default"
+    }
+  }
+}

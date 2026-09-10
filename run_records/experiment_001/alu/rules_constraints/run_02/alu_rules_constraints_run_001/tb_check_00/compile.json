@@ -1,0 +1,16 @@
+{
+  "command": [
+    "iverilog",
+    "-g2012",
+    "-s",
+    "alu_tb",
+    "-o",
+    "/tmp/a1-phase-c-i5vc1kvm/tb_0.vvp",
+    "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv",
+    "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_initial_tb.sv"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:32: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:64: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/alu_rules_constraints_initial_rtl.sv:21: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n",
+  "tool_error": false
+}

@@ -1,0 +1,16 @@
+Generate RTL for the hardware design described below. Treat the YAML specification as the source of truth.
+
+Before writing code, internally check these requirements:
+1. The module signature is copied exactly.
+2. Every behavior table and note in the spec is implemented.
+3. Combinational and sequential logic use the correct SystemVerilog constructs.
+4. Widths, signedness, reset timing, and illegal/default cases are handled explicitly.
+
+RTL coding rules:
+{rtl_best_practices}
+
+Required module signature:
+{module_signature}
+
+Full specification:
+{spec_text}

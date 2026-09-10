@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 2133,
+    "prompt_tokens": 1962,
+    "total_tokens": 4095,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 7,
+      "engine_ttft_ms": 117,
+      "engine_ttlt_ms": 14429,
+      "pre_inference_ms": 175,
+      "service_tbt_ms": 7,
+      "service_ttft_ms": 577,
+      "service_ttlt_ms": 14883,
+      "user_visible_ttft_ms": 402
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXW7FAsgbxo1gKhDMlToqBQncLiS",
+    "created": 1788802435,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "module controller (\n    input  logic [31:0] InstrD,\n    output logic        RegWriteD,\n    output logic [2:0]  ImmSrcD,\n    output logic        ALUSrcAD,\n    output logic        ALUSrcBD,\n    output logic [1:0]  MemRWD,\n    output logic [2:0]  ResultSrcD,\n    output logic        BranchD,\n    output logic        JumpD,\n    output logic        ALUResultSrcD,\n    output logic [2:0]  ALUSelectD,\n    output logic        SubArithD,\n    output logic        IllegalInstrD\n);\n\n    logic [6:0] opcode;\n    logic [2:0] funct3;\n    logic [6:0] funct7;\n\n    always_comb begin\n        opcode = InstrD[6:0];\n        funct3 = InstrD[14:12];\n        funct7 = InstrD[31:25];\n\n        RegWriteD     = 1'b0;\n        ImmSrcD       = 3'b000;\n        ALUSrcAD      = 1'b0;\n        ALUSrcBD      = 1'b0;\n        MemRWD        = 2'b00;\n        ResultSrcD    = 3'b000;\n        BranchD       = 1'b0;\n        JumpD         = 1'b0;\n        ALUResultSrcD = 1'b0;\n        ALUSelectD    = 3'b000;\n        SubArithD     = 1'b0;\n        IllegalInstrD = 1'b0;\n\n        case (opcode)\n            7'b0000011: begin\n                RegWriteD  = 1'b1;\n                ImmSrcD    = 3'b000;\n                ALUSrcAD   = 1'b0;\n                ALUSrcBD   = 1'b1;\n                MemRWD     = 2'b10;\n                ResultSrcD = 3'b001;\n                ALUSelectD = 3'b000;\n                case (funct3)\n                    3'b000, 3'b001, 3'b010, 3'b100, 3'b101: IllegalInstrD = 1'b0;\n                    default: begin\n                        IllegalInstrD = 1'b1;\n                        RegWriteD     = 1'b0;\n                        MemRWD        = 2'b00;\n                    end\n                endcase\n            end\n\n            7'b0010011: begin\n                RegWriteD  = 1'b1;\n                ImmSrcD    = 3'b000;\n                ALUSrcAD   = 1'b0;\n                ALUSrcBD   = 1'b1;\n                ALUSelectD = funct3;\n                case (funct3)\n                    3'b000, 3'b010, 3'b011, 3'b100, 3'b110, 3'b111: begin\n                        if (funct7 != 7'b0000000)\n                            IllegalInstrD = 1'b1;\n                        if (funct3 == 3'b010 || funct3 == 3'b011)\n                            SubArithD = 1'b1;\n                    end\n                    3'b001: begin\n                        if (funct7 != 7'b0000000)\n                            IllegalInstrD = 1'b1;\n                    end\n                    3'b101: begin\n                        if (funct7 == 7'b0000000) begin\n                            SubArithD = 1'b0;\n                        end else if (funct7 == 7'b0100000) begin\n                            SubArithD = 1'b1;\n                        end else begin\n                            IllegalInstrD = 1'b1;\n                        end\n                    end\n                    default: IllegalInstrD = 1'b1;\n                endcase\n                if (IllegalInstrD) begin\n                    RegWriteD = 1'b0;\n                    MemRWD    = 2'b00;\n                end\n            end\n\n            7'b0010111: begin\n                RegWriteD  = 1'b1;\n                ImmSrcD    = 3'b100;\n                ALUSrcAD   = 1'b1;\n                ALUSrcBD   = 1'b1;\n                ALUSelectD = 3'b000;\n            end\n\n            7'b0100011: begin\n                ImmSrcD    = 3'b001;\n                ALUSrcAD   = 1'b0;\n                ALUSrcBD   = 1'b1;\n                MemRWD     = 2'b01;\n                ALUSelectD = 3'b000;\n                case (funct3)\n                    3'b000, 3'b001, 3'b010: IllegalInstrD = 1'b0;\n                    default: begin\n                        IllegalInstrD = 1'b1;\n                        MemRWD        = 2'b00;\n                    end\n                endcase\n            end\n\n            7'b0110011: begin\n                RegWriteD  = 1'b1;\n                ALUSrcAD   = 1'b0;\n                ALUSrcBD   = 1'b0;\n                ALUSelectD = funct3;\n                case (funct3)\n                    3'b000: begin\n                        if (funct7 == 7'b0000000) begin\n                            SubArithD = 1'b0;\n                        end else if (funct7 == 7'b0100000) begin\n                            SubArithD = 1'b1;\n                        end else begin\n                            IllegalInstrD = 1'b1;\n                        end\n                    end\n                    3'b001: begin\n                        if (funct7 != 7'b0000000)\n                            IllegalInstrD = 1'b1;\n                    end\n                    3'b010: begin\n                        if (funct7 != 7'b0000000)\n                            IllegalInstrD = 1'b1;\n                        SubArithD = 1'b1;\n                    end\n                    3'b011: begin\n                        if (funct7 != 7'b0000000)\n                            IllegalInstrD = 1'b1;\n                        SubArithD = 1'b1;\n                    end\n                    3'b100: begin\n                        if (funct7 != 7'b0000000)\n                            IllegalInstrD = 1'b1;\n                    end\n                    3'b101: begin\n                        if (funct7 == 7'b0000000) begin\n                            SubArithD = 1'b0;\n                        end else if (funct7 == 7'b0100000) begin\n                            SubArithD = 1'b1;\n                        end else begin\n                            IllegalInstrD = 1'b1;\n                        end\n                    end\n                    3'b110, 3'b111: begin\n                        if (funct7 != 7'b0000000)\n                            IllegalInstrD = 1'b1;\n                    end\n                    default: IllegalInstrD = 1'b1;\n                endcase\n                if (IllegalInstrD) begin\n                    RegWriteD = 1'b0;\n                    MemRWD    = 2'b00;\n                end\n            end\n\n            7'b0110111: begin\n                RegWriteD     = 1'b1;\n                ImmSrcD       = 3'b100;\n                ALUSrcAD      = 1'b0;\n                ALUSrcBD      = 1'b1;\n                ALUResultSrcD = 1'b1;\n                ALUSelectD    = 3'b000;\n            end\n\n            7'b1100011: begin\n                ImmSrcD    = 3'b010;\n                ALUSrcAD   = 1'b1;\n                ALUSrcBD   = 1'b1;\n                BranchD    = 1'b1;\n                ALUSelectD = 3'b000;\n                case (funct3)\n                    3'b000, 3'b001, 3'b100, 3'b101, 3'b110, 3'b111: IllegalInstrD = 1'b0;\n                    default: begin\n                        IllegalInstrD = 1'b1;\n                        BranchD       = 1'b0;\n                    end\n                endcase\n            end\n\n            7'b1100111: begin\n                RegWriteD     = 1'b1;\n                ImmSrcD       = 3'b000;\n                ALUSrcAD      = 1'b0;\n                ALUSrcBD      = 1'b1;\n                JumpD         = 1'b1;\n                ALUResultSrcD = 1'b1;\n                ALUSelectD    = 3'b000;\n                if (funct3 != 3'b000) begin\n                    IllegalInstrD = 1'b1;\n                    RegWriteD     = 1'b0;\n                    JumpD         = 1'b0;\n                end\n            end\n\n            7'b1101111: begin\n                RegWriteD     = 1'b1;\n                ImmSrcD       = 3'b011;\n                ALUSrcAD      = 1'b1;\n                ALUSrcBD      = 1'b1;\n                JumpD         = 1'b1;\n                ALUResultSrcD = 1'b1;\n                ALUSelectD    = 3'b000;\n            end\n\n            default: begin\n                IllegalInstrD = 1'b1;\n                RegWriteD     = 1'b0;\n                MemRWD        = 2'b00;\n                BranchD       = 1'b0;\n                JumpD         = 1'b0;\n            end\n        endcase\n\n        if (IllegalInstrD) begin\n            RegWriteD = 1'b0;\n            MemRWD    = 2'b00;\n            BranchD   = 1'b0;\n            JumpD     = 1'b0;\n        end\n    end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2133,
+      "prompt_tokens": 1962,
+      "total_tokens": 4095,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 7,
+        "engine_ttft_ms": 117,
+        "engine_ttlt_ms": 14429,
+        "pre_inference_ms": 175,
+        "service_tbt_ms": 7,
+        "service_ttft_ms": 577,
+        "service_ttlt_ms": 14883,
+        "user_visible_ttft_ms": 402
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260817141218-5101d8b2-default-r1-dp0-default"
+    }
+  }
+}

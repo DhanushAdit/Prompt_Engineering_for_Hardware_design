@@ -1,0 +1,15 @@
+{
+  "command": [
+    "iverilog",
+    "-g2012",
+    "-s",
+    "alu",
+    "-o",
+    "/tmp/a1-phase-c-8jyl15j9/rtl_0.vvp",
+    "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv:20: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv:24: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv:24: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/alu/template_fill/run_01/alu_template_fill_run_001/alu_template_fill_initial_rtl.sv:18: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n",
+  "tool_error": false
+}

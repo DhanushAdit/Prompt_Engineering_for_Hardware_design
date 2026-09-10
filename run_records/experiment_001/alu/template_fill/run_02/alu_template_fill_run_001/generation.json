@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 330,
+    "prompt_tokens": 1314,
+    "total_tokens": 1644,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 7,
+      "engine_ttft_ms": 81,
+      "engine_ttlt_ms": 2383,
+      "pre_inference_ms": 137,
+      "service_tbt_ms": 7,
+      "service_ttft_ms": 442,
+      "service_ttlt_ms": 2739,
+      "user_visible_ttft_ms": 306
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXRPpQZGblGztrIXjD4D47S07vhL",
+    "created": 1788802143,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "module alu (\n    input  logic [31:0] A,\n    input  logic [31:0] B,\n    input  logic [2:0]  ALUSelect,\n    input  logic        SubArith,\n    output logic [31:0] ALUResult,\n    output logic [31:0] Sum\n);\n    logic signed [31:0] As;\n    logic signed [31:0] Bs;\n\n    assign As  = A;\n    assign Bs  = B;\n    assign Sum = SubArith ? (A - B) : (A + B);\n\n    always_comb begin\n        unique case (ALUSelect)\n            3'b000: ALUResult = Sum;\n            3'b001: ALUResult = A << B[4:0];\n            3'b010: ALUResult = (As < Bs) ? 32'h00000001 : 32'h00000000;\n            3'b011: ALUResult = (A < B)   ? 32'h00000001 : 32'h00000000;\n            3'b100: ALUResult = A ^ B;\n            3'b101: ALUResult = SubArith ? logic'(As >>> B[4:0]) : (A >> B[4:0]);\n            3'b110: ALUResult = A | B;\n            3'b111: ALUResult = A & B;\n            default: ALUResult = 32'h00000000;\n        endcase\n    end\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 330,
+      "prompt_tokens": 1314,
+      "total_tokens": 1644,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 7,
+        "engine_ttft_ms": 81,
+        "engine_ttlt_ms": 2383,
+        "pre_inference_ms": 137,
+        "service_tbt_ms": 7,
+        "service_ttft_ms": 442,
+        "service_ttlt_ms": 2739,
+        "user_visible_ttft_ms": 306
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260814215123-fc970820-default-r2-dp0-default"
+    }
+  }
+}

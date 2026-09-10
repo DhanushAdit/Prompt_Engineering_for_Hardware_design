@@ -1,0 +1,94 @@
+{
+  "alu": {
+    "block": "alu",
+    "style": "rules_constraints",
+    "repetition": 2,
+    "directory": "alu/rules_constraints/run_02",
+    "status": "PASS",
+    "exit_code": 0,
+    "timed_out": false,
+    "history": "run_records/experiment_001/alu/rules_constraints/run_02/alu_rules_constraints_run_001/phase_c.json",
+    "initial_pass": true,
+    "initial_counts": {
+      "passed": 40,
+      "failed": 0,
+      "total": 40
+    },
+    "initial_sha256": "d458f3d2c689b432278327d2c6691f6d8b49d6d04378ecf42d6d1457ad7cb17d",
+    "initial_lines": 92,
+    "rtl_repairs": 0,
+    "tb_repairs": 0,
+    "final_rtl_pass": true,
+    "checks": 1340,
+    "reason": "Passes all instructor samples and its generated testbench; among passing pairs, prefer fewer RTL repairs, then fewer TB repairs, then shorter initial RTL."
+  },
+  "regfile": {
+    "block": "regfile",
+    "style": "template_fill",
+    "repetition": 1,
+    "directory": "regfile/template_fill/run_01",
+    "status": "PASS",
+    "exit_code": 0,
+    "timed_out": false,
+    "history": "run_records/experiment_001/regfile/template_fill/run_01/regfile_template_fill_run_001/phase_c.json",
+    "initial_pass": true,
+    "initial_counts": {
+      "passed": 39,
+      "failed": 0,
+      "total": 39
+    },
+    "initial_sha256": "2d1fefd4fa063e21523ce6b1437c9e7206b6e1417e2d1594879d4f4e585f3a7a",
+    "initial_lines": 38,
+    "rtl_repairs": 0,
+    "tb_repairs": 1,
+    "final_rtl_pass": true,
+    "checks": 491,
+    "reason": "Passes all instructor samples and its generated testbench; among passing pairs, prefer fewer RTL repairs, then fewer TB repairs, then shorter initial RTL."
+  },
+  "extend": {
+    "block": "extend",
+    "style": "template_fill",
+    "repetition": 1,
+    "directory": "extend/template_fill/run_01",
+    "status": "PASS",
+    "exit_code": 0,
+    "timed_out": false,
+    "history": "run_records/experiment_001/extend/template_fill/run_01/extend_template_fill_run_001/phase_c.json",
+    "initial_pass": true,
+    "initial_counts": {
+      "passed": 40,
+      "failed": 0,
+      "total": 40
+    },
+    "initial_sha256": "faf7d8559a0c709d4742d0789f3549c6881ab9ea5600abe9033a2021a5c8380a",
+    "initial_lines": 16,
+    "rtl_repairs": 0,
+    "tb_repairs": 0,
+    "final_rtl_pass": true,
+    "checks": 84,
+    "reason": "Passes all instructor samples and its generated testbench; among passing pairs, prefer fewer RTL repairs, then fewer TB repairs, then shorter initial RTL."
+  },
+  "controller": {
+    "block": "controller",
+    "style": "direct",
+    "repetition": 2,
+    "directory": "controller/direct/run_02",
+    "status": "PASS",
+    "exit_code": 0,
+    "timed_out": false,
+    "history": "run_records/experiment_001/controller/direct/run_02/controller_direct_run_001/phase_c.json",
+    "initial_pass": true,
+    "initial_counts": {
+      "passed": 40,
+      "failed": 0,
+      "total": 40
+    },
+    "initial_sha256": "5a27f18561cf1a5c66fbd800c74f24f5cc4fc1f13411c534a73ff574d4b72946",
+    "initial_lines": 288,
+    "rtl_repairs": 0,
+    "tb_repairs": 0,
+    "final_rtl_pass": true,
+    "checks": 597,
+    "reason": "Passes all instructor samples and its generated testbench; among passing pairs, prefer fewer RTL repairs, then fewer TB repairs, then shorter initial RTL."
+  }
+}

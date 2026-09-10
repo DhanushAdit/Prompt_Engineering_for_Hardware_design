@@ -1,0 +1,10 @@
+Complete the TODO in the module template below. Preserve the interface exactly
+and replace the TODO with synthesizable SystemVerilog implementing the specification.
+
+Module template:
+{module_signature}
+    // TODO: Declare internal signals and implement the specified behavior here.
+endmodule
+
+Full behavior specification:
+{spec_text}

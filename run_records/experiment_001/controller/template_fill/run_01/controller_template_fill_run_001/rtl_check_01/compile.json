@@ -1,0 +1,15 @@
+{
+  "command": [
+    "iverilog",
+    "-g2012",
+    "-s",
+    "controller",
+    "-o",
+    "/tmp/a1-phase-c-4aw703sj/rtl_1.vvp",
+    "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/template_fill/run_01/controller_template_fill_run_001/rtl_repair_01/controller_rtl.sv"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "",
+  "tool_error": false
+}

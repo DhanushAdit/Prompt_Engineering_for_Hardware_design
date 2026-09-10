@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 3463,
+    "prompt_tokens": 1918,
+    "total_tokens": 5381,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 8,
+      "engine_ttft_ms": 106,
+      "engine_ttlt_ms": 27374,
+      "pre_inference_ms": 70,
+      "service_tbt_ms": 8,
+      "service_ttft_ms": 358,
+      "service_ttlt_ms": 27609,
+      "user_visible_ttft_ms": 288
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXPYR338n1orbuswslG7UcCAVTXd",
+    "created": 1788802028,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "`timescale 1ns/1ps\n\nmodule alu_tb;\n\n  logic [31:0] A;\n  logic [31:0] B;\n  logic [2:0]  ALUSelect;\n  logic        SubArith;\n  logic [31:0] ALUResult;\n  logic [31:0] Sum;\n\n  integer checks;\n  integer failures;\n  integer done;\n\n  alu dut (\n    .A(A),\n    .B(B),\n    .ALUSelect(ALUSelect),\n    .SubArith(SubArith),\n    .ALUResult(ALUResult),\n    .Sum(Sum)\n  );\n\n  task automatic do_check(\n    input logic [31:0] a_i,\n    input logic [31:0] b_i,\n    input logic [2:0]  sel_i,\n    input logic        sub_i,\n    input logic        check_res,\n    input logic [31:0] exp_res,\n    input logic        check_sum,\n    input logic [31:0] exp_sum\n  );\n    logic signed [31:0] sa;\n    logic signed [31:0] sb;\n    logic signed [31:0] sra_val;\n    logic [4:0] shamt;\n    begin\n      A = a_i;\n      B = b_i;\n      ALUSelect = sel_i;\n      SubArith = sub_i;\n      #1;\n\n      shamt = b_i[4:0];\n      sa = a_i;\n      sb = b_i;\n      sra_val = sa >>> shamt;\n\n      if (check_sum) begin\n        checks = checks + 1;\n        if (Sum !== exp_sum) begin\n          failures = failures + 1;\n          $display(\"Mismatch Sum A=%h B=%h ALUSelect=%b SubArith=%b actual=%h expected=%h\",\n                   a_i, b_i, sel_i, sub_i, Sum, exp_sum);\n        end\n      end\n\n      if (check_res) begin\n        checks = checks + 1;\n        if (ALUResult !== exp_res) begin\n          failures = failures + 1;\n          $display(\"Mismatch ALUResult A=%h B=%h ALUSelect=%b SubArith=%b actual=%h expected=%h\",\n                   a_i, b_i, sel_i, sub_i, ALUResult, exp_res);\n        end\n      end\n    end\n  endtask\n\n  task automatic check_case(\n    input logic [31:0] a_i,\n    input logic [31:0] b_i,\n    input logic [2:0]  sel_i,\n    input logic        sub_i\n  );\n    logic [31:0] exp_res;\n    logic [31:0] exp_sum;\n    logic        check_res;\n    logic        check_sum;\n    logic signed [31:0] sa;\n    logic signed [31:0] sb;\n    logic signed [31:0] sra_val;\n    logic [4:0] shamt;\n    begin\n      exp_res = 32'h00000000;\n      exp_sum = 32'h00000000;\n      check_res = 1'b0;\n      check_sum = 1'b1;\n\n      exp_sum = sub_i ? (a_i - b_i) : (a_i + b_i);\n      shamt = b_i[4:0];\n      sa = a_i;\n      sb = b_i;\n      sra_val = sa >>> shamt;\n\n      case (sel_i)\n        3'b000: begin\n          check_res = 1'b1;\n          exp_res = sub_i ? (a_i - b_i) : (a_i + b_i);\n        end\n        3'b001: begin\n          if (sub_i == 1'b0) begin\n            check_res = 1'b1;\n            exp_res = a_i << shamt;\n          end\n        end\n        3'b010: begin\n          if (sub_i == 1'b1) begin\n            check_res = 1'b1;\n            exp_res = (sa < sb) ? 32'h00000001 : 32'h00000000;\n          end\n        end\n        3'b011: begin\n          if (sub_i == 1'b1) begin\n            check_res = 1'b1;\n            exp_res = (a_i < b_i) ? 32'h00000001 : 32'h00000000;\n          end\n        end\n        3'b100: begin\n          if (sub_i == 1'b0) begin\n            check_res = 1'b1;\n            exp_res = a_i ^ b_i;\n          end\n        end\n        3'b101: begin\n          check_res = 1'b1;\n          if (sub_i == 1'b0) exp_res = a_i >> shamt;\n          else               exp_res = logic'(sra_val);\n        end\n        3'b110: begin\n          if (sub_i == 1'b0) begin\n            check_res = 1'b1;\n            exp_res = a_i | b_i;\n          end\n        end\n        3'b111: begin\n          if (sub_i == 1'b0) begin\n            check_res = 1'b1;\n            exp_res = a_i & b_i;\n          end\n        end\n        default: begin\n        end\n      endcase\n\n      do_check(a_i, b_i, sel_i, sub_i, check_res, exp_res, check_sum, exp_sum);\n    end\n  endtask\n\n  initial begin : stimulus\n    integer i;\n    logic [31:0] vecA [0:9];\n    logic [31:0] vecB [0:9];\n    logic [31:0] lcg;\n    logic [31:0] tmp_b;\n    checks = 0;\n    failures = 0;\n    done = 0;\n\n    A = 32'h0;\n    B = 32'h0;\n    ALUSelect = 3'b000;\n    SubArith = 1'b0;\n\n    vecA[0] = 32'h00000000;\n    vecA[1] = 32'h00000001;\n    vecA[2] = 32'hFFFFFFFF;\n    vecA[3] = 32'h7FFFFFFF;\n    vecA[4] = 32'h80000000;\n    vecA[5] = 32'h0000000A;\n    vecA[6] = 32'h12345678;\n    vecA[7] = 32'h89ABCDEF;\n    vecA[8] = 32'h0000000F;\n    vecA[9] = 32'h55555555;\n\n    vecB[0] = 32'h00000000;\n    vecB[1] = 32'h00000001;\n    vecB[2] = 32'hFFFFFFFF;\n    vecB[3] = 32'h7FFFFFFF;\n    vecB[4] = 32'h80000000;\n    vecB[5] = 32'h00000003;\n    vecB[6] = 32'h0000001F;\n    vecB[7] = 32'h12345678;\n    vecB[8] = 32'h89ABCDEF;\n    vecB[9] = 32'hAAAAAAAA;\n\n    // Representative spec examples\n    check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b0);\n    check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b1);\n    check_case(32'hFFFFFFFF, 32'h00000001, 3'b010, 1'b1);\n    check_case(32'hFFFFFFFF, 32'h00000001, 3'b011, 1'b1);\n    check_case(32'h80000000, 32'h00000001, 3'b101, 1'b1);\n    check_case(32'h0000000F, 32'h0000001F, 3'b001, 1'b0);\n\n    // Arithmetic wraparound and Sum independence\n    check_case(32'hFFFFFFFF, 32'h00000001, 3'b000, 1'b0);\n    check_case(32'h00000000, 32'h00000001, 3'b000, 1'b1);\n    check_case(32'h80000000, 32'h80000000, 3'b000, 1'b0);\n    check_case(32'h7FFFFFFF, 32'hFFFFFFFF, 3'b000, 1'b0);\n    check_case(32'h00000005, 32'h00000003, 3'b100, 1'b1);\n    check_case(32'h00000005, 32'h00000003, 3'b110, 1'b1);\n    check_case(32'h00000005, 32'h00000003, 3'b111, 1'b1);\n    check_case(32'h00000005, 32'h00000003, 3'b001, 1'b1);\n    check_case(32'h00000005, 32'h00000003, 3'b010, 1'b0);\n    check_case(32'h00000005, 32'h00000003, 3'b011, 1'b0);\n\n    // Signed/unsigned comparison boundaries\n    check_case(32'h80000000, 32'h00000000, 3'b010, 1'b1);\n    check_case(32'h80000000, 32'h00000000, 3'b011, 1'b1);\n    check_case(32'h7FFFFFFF, 32'h80000000, 3'b010, 1'b1);\n    check_case(32'h7FFFFFFF, 32'h80000000, 3'b011, 1'b1);\n    check_case(32'hFFFFFFFF, 32'hFFFFFFFF, 3'b010, 1'b1);\n    check_case(32'hFFFFFFFF, 32'hFFFFFFFF, 3'b011, 1'b1);\n    check_case(32'h00000000, 32'hFFFFFFFF, 3'b010, 1'b1);\n    check_case(32'h00000000, 32'hFFFFFFFF, 3'b011, 1'b1);\n\n    // Shift amount boundaries and B[4:0] only\n    check_case(32'h00000001, 32'h00000000, 3'b001, 1'b0);\n    check_case(32'h00000001, 32'h00000001, 3'b001, 1'b0);\n    check_case(32'h00000001, 32'h0000001F, 3'b001, 1'b0);\n    check_case(32'h00000001, 32'h00000020, 3'b001, 1'b0);\n    check_case(32'h00000001, 32'hFFFFFFFF, 3'b001, 1'b0);\n    check_case(32'h80000000, 32'h0000001F, 3'b101, 1'b0);\n    check_case(32'h80000000, 32'h0000001F, 3'b101, 1'b1);\n    check_case(32'hF0000000, 32'h00000004, 3'b101, 1'b0);\n    check_case(32'hF0000000, 32'h00000004, 3'b101, 1'b1);\n    check_case(32'h89ABCDEF, 32'h12345678, 3'b101, 1'b0);\n    check_case(32'h89ABCDEF, 32'h12345678, 3'b101, 1'b1);\n\n    // Logical ops directed\n    check_case(32'h12345678, 32'h89ABCDEF, 3'b100, 1'b0);\n    check_case(32'h12345678, 32'h89ABCDEF, 3'b110, 1'b0);\n    check_case(32'h12345678, 32'h89ABCDEF, 3'b111, 1'b0);\n    check_case(32'hFFFFFFFF, 32'h00000000, 3'b100, 1'b0);\n    check_case(32'hFFFFFFFF, 32'h00000000, 3'b110, 1'b0);\n    check_case(32'hFFFFFFFF, 32'h00000000, 3'b111, 1'b0);\n\n    // Systematic cross-product over boundary vectors for all select/sub combinations\n    for (i = 0; i < 10; i = i + 1) begin\n      check_case(vecA[i], vecB[i], 3'b000, 1'b0);\n      check_case(vecA[i], vecB[i], 3'b000, 1'b1);\n      check_case(vecA[i], vecB[9-i], 3'b001, 1'b0);\n      check_case(vecA[i], vecB[9-i], 3'b001, 1'b1);\n      check_case(vecA[i], vecB[9-i], 3'b010, 1'b0);\n      check_case(vecA[i], vecB[9-i], 3'b010, 1'b1);\n      check_case(vecA[i], vecB[9-i], 3'b011, 1'b0);\n      check_case(vecA[i], vecB[9-i], 3'b011, 1'b1);\n      check_case(vecA[i], vecB[i], 3'b100, 1'b0);\n      check_case(vecA[i], vecB[i], 3'b100, 1'b1);\n      check_case(vecA[i], vecB[9-i], 3'b101, 1'b0);\n      check_case(vecA[i], vecB[9-i], 3'b101, 1'b1);\n      check_case(vecA[i], vecB[i], 3'b110, 1'b0);\n      check_case(vecA[i], vecB[i], 3'b110, 1'b1);\n      check_case(vecA[i], vecB[i], 3'b111, 1'b0);\n      check_case(vecA[i], vecB[i], 3'b111, 1'b1);\n    end\n\n    // Deterministic pseudo-random directed sweep\n    lcg = 32'h1ACEB00C;\n    for (i = 0; i < 24; i = i + 1) begin\n      lcg = (lcg * 32'd1664525) + 32'd1013904223;\n      tmp_b = lcg ^ 32'hA5A5A5A5;\n      check_case(lcg, tmp_b, 3'b000, i[0]);\n      check_case(lcg, tmp_b, 3'b001, 1'b0);\n      check_case(lcg, tmp_b, 3'b010, 1'b1);\n      check_case(lcg, tmp_b, 3'b011, 1'b1);\n      check_case(lcg, tmp_b, 3'b100, 1'b0);\n      check_case(lcg, tmp_b, 3'b101, i[0]);\n      check_case(lcg, tmp_b, 3'b110, 1'b0);\n      check_case(lcg, tmp_b, 3'b111, 1'b0);\n    end\n\n    done = 1;\n    $display(\"SUMMARY checks=%0d failures=%0d\", checks, failures);\n    if (checks > 0 && failures == 0) begin\n      $display(\"PASS\");\n      $finish;\n    end\n    else begin\n      $display(\"FAIL\");\n      $fatal(1, \"verification failed\");\n    end\n  end\n\n  initial begin : watchdog\n    #5000;\n    if (!done) begin\n      $display(\"FAIL\");\n      $fatal(1, \"timeout\");\n    end\n  end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 3463,
+      "prompt_tokens": 1918,
+      "total_tokens": 5381,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 8,
+        "engine_ttft_ms": 106,
+        "engine_ttlt_ms": 27374,
+        "pre_inference_ms": 70,
+        "service_tbt_ms": 8,
+        "service_ttft_ms": 358,
+        "service_ttlt_ms": 27609,
+        "user_visible_ttft_ms": 288
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260818035351-a85f5e81-default-r0-dp0-default"
+    }
+  }
+}

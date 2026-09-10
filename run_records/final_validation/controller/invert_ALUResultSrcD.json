@@ -1,0 +1,29 @@
+{
+  "compile": {
+    "command": [
+      "iverilog",
+      "-g2012",
+      "-s",
+      "controller_tb",
+      "-o",
+      "/tmp/a1-final-i7bah1gv/mutation.vvp",
+      "/tmp/a1-final-i7bah1gv/mutant.sv",
+      "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/rtl_and_testbenches/final/controller_tb.sv"
+    ],
+    "timed_out": false,
+    "exit_code": 0,
+    "log": "/tmp/a1-final-i7bah1gv/mutant.sv:63: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').\n/tmp/a1-final-i7bah1gv/mutant.sv:64: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').\n/tmp/a1-final-i7bah1gv/mutant.sv:65: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').\n/tmp/a1-final-i7bah1gv/mutant.sv:80: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n",
+    "tool_error": false
+  },
+  "simulation": {
+    "command": [
+      "vvp",
+      "/tmp/a1-final-i7bah1gv/mutation.vvp"
+    ],
+    "timed_out": false,
+    "exit_code": 1,
+    "log": "MISMATCH load_   0 ALUResultSrcD instr=00000003 actual=1 expected=0\nMISMATCH load_   1 ALUResultSrcD instr=7fff9f83 actual=1 expected=0\nMISMATCH load_   2 ALUResultSrcD instr=80012083 actual=1 expected=0\nMISMATCH load_   3 ALUResultSrcD instr=1234c383 actual=1 expected=0\nMISMATCH load_   4 ALUResultSrcD instr=fff8d683 actual=1 expected=0\nMISMATCH store_   0 ALUResultSrcD instr=81f08023 actual=1 expected=0\nMISMATCH store_   1 ALUResultSrcD instr=81e110a3 actual=1 expected=0\nMISMATCH store_   2 ALUResultSrcD instr=81d1a123 actual=1 expected=0\nMISMATCH branch_   0 ALUResultSrcD instr=00208063 actual=1 expected=0\nMISMATCH branch_   1 ALUResultSrcD instr=fe209fe3 actual=1 expected=0\nMISMATCH branch_   2 ALUResultSrcD instr=8020c063 actual=1 expected=0\nMISMATCH branch_   3 ALUResultSrcD instr=5420da63 actual=1 expected=0\nMISMATCH branch_   4 ALUResultSrcD instr=5420ea63 actual=1 expected=0\nMISMATCH branch_   5 ALUResultSrcD instr=5420fa63 actual=1 expected=0\nMISMATCH jalr_legal ALUResultSrcD instr=000100e7 actual=0 expected=1\nMISMATCH jal_zero ALUResultSrcD instr=0000006f actual=0 expected=1\nMISMATCH jal_sign ALUResultSrcD instr=80000fef actual=0 expected=1\nMISMATCH auipc_zero ALUResultSrcD instr=00000097 actual=1 expected=0\nMISMATCH lui_max ALUResultSrcD instr=ffffffb7 actual=0 expected=1\nMISMATCH itype_   0 ALUResultSrcD instr=00050593 actual=1 expected=0\nMISMATCH itype_   2 ALUResultSrcD instr=80052593 actual=1 expected=0\nMISMATCH itype_   3 ALUResultSrcD instr=80053593 actual=1 expected=0\nMISMATCH itype_   4 ALUResultSrcD instr=80054593 actual=1 expected=0\nMISMATCH itype_   6 ALUResultSrcD instr=80056593 actual=1 expected=0\nMISMATCH itype_   7 ALUResultSrcD instr=80057593 actual=1 expected=0\nMISMATCH slli_sh0 ALUResultSrcD instr=00009113 actual=1 expected=0\nMISMATCH slli_sh31 ALUResultSrcD instr=01f19213 actual=1 expected=0\nMISMATCH srli ALUResultSrcD instr=0072d313 actual=1 expected=0\nMISMATCH srai ALUResultSrcD instr=4072d313 actual=1 expected=0\nMISMATCH rtype_f7_00_   0 ALUResultSrcD instr=00848533 actual=1 expected=0\nMISMATCH rtype_f7_00_   1 ALUResultSrcD instr=00849533 actual=1 expected=0\nMISMATCH rtype_f7_00_   2 ALUResultSrcD instr=0084a533 actual=1 expected=0\nMISMATCH rtype_f7_00_   3 ALUResultSrcD instr=0084b533 actual=1 expected=0\nMISMATCH rtype_f7_00_   4 ALUResultSrcD instr=0084c533 actual=1 expected=0\nMISMATCH rtype_f7_00_   5 ALUResultSrcD instr=0084d533 actual=1 expected=0\nMISMATCH rtype_f7_00_   6 ALUResultSrcD instr=0084e533 actual=1 expected=0\nMISMATCH rtype_f7_00_   7 ALUResultSrcD instr=0084f533 actual=1 expected=0\nMISMATCH sub ALUResultSrcD instr=403100b3 actual=1 expected=0\nMISMATCH sra ALUResultSrcD instr=403150b3 actual=1 expected=0\nSUMMARY checks=597 failures=39\nFAIL\nFATAL: /run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/rtl_and_testbenches/final/controller_tb.sv:396: verification failed\n       Time: 68000  Scope: controller_tb.stimulus\n",
+    "tool_error": false
+  },
+  "detected": true
+}

@@ -1,0 +1,294 @@
+`timescale 1ns/1ps
+
+module alu_tb;
+
+  logic [31:0] A;
+  logic [31:0] B;
+  logic [2:0]  ALUSelect;
+  logic        SubArith;
+  logic [31:0] ALUResult;
+  logic [31:0] Sum;
+
+  integer checks;
+  integer failures;
+  integer done;
+
+  alu dut (
+    .A(A),
+    .B(B),
+    .ALUSelect(ALUSelect),
+    .SubArith(SubArith),
+    .ALUResult(ALUResult),
+    .Sum(Sum)
+  );
+
+  task automatic do_check(
+    input logic [31:0] a_i,
+    input logic [31:0] b_i,
+    input logic [2:0]  sel_i,
+    input logic        sub_i,
+    input logic        check_res,
+    input logic [31:0] exp_res,
+    input logic        check_sum,
+    input logic [31:0] exp_sum
+  );
+    logic signed [31:0] sa;
+    logic signed [31:0] sb;
+    logic signed [31:0] sra_val;
+    logic [4:0] shamt;
+    begin
+      A = a_i;
+      B = b_i;
+      ALUSelect = sel_i;
+      SubArith = sub_i;
+      #1;
+
+      shamt = b_i[4:0];
+      sa = a_i;
+      sb = b_i;
+      sra_val = sa >>> shamt;
+
+      if (check_sum) begin
+        checks = checks + 1;
+        if (Sum !== exp_sum) begin
+          failures = failures + 1;
+          $display("Mismatch Sum A=%h B=%h ALUSelect=%b SubArith=%b actual=%h expected=%h",
+                   a_i, b_i, sel_i, sub_i, Sum, exp_sum);
+        end
+      end
+
+      if (check_res) begin
+        checks = checks + 1;
+        if (ALUResult !== exp_res) begin
+          failures = failures + 1;
+          $display("Mismatch ALUResult A=%h B=%h ALUSelect=%b SubArith=%b actual=%h expected=%h",
+                   a_i, b_i, sel_i, sub_i, ALUResult, exp_res);
+        end
+      end
+    end
+  endtask
+
+  task automatic check_case(
+    input logic [31:0] a_i,
+    input logic [31:0] b_i,
+    input logic [2:0]  sel_i,
+    input logic        sub_i
+  );
+    logic [31:0] exp_res;
+    logic [31:0] exp_sum;
+    logic        check_res;
+    logic        check_sum;
+    logic signed [31:0] sa;
+    logic signed [31:0] sb;
+    logic signed [31:0] sra_val;
+    logic [4:0] shamt;
+    begin
+      exp_res = 32'h00000000;
+      exp_sum = 32'h00000000;
+      check_res = 1'b0;
+      check_sum = 1'b1;
+
+      exp_sum = sub_i ? (a_i - b_i) : (a_i + b_i);
+      shamt = b_i[4:0];
+      sa = a_i;
+      sb = b_i;
+      sra_val = sa >>> shamt;
+
+      case (sel_i)
+        3'b000: begin
+          check_res = 1'b1;
+          exp_res = sub_i ? (a_i - b_i) : (a_i + b_i);
+        end
+        3'b001: begin
+          if (sub_i == 1'b0) begin
+            check_res = 1'b1;
+            exp_res = a_i << shamt;
+          end
+        end
+        3'b010: begin
+          if (sub_i == 1'b1) begin
+            check_res = 1'b1;
+            exp_res = (sa < sb) ? 32'h00000001 : 32'h00000000;
+          end
+        end
+        3'b011: begin
+          if (sub_i == 1'b1) begin
+            check_res = 1'b1;
+            exp_res = (a_i < b_i) ? 32'h00000001 : 32'h00000000;
+          end
+        end
+        3'b100: begin
+          if (sub_i == 1'b0) begin
+            check_res = 1'b1;
+            exp_res = a_i ^ b_i;
+          end
+        end
+        3'b101: begin
+          check_res = 1'b1;
+          if (sub_i == 1'b0) exp_res = a_i >> shamt;
+          else               exp_res = logic'(sra_val);
+        end
+        3'b110: begin
+          if (sub_i == 1'b0) begin
+            check_res = 1'b1;
+            exp_res = a_i | b_i;
+          end
+        end
+        3'b111: begin
+          if (sub_i == 1'b0) begin
+            check_res = 1'b1;
+            exp_res = a_i & b_i;
+          end
+        end
+        default: begin
+        end
+      endcase
+
+      do_check(a_i, b_i, sel_i, sub_i, check_res, exp_res, check_sum, exp_sum);
+    end
+  endtask
+
+  initial begin : stimulus
+    integer i;
+    logic [31:0] vecA [0:9];
+    logic [31:0] vecB [0:9];
+    logic [31:0] lcg;
+    logic [31:0] tmp_b;
+    checks = 0;
+    failures = 0;
+    done = 0;
+
+    A = 32'h0;
+    B = 32'h0;
+    ALUSelect = 3'b000;
+    SubArith = 1'b0;
+
+    vecA[0] = 32'h00000000;
+    vecA[1] = 32'h00000001;
+    vecA[2] = 32'hFFFFFFFF;
+    vecA[3] = 32'h7FFFFFFF;
+    vecA[4] = 32'h80000000;
+    vecA[5] = 32'h0000000A;
+    vecA[6] = 32'h12345678;
+    vecA[7] = 32'h89ABCDEF;
+    vecA[8] = 32'h0000000F;
+    vecA[9] = 32'h55555555;
+
+    vecB[0] = 32'h00000000;
+    vecB[1] = 32'h00000001;
+    vecB[2] = 32'hFFFFFFFF;
+    vecB[3] = 32'h7FFFFFFF;
+    vecB[4] = 32'h80000000;
+    vecB[5] = 32'h00000003;
+    vecB[6] = 32'h0000001F;
+    vecB[7] = 32'h12345678;
+    vecB[8] = 32'h89ABCDEF;
+    vecB[9] = 32'hAAAAAAAA;
+
+    // Representative spec examples
+    check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b0);
+    check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b1);
+    check_case(32'hFFFFFFFF, 32'h00000001, 3'b010, 1'b1);
+    check_case(32'hFFFFFFFF, 32'h00000001, 3'b011, 1'b1);
+    check_case(32'h80000000, 32'h00000001, 3'b101, 1'b1);
+    check_case(32'h0000000F, 32'h0000001F, 3'b001, 1'b0);
+
+    // Arithmetic wraparound and Sum independence
+    check_case(32'hFFFFFFFF, 32'h00000001, 3'b000, 1'b0);
+    check_case(32'h00000000, 32'h00000001, 3'b000, 1'b1);
+    check_case(32'h80000000, 32'h80000000, 3'b000, 1'b0);
+    check_case(32'h7FFFFFFF, 32'hFFFFFFFF, 3'b000, 1'b0);
+    check_case(32'h00000005, 32'h00000003, 3'b100, 1'b1);
+    check_case(32'h00000005, 32'h00000003, 3'b110, 1'b1);
+    check_case(32'h00000005, 32'h00000003, 3'b111, 1'b1);
+    check_case(32'h00000005, 32'h00000003, 3'b001, 1'b1);
+    check_case(32'h00000005, 32'h00000003, 3'b010, 1'b0);
+    check_case(32'h00000005, 32'h00000003, 3'b011, 1'b0);
+
+    // Signed/unsigned comparison boundaries
+    check_case(32'h80000000, 32'h00000000, 3'b010, 1'b1);
+    check_case(32'h80000000, 32'h00000000, 3'b011, 1'b1);
+    check_case(32'h7FFFFFFF, 32'h80000000, 3'b010, 1'b1);
+    check_case(32'h7FFFFFFF, 32'h80000000, 3'b011, 1'b1);
+    check_case(32'hFFFFFFFF, 32'hFFFFFFFF, 3'b010, 1'b1);
+    check_case(32'hFFFFFFFF, 32'hFFFFFFFF, 3'b011, 1'b1);
+    check_case(32'h00000000, 32'hFFFFFFFF, 3'b010, 1'b1);
+    check_case(32'h00000000, 32'hFFFFFFFF, 3'b011, 1'b1);
+
+    // Shift amount boundaries and B[4:0] only
+    check_case(32'h00000001, 32'h00000000, 3'b001, 1'b0);
+    check_case(32'h00000001, 32'h00000001, 3'b001, 1'b0);
+    check_case(32'h00000001, 32'h0000001F, 3'b001, 1'b0);
+    check_case(32'h00000001, 32'h00000020, 3'b001, 1'b0);
+    check_case(32'h00000001, 32'hFFFFFFFF, 3'b001, 1'b0);
+    check_case(32'h80000000, 32'h0000001F, 3'b101, 1'b0);
+    check_case(32'h80000000, 32'h0000001F, 3'b101, 1'b1);
+    check_case(32'hF0000000, 32'h00000004, 3'b101, 1'b0);
+    check_case(32'hF0000000, 32'h00000004, 3'b101, 1'b1);
+    check_case(32'h89ABCDEF, 32'h12345678, 3'b101, 1'b0);
+    check_case(32'h89ABCDEF, 32'h12345678, 3'b101, 1'b1);
+
+    // Logical ops directed
+    check_case(32'h12345678, 32'h89ABCDEF, 3'b100, 1'b0);
+    check_case(32'h12345678, 32'h89ABCDEF, 3'b110, 1'b0);
+    check_case(32'h12345678, 32'h89ABCDEF, 3'b111, 1'b0);
+    check_case(32'hFFFFFFFF, 32'h00000000, 3'b100, 1'b0);
+    check_case(32'hFFFFFFFF, 32'h00000000, 3'b110, 1'b0);
+    check_case(32'hFFFFFFFF, 32'h00000000, 3'b111, 1'b0);
+
+    // Systematic cross-product over boundary vectors for all select/sub combinations
+    for (i = 0; i < 10; i = i + 1) begin
+      check_case(vecA[i], vecB[i], 3'b000, 1'b0);
+      check_case(vecA[i], vecB[i], 3'b000, 1'b1);
+      check_case(vecA[i], vecB[9-i], 3'b001, 1'b0);
+      check_case(vecA[i], vecB[9-i], 3'b001, 1'b1);
+      check_case(vecA[i], vecB[9-i], 3'b010, 1'b0);
+      check_case(vecA[i], vecB[9-i], 3'b010, 1'b1);
+      check_case(vecA[i], vecB[9-i], 3'b011, 1'b0);
+      check_case(vecA[i], vecB[9-i], 3'b011, 1'b1);
+      check_case(vecA[i], vecB[i], 3'b100, 1'b0);
+      check_case(vecA[i], vecB[i], 3'b100, 1'b1);
+      check_case(vecA[i], vecB[9-i], 3'b101, 1'b0);
+      check_case(vecA[i], vecB[9-i], 3'b101, 1'b1);
+      check_case(vecA[i], vecB[i], 3'b110, 1'b0);
+      check_case(vecA[i], vecB[i], 3'b110, 1'b1);
+      check_case(vecA[i], vecB[i], 3'b111, 1'b0);
+      check_case(vecA[i], vecB[i], 3'b111, 1'b1);
+    end
+
+    // Deterministic pseudo-random directed sweep
+    lcg = 32'h1ACEB00C;
+    for (i = 0; i < 24; i = i + 1) begin
+      lcg = (lcg * 32'd1664525) + 32'd1013904223;
+      tmp_b = lcg ^ 32'hA5A5A5A5;
+      check_case(lcg, tmp_b, 3'b000, i[0]);
+      check_case(lcg, tmp_b, 3'b001, 1'b0);
+      check_case(lcg, tmp_b, 3'b010, 1'b1);
+      check_case(lcg, tmp_b, 3'b011, 1'b1);
+      check_case(lcg, tmp_b, 3'b100, 1'b0);
+      check_case(lcg, tmp_b, 3'b101, i[0]);
+      check_case(lcg, tmp_b, 3'b110, 1'b0);
+      check_case(lcg, tmp_b, 3'b111, 1'b0);
+    end
+
+    done = 1;
+    $display("SUMMARY checks=%0d failures=%0d", checks, failures);
+    if (checks > 0 && failures == 0) begin
+      $display("PASS");
+      $finish;
+    end
+    else begin
+      $display("FAIL");
+      $fatal(1, "verification failed");
+    end
+  end
+
+  initial begin : watchdog
+    #5000;
+    if (!done) begin
+      $display("FAIL");
+      $fatal(1, "timeout");
+    end
+  end
+
+endmodule

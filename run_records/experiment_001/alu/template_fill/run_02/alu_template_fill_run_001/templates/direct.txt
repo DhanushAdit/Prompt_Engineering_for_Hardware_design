@@ -1,0 +1,4 @@
+Generate synthesizable SystemVerilog RTL for `{top_module}`.
+
+Specification:
+{spec_text}

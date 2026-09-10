@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 246,
+    "prompt_tokens": 854,
+    "total_tokens": 1100,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 15,
+      "engine_ttft_ms": 425,
+      "engine_ttlt_ms": 4223,
+      "pre_inference_ms": 243,
+      "service_tbt_ms": 15,
+      "service_ttft_ms": 951,
+      "service_ttlt_ms": 4732,
+      "user_visible_ttft_ms": 709
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXTYwXEasW6605678rISEa4SrNPA",
+    "created": 1788802276,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "module extend (\n    input  logic [31:7] InstrD,\n    input  logic [2:0]  ImmSrcD,\n    output logic [31:0] ImmExtD\n);\n\n    always_comb begin\n        case (ImmSrcD)\n            3'b000: ImmExtD = {{20{InstrD[31]}}, InstrD[31:20]};\n            3'b001: ImmExtD = {{20{InstrD[31]}}, InstrD[31:25], InstrD[11:7]};\n            3'b010: ImmExtD = {{20{InstrD[31]}}, InstrD[7], InstrD[30:25], InstrD[11:8], 1'b0};\n            3'b011: ImmExtD = {{12{InstrD[31]}}, InstrD[19:12], InstrD[20], InstrD[30:21], 1'b0};\n            3'b100: ImmExtD = {InstrD[31:12], 12'b0};\n            default: ImmExtD = 32'b0;\n        endcase\n    end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 246,
+      "prompt_tokens": 854,
+      "total_tokens": 1100,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 15,
+        "engine_ttft_ms": 425,
+        "engine_ttlt_ms": 4223,
+        "pre_inference_ms": 243,
+        "service_tbt_ms": 15,
+        "service_ttft_ms": 951,
+        "service_ttlt_ms": 4732,
+        "user_visible_ttft_ms": 709
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260820131853-fda88bb6-prefill-r3-dp0-prefill"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "bash",
+    "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/run_generated_tb.sh",
+    "controller",
+    "/tmp/a1-final-i7bah1gv"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "RTL:       /tmp/a1-final-i7bah1gv/final_rtl.sv\nTestbench: /tmp/a1-final-i7bah1gv/controller_tb.sv\n/tmp/a1-final-i7bah1gv/final_rtl.sv:22: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').\n/tmp/a1-final-i7bah1gv/final_rtl.sv:23: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').\n/tmp/a1-final-i7bah1gv/final_rtl.sv:24: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:0]').\n/tmp/a1-final-i7bah1gv/final_rtl.sv:39: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\nSUMMARY checks=597 failures=0\nPASS\n/tmp/a1-final-i7bah1gv/controller_tb.sv:392: $finish called at 68000 (1ps)\n>>> RESULT: PASS\n",
+  "tool_error": false
+}

@@ -1,0 +1,210 @@
+`timescale 1ns/1ps
+
+module extend_tb;
+
+  logic [31:7] InstrD;
+  logic [2:0]  ImmSrcD;
+  logic [31:0] ImmExtD;
+
+  integer checks;
+  integer failures;
+  integer done;
+
+  logic [31:0] expected;
+  logic        check_valid;
+
+  extend dut (
+    .InstrD(InstrD),
+    .ImmSrcD(ImmSrcD),
+    .ImmExtD(ImmExtD)
+  );
+
+  task automatic compute_expected(
+    input  logic [31:7] instr,
+    input  logic [2:0]  src,
+    output logic [31:0] exp,
+    output logic        valid
+  );
+    begin
+      valid = 1'b1;
+      case (src)
+        3'b000: exp = {{20{instr[31]}}, instr[31:20]};
+        3'b001: exp = {{20{instr[31]}}, instr[31:25], instr[11:7]};
+        3'b010: exp = {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0};
+        3'b011: exp = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};
+        3'b100: exp = {instr[31:12], 12'b0};
+        default: begin
+          exp   = 32'h00000000;
+          valid = 1'b0;
+        end
+      endcase
+    end
+  endtask
+
+  task automatic drive_and_check(
+    input logic [31:7] instr,
+    input logic [2:0]  src,
+    input [255:0]      name
+  );
+    logic [31:0] exp;
+    logic        valid;
+    begin
+      InstrD   = instr;
+      ImmSrcD  = src;
+      compute_expected(instr, src, exp, valid);
+      #1;
+      if (valid) begin
+        checks = checks + 1;
+        if (ImmExtD !== exp) begin
+          failures = failures + 1;
+          $display("MISMATCH %0s InstrD=%h ImmSrcD=%b actual=%h expected=%h", name, InstrD, ImmSrcD, ImmExtD, exp);
+        end
+      end
+    end
+  endtask
+
+  initial begin : main
+    logic [31:7] instr;
+    integer i;
+    integer j;
+    logic signbit;
+    logic [11:0] iimm;
+    logic [11:0] simm;
+    logic [12:0] bimm;
+    logic [20:0] jimm;
+    logic [19:0] uimm;
+    logic [4:0]  tmp5;
+    logic [5:0]  tmp6;
+    logic [7:0]  tmp8;
+    logic [9:0]  tmp10;
+
+    checks = 0;
+    failures = 0;
+    done = 0;
+    InstrD = '0;
+    ImmSrcD = 3'b000;
+
+    #1;
+
+    // I-type: zero, extrema, sign boundaries, representative values
+    iimm = 12'h000; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, "I zero");
+    iimm = 12'h001; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, "I +1");
+    iimm = 12'h7FF; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, "I maxpos");
+    iimm = 12'h800; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, "I minneg");
+    iimm = 12'hFFF; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, "I -1 sample");
+    iimm = 12'hABC; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, "I randomneg");
+    iimm = 12'h123; instr = '0; instr[31:20] = iimm; drive_and_check(instr, 3'b000, "I randompos");
+
+    // S-type: split field and sign extension
+    simm = 12'h000; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, "S zero");
+    simm = 12'h001; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, "S +1");
+    simm = 12'h7FF; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, "S maxpos");
+    simm = 12'h800; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, "S minneg");
+    simm = 12'hFFF; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, "S -1");
+    simm = 12'hA55; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, "S mixed");
+    simm = 12'h124; instr = '0; instr[31:25] = simm[11:5]; instr[11:7] = simm[4:0]; drive_and_check(instr, 3'b001, "S splitbits");
+
+    // B-type: fragmented field, implicit bit0=0, sample +8 and -4, extrema
+    bimm = 13'h0000; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, "B zero");
+    bimm = 13'h0008; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, "B +8 sample");
+    bimm = 13'h0002; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, "B +2 minstep");
+    bimm = 13'h07FE; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, "B maxpos");
+    bimm = 13'h1800; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, "B minneg");
+    bimm = 13'h1FFC; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, "B -4 sample");
+    bimm = 13'h1554; instr = '0; instr[31] = bimm[12]; instr[7] = bimm[11]; instr[30:25] = bimm[10:5]; instr[11:8] = bimm[4:1]; drive_and_check(instr, 3'b010, "B fragmented");
+
+    // J-type: fragmented field, implicit bit0=0, sign extension
+    jimm = 21'h00000; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, "J zero");
+    jimm = 21'h00002; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, "J +2 minstep");
+    jimm = 21'h00008; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, "J +8");
+    jimm = 21'h0FFFFE; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, "J maxpos");
+    jimm = 21'h100000; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, "J minneg");
+    jimm = 21'h1FFFFE; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, "J -2");
+    jimm = 21'h155554; instr = '0; instr[31] = jimm[20]; instr[19:12] = jimm[19:12]; instr[20] = jimm[11]; instr[30:21] = jimm[10:1]; drive_and_check(instr, 3'b011, "J fragmented");
+
+    // U-type: upper immediate placement
+    uimm = 20'h00000; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, "U zero");
+    uimm = 20'h00001; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, "U lowbit");
+    uimm = 20'h7FFFF; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, "U mid");
+    uimm = 20'h80000; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, "U signbitset");
+    uimm = 20'hABCDE; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, "U sample");
+    uimm = 20'hFFFFF; instr = '0; instr[31:12] = uimm; drive_and_check(instr, 3'b100, "U allones");
+
+    // Interacting controls: same InstrD, different valid modes
+    instr = 25'h1ABCDE1;
+    for (i = 0; i <= 4; i = i + 1) begin
+      drive_and_check(instr, i[2:0], "same_instr_all_modes");
+    end
+
+    // Systematic valid-mode sweep with deterministic patterned instructions
+    for (j = 0; j < 16; j = j + 1) begin
+      signbit = j[0];
+      tmp10 = (j * 10) & 10'h3FF;
+      tmp8  = (j * 17) & 8'hFF;
+      tmp6  = (j * 9) & 6'h3F;
+      tmp5  = (j * 5) & 5'h1F;
+
+      // I
+      instr = '0;
+      instr[31] = signbit;
+      instr[30:21] = tmp10;
+      instr[20] = j[1];
+      drive_and_check(instr, 3'b000, "loop_I");
+
+      // S
+      instr = '0;
+      instr[31] = signbit;
+      instr[30:25] = tmp6;
+      instr[11:7] = tmp5;
+      drive_and_check(instr, 3'b001, "loop_S");
+
+      // B
+      instr = '0;
+      instr[31] = signbit;
+      instr[7] = j[1];
+      instr[30:25] = tmp6;
+      instr[11:8] = j[5:2];
+      drive_and_check(instr, 3'b010, "loop_B");
+
+      // J
+      instr = '0;
+      instr[31] = signbit;
+      instr[19:12] = tmp8;
+      instr[20] = j[2];
+      instr[30:21] = tmp10;
+      drive_and_check(instr, 3'b011, "loop_J");
+
+      // U
+      instr = '0;
+      instr[31:12] = {signbit, tmp8, j[2:0], tmp8[7:0]};
+      drive_and_check(instr, 3'b100, "loop_U");
+    end
+
+    // Unused control values: exercise but do not check output
+    instr = 25'h1234567;
+    ImmSrcD = 3'b101; InstrD = instr; #1;
+    ImmSrcD = 3'b110; InstrD = ~instr; #1;
+    ImmSrcD = 3'b111; InstrD = 25'h1FFFFFE; #1;
+
+    done = 1;
+
+    $display("SUMMARY checks=%0d failures=%0d", checks, failures);
+    if (checks > 0 && failures == 0) begin
+      $display("PASS");
+      $finish;
+    end
+    else begin
+      $display("FAIL");
+      $fatal(1, "verification failed");
+    end
+  end
+
+  initial begin : watchdog
+    #10000;
+    if (!done) begin
+      $display("FAIL");
+      $fatal(1, "timeout");
+    end
+  end
+
+endmodule

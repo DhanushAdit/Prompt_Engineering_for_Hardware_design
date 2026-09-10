@@ -1,0 +1,10 @@
+{
+  "command": [
+    "vvp",
+    "/tmp/a1-phase-c-pg7pj36e/tb_0.vvp"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "SUMMARY checks=597 failures=0\nPASS\n/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/run_records/experiment_001/controller/direct/run_02/controller_direct_run_001/controller_initial_tb.sv:392: $finish called at 68000 (1ps)\n",
+  "tool_error": false
+}

@@ -1,0 +1,93 @@
+Generate RTL for the hardware design described below. Treat the YAML specification as the source of truth.
+
+Before writing code, internally check these requirements:
+1. The module signature is copied exactly.
+2. Every behavior table and note in the spec is implemented.
+3. Combinational and sequential logic use the correct SystemVerilog constructs.
+4. Widths, signedness, reset timing, and illegal/default cases are handled explicitly.
+
+RTL coding rules:
+SystemVerilog RTL rules you must follow:
+- Generate synthesizable SystemVerilog compatible with Icarus Verilog using -g2012.
+- Use the exact module signature from the specification. Do not add, remove, rename, or resize ports.
+- Prefer `logic` for internal data signals; use `int` for bounded loop indices when needed.
+- Give each signal a single driver. Do not drive a signal from multiple procedural blocks.
+- Use continuous `assign` statements for simple combinational expressions.
+- Use `always_comb` for combinational decision logic. Do not write manual sensitivity lists.
+- In every `always_comb` block, assign safe default values to every output or temporary written by that block before any `if` or `case`.
+- Use blocking assignments (`=`) only in combinational logic.
+- Use `always_ff` for clocked state. Use nonblocking assignments (`<=`) only in sequential logic.
+- Do not mix blocking and nonblocking assignments in the same procedural block.
+- Do not infer latches. Every output must receive a value for every valid input/control path.
+- Use `unique case` or `case` with a `default` branch for decoders and operation selects.
+- Do not use `casex`; avoid wildcard matching unless the spec requires it.
+- Use explicit-width numeric literals, such as `32'h0000_0000`, `1'b0`, or `3'b101`.
+- Avoid unsized constants in datapath expressions where width matters.
+- For signed comparisons or arithmetic shifts, cast operands explicitly with `$signed(...)`.
+- For logical right shifts use `>>`; for arithmetic right shifts use `>>>` with a signed left operand when needed.
+- For shift amounts, use only the exact shift bits required by the spec.
+- Keep purely combinational modules free of clocks, resets, initial blocks, delays, and state.
+- For clocked modules, implement reset behavior exactly as described in the spec, including edge sensitivity and priority.
+- Do not use `#` delays, `$display`, `$finish`, assertions, classes, randomization, DPI, interfaces, packages, macros, or non-synthesizable constructs in RTL.
+- Prefer clear, direct RTL over clever or highly compressed code.
+- The specification takes precedence over style preferences. Do not invent resets, bypasses, or unspecified features.
+- Derive behavior, priorities, and default values from the supplied specification; do not assume a processor architecture or infer semantics from signal names alone.
+- Check each specified operating mode and boundary condition against every affected output. Preserve explicitly unspecified behavior as implementation freedom, not an invented requirement.
+- Return only the complete SystemVerilog module text, with no Markdown fences and no explanation.
+
+Required module signature:
+module extend (
+    input  logic [31:7] InstrD,
+    input  logic [2:0]  ImmSrcD,
+    output logic [31:0] ImmExtD
+);
+
+Full specification:
+extend:
+  description: >
+    Combinational RV32I immediate extension unit. Reconstructs the 32-bit
+    immediate from instruction bits [31:7] according to ImmSrcD, for the five base
+    RV32I formats (I, S, B, J, U), with correct sign extension and the
+    RISC-V fragmented bit orderings.
+  tech_node: ASAP7 / SkyWater 130HD (course flow)
+  clock_period: combinational (no clock)
+  ports:
+    - {name: InstrD,  direction: input,  type: "logic [31:7]", description: "Instruction bits 31:7 (opcode not needed for immediates)"}
+    - {name: ImmSrcD, direction: input,  type: "logic [2:0]",  description: Selects the immediate format}
+    - {name: ImmExtD, direction: output, type: "logic [31:0]", description: Reconstructed 32-bit immediate}
+  module_signature: |
+    module extend (
+        input  logic [31:7] InstrD,
+        input  logic [2:0]  ImmSrcD,
+        output logic [31:0] ImmExtD
+    );
+  behavior:
+    formats: |
+      ImmSrcD  Format  Use
+      000      I-type  ALU-immediate, loads, JALR
+      001      S-type  stores
+      010      B-type  conditional branches
+      011      J-type  JAL
+      100      U-type  LUI, AUIPC
+      (101/110/111 unused; output unspecified, not graded)
+    construction: |
+      I: {{20{InstrD[31]}}, InstrD[31:20]}
+      S: {{20{InstrD[31]}}, InstrD[31:25], InstrD[11:7]}
+      B: {{20{InstrD[31]}}, InstrD[7], InstrD[30:25], InstrD[11:8], 1'b0}
+      J: {{12{InstrD[31]}}, InstrD[19:12], InstrD[20], InstrD[30:21], 1'b0}
+      U: {InstrD[31:12], 12'b0}
+    notes: >
+      B- and J-type immediates are sign-extended and have an implicit 1'b0 in bit 0
+      (2-byte aligned). Note B bit 11 comes from InstrD[7]; J bit 11 from InstrD[20].
+    timing: >
+      Purely combinational; no clocked state; no latches for valid ImmSrcD.
+      Synthesizable SystemVerilog. All immediates are 32 bits (XLEN=32).
+    out_of_scope: >
+      No RV64, atomics immediates, compressed, custom formats, or privileged instrs.
+  sample_usage:
+    description: Representative immediates including negative and fragmented fields.
+    cases:
+      - {ImmSrcD: "000", InstrD_31_20: "0xFFF", ImmExtD: "0xFFFFFFFF", note: "I-type -1"}
+      - {ImmSrcD: "100", InstrD_31_12: "0xABCDE", ImmExtD: "0xABCDE000", note: "U-type"}
+      - {ImmSrcD: "010", desc: "B-type +8 (bits set so imm=8)", ImmExtD: "0x00000008"}
+      - {ImmSrcD: "010", desc: "B-type -4",                     ImmExtD: "0xFFFFFFFC"}

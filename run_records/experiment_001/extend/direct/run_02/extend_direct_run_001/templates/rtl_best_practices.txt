@@ -1,0 +1,27 @@
+SystemVerilog RTL rules you must follow:
+- Generate synthesizable SystemVerilog compatible with Icarus Verilog using -g2012.
+- Use the exact module signature from the specification. Do not add, remove, rename, or resize ports.
+- Prefer `logic` for internal data signals; use `int` for bounded loop indices when needed.
+- Give each signal a single driver. Do not drive a signal from multiple procedural blocks.
+- Use continuous `assign` statements for simple combinational expressions.
+- Use `always_comb` for combinational decision logic. Do not write manual sensitivity lists.
+- In every `always_comb` block, assign safe default values to every output or temporary written by that block before any `if` or `case`.
+- Use blocking assignments (`=`) only in combinational logic.
+- Use `always_ff` for clocked state. Use nonblocking assignments (`<=`) only in sequential logic.
+- Do not mix blocking and nonblocking assignments in the same procedural block.
+- Do not infer latches. Every output must receive a value for every valid input/control path.
+- Use `unique case` or `case` with a `default` branch for decoders and operation selects.
+- Do not use `casex`; avoid wildcard matching unless the spec requires it.
+- Use explicit-width numeric literals, such as `32'h0000_0000`, `1'b0`, or `3'b101`.
+- Avoid unsized constants in datapath expressions where width matters.
+- For signed comparisons or arithmetic shifts, cast operands explicitly with `$signed(...)`.
+- For logical right shifts use `>>`; for arithmetic right shifts use `>>>` with a signed left operand when needed.
+- For shift amounts, use only the exact shift bits required by the spec.
+- Keep purely combinational modules free of clocks, resets, initial blocks, delays, and state.
+- For clocked modules, implement reset behavior exactly as described in the spec, including edge sensitivity and priority.
+- Do not use `#` delays, `$display`, `$finish`, assertions, classes, randomization, DPI, interfaces, packages, macros, or non-synthesizable constructs in RTL.
+- Prefer clear, direct RTL over clever or highly compressed code.
+- The specification takes precedence over style preferences. Do not invent resets, bypasses, or unspecified features.
+- Derive behavior, priorities, and default values from the supplied specification; do not assume a processor architecture or infer semantics from signal names alone.
+- Check each specified operating mode and boundary condition against every affected output. Preserve explicitly unspecified behavior as implementation freedom, not an invented requirement.
+- Return only the complete SystemVerilog module text, with no Markdown fences and no explanation.

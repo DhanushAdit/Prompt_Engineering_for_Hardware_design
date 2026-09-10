@@ -1,0 +1,12 @@
+{
+  "command": [
+    "bash",
+    "/run/user/1000/gvfs/sftp:host=olympus.ece.tamu.edu,user=dhanush_adithya/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-1/submission_artifacts/code/A1_student/run_generated_tb.sh",
+    "alu",
+    "/tmp/a1-final-maa7g4ga"
+  ],
+  "timed_out": false,
+  "exit_code": 0,
+  "log": "RTL:       /tmp/a1-final-maa7g4ga/final_rtl.sv\nTestbench: /tmp/a1-final-maa7g4ga/alu_tb.sv\n/tmp/a1-final-maa7g4ga/final_rtl.sv:32: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/tmp/a1-final-maa7g4ga/final_rtl.sv:64: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/tmp/a1-final-maa7g4ga/final_rtl.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/tmp/a1-final-maa7g4ga/final_rtl.sv:21: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\nSUMMARY checks=1340 failures=0\nPASS\n/tmp/a1-final-maa7g4ga/alu_tb.sv:209: $finish called at 695000 (1ps)\n>>> RESULT: PASS\n",
+  "tool_error": false
+}

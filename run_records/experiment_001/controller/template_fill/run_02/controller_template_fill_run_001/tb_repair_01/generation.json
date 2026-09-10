@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 6541,
+    "prompt_tokens": 14953,
+    "total_tokens": 21494,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 8,
+      "engine_ttft_ms": 507,
+      "engine_ttlt_ms": 54492,
+      "pre_inference_ms": 113,
+      "service_tbt_ms": 8,
+      "service_ttft_ms": 664,
+      "service_ttlt_ms": 54639,
+      "user_visible_ttft_ms": 550
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXWv4sYd9osAneKjdAOub3gceNNH",
+    "created": 1788802485,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "`timescale 1ns/1ps\nmodule controller_tb;\n  logic [31:0] InstrD;\n  logic RegWriteD;\n  logic [2:0] ImmSrcD;\n  logic ALUSrcAD, ALUSrcBD;\n  logic [1:0] MemRWD;\n  logic [2:0] ResultSrcD;\n  logic BranchD, JumpD, ALUResultSrcD;\n  logic [2:0] ALUSelectD;\n  logic SubArithD, IllegalInstrD;\n  integer checks, failures;\n  logic done;\n\n  controller dut(\n    .InstrD(InstrD), .RegWriteD(RegWriteD), .ImmSrcD(ImmSrcD), .ALUSrcAD(ALUSrcAD),\n    .ALUSrcBD(ALUSrcBD), .MemRWD(MemRWD), .ResultSrcD(ResultSrcD), .BranchD(BranchD),\n    .JumpD(JumpD), .ALUResultSrcD(ALUResultSrcD), .ALUSelectD(ALUSelectD),\n    .SubArithD(SubArithD), .IllegalInstrD(IllegalInstrD)\n  );\n\n  typedef struct packed {\n    logic RegWriteD,v_RegWriteD;\n    logic [2:0] ImmSrcD; logic v_ImmSrcD;\n    logic ALUSrcAD,v_ALUSrcAD;\n    logic ALUSrcBD,v_ALUSrcBD;\n    logic [1:0] MemRWD; logic v_MemRWD;\n    logic [2:0] ResultSrcD; logic v_ResultSrcD;\n    logic BranchD,v_BranchD;\n    logic JumpD,v_JumpD;\n    logic ALUResultSrcD,v_ALUResultSrcD;\n    logic [2:0] ALUSelectD; logic v_ALUSelectD;\n    logic SubArithD,v_SubArithD;\n    logic IllegalInstrD,v_IllegalInstrD;\n  } exp_t;\n\n  function automatic [31:0] mk_r(input [6:0] f7,input [4:0] rs2,input [4:0] rs1,input [2:0] f3,input [4:0] rd,input [6:0] opc);\n    mk_r={f7,rs2,rs1,f3,rd,opc};\n  endfunction\n  function automatic [31:0] mk_i(input [11:0] imm,input [4:0] rs1,input [2:0] f3,input [4:0] rd,input [6:0] opc);\n    mk_i={imm,rs1,f3,rd,opc};\n  endfunction\n  function automatic [31:0] mk_s(input [11:0] imm,input [4:0] rs2,input [4:0] rs1,input [2:0] f3,input [6:0] opc);\n    mk_s={imm[11:5],rs2,rs1,f3,imm[4:0],opc};\n  endfunction\n  function automatic [31:0] mk_b(input [12:0] imm,input [4:0] rs2,input [4:0] rs1,input [2:0] f3,input [6:0] opc);\n    mk_b={imm[12],imm[10:5],rs2,rs1,f3,imm[4:1],imm[11],opc};\n  endfunction\n  function automatic [31:0] mk_u(input [19:0] imm,input [4:0] rd,input [6:0] opc);\n    mk_u={imm,rd,opc};\n  endfunction\n  function automatic [31:0] mk_j(input [20:0] imm,input [4:0] rd,input [6:0] opc);\n    mk_j={imm[20],imm[10:1],imm[11],imm[19:12],rd,opc};\n  endfunction\n\n  function automatic exp_t ref_decode(input logic [31:0] instr);\n    exp_t e; logic [6:0] opc,f7; logic [2:0] f3;\n    begin\n      e='0; opc=instr[6:0]; f3=instr[14:12]; f7=instr[31:25];\n      case(opc)\n        7'b0000011: begin\n          if(f3==3'b000||f3==3'b001||f3==3'b010||f3==3'b100||f3==3'b101) begin\n            e.RegWriteD=1; e.v_RegWriteD=1; e.ImmSrcD=3'b000; e.v_ImmSrcD=1;\n            e.ALUSrcAD=0; e.v_ALUSrcAD=1; e.ALUSrcBD=1; e.v_ALUSrcBD=1;\n            e.MemRWD=2'b10; e.v_MemRWD=1; e.ResultSrcD=3'b001; e.v_ResultSrcD=1;\n            e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n            e.ALUResultSrcD=0; e.v_ALUResultSrcD=1; e.ALUSelectD=3'b000; e.v_ALUSelectD=1;\n            e.SubArithD=0; e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n          end else begin\n            e.IllegalInstrD=1; e.v_IllegalInstrD=1; e.RegWriteD=0; e.v_RegWriteD=1;\n            e.MemRWD=2'b00; e.v_MemRWD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n          end\n        end\n        7'b0010011: begin\n          if((f3==3'b001 && f7!=7'b0000000) || (f3==3'b101 && !(f7==7'b0000000||f7==7'b0100000))) begin\n            e.IllegalInstrD=1; e.v_IllegalInstrD=1; e.RegWriteD=0; e.v_RegWriteD=1;\n            e.MemRWD=2'b00; e.v_MemRWD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n          end else begin\n            e.RegWriteD=1; e.v_RegWriteD=1; e.ImmSrcD=3'b000; e.v_ImmSrcD=1;\n            e.ALUSrcAD=0; e.v_ALUSrcAD=1; e.ALUSrcBD=1; e.v_ALUSrcBD=1;\n            e.MemRWD=2'b00; e.v_MemRWD=1; e.ResultSrcD=3'b000; e.v_ResultSrcD=1;\n            e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n            e.ALUResultSrcD=0; e.v_ALUResultSrcD=1; e.ALUSelectD=f3; e.v_ALUSelectD=1;\n            e.SubArithD=(f3==3'b010)||(f3==3'b011)||((f3==3'b101)&&(f7==7'b0100000)); e.v_SubArithD=1;\n            e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n          end\n        end\n        7'b0010111: begin\n          e.RegWriteD=1; e.v_RegWriteD=1; e.ImmSrcD=3'b100; e.v_ImmSrcD=1;\n          e.ALUSrcAD=1; e.v_ALUSrcAD=1; e.ALUSrcBD=1; e.v_ALUSrcBD=1; e.MemRWD=2'b00; e.v_MemRWD=1;\n          e.ResultSrcD=3'b000; e.v_ResultSrcD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n          e.ALUResultSrcD=0; e.v_ALUResultSrcD=1; e.ALUSelectD=3'b000; e.v_ALUSelectD=1;\n          e.SubArithD=0; e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n        end\n        7'b0100011: begin\n          if(f3==3'b000||f3==3'b001||f3==3'b010) begin\n            e.RegWriteD=0; e.v_RegWriteD=1; e.ImmSrcD=3'b001; e.v_ImmSrcD=1;\n            e.ALUSrcAD=0; e.v_ALUSrcAD=1; e.ALUSrcBD=1; e.v_ALUSrcBD=1; e.MemRWD=2'b01; e.v_MemRWD=1;\n            e.ResultSrcD=3'b000; e.v_ResultSrcD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n            e.ALUResultSrcD=0; e.v_ALUResultSrcD=1; e.ALUSelectD=3'b000; e.v_ALUSelectD=1;\n            e.SubArithD=0; e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n          end else begin\n            e.IllegalInstrD=1; e.v_IllegalInstrD=1; e.RegWriteD=0; e.v_RegWriteD=1;\n            e.MemRWD=2'b00; e.v_MemRWD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n          end\n        end\n        7'b0110011: begin\n          if(f7==7'b0000000) begin\n            e.RegWriteD=1; e.v_RegWriteD=1; e.ImmSrcD=3'b000; e.v_ImmSrcD=1;\n            e.ALUSrcAD=0; e.v_ALUSrcAD=1; e.ALUSrcBD=0; e.v_ALUSrcBD=1; e.MemRWD=2'b00; e.v_MemRWD=1;\n            e.ResultSrcD=3'b000; e.v_ResultSrcD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n            e.ALUResultSrcD=0; e.v_ALUResultSrcD=1; e.ALUSelectD=f3; e.v_ALUSelectD=1;\n            e.SubArithD=(f3==3'b010)||(f3==3'b011); e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n          end else if(f7==7'b0100000 && (f3==3'b000||f3==3'b101)) begin\n            e.RegWriteD=1; e.v_RegWriteD=1; e.ImmSrcD=3'b000; e.v_ImmSrcD=1;\n            e.ALUSrcAD=0; e.v_ALUSrcAD=1; e.ALUSrcBD=0; e.v_ALUSrcBD=1; e.MemRWD=2'b00; e.v_MemRWD=1;\n            e.ResultSrcD=3'b000; e.v_ResultSrcD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n            e.ALUResultSrcD=0; e.v_ALUResultSrcD=1; e.ALUSelectD=f3; e.v_ALUSelectD=1;\n            e.SubArithD=1; e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n          end else begin\n            e.IllegalInstrD=1; e.v_IllegalInstrD=1; e.RegWriteD=0; e.v_RegWriteD=1;\n            e.MemRWD=2'b00; e.v_MemRWD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n          end\n        end\n        7'b0110111: begin\n          e.RegWriteD=1; e.v_RegWriteD=1; e.ImmSrcD=3'b100; e.v_ImmSrcD=1;\n          e.ALUSrcAD=0; e.v_ALUSrcAD=1; e.ALUSrcBD=1; e.v_ALUSrcBD=1; e.MemRWD=2'b00; e.v_MemRWD=1;\n          e.ResultSrcD=3'b000; e.v_ResultSrcD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n          e.ALUResultSrcD=1; e.v_ALUResultSrcD=1; e.ALUSelectD=3'b000; e.v_ALUSelectD=1;\n          e.SubArithD=0; e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n        end\n        7'b1100011: begin\n          if(f3==3'b000||f3==3'b001||f3==3'b100||f3==3'b101||f3==3'b110||f3==3'b111) begin\n            e.RegWriteD=0; e.v_RegWriteD=1; e.ImmSrcD=3'b010; e.v_ImmSrcD=1;\n            e.ALUSrcAD=1; e.v_ALUSrcAD=1; e.ALUSrcBD=1; e.v_ALUSrcBD=1; e.MemRWD=2'b00; e.v_MemRWD=1;\n            e.ResultSrcD=3'b000; e.v_ResultSrcD=1; e.BranchD=1; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n            e.ALUResultSrcD=0; e.v_ALUResultSrcD=1; e.ALUSelectD=3'b000; e.v_ALUSelectD=1;\n            e.SubArithD=0; e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n          end else begin\n            e.IllegalInstrD=1; e.v_IllegalInstrD=1; e.RegWriteD=0; e.v_RegWriteD=1;\n            e.MemRWD=2'b00; e.v_MemRWD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n          end\n        end\n        7'b1100111: begin\n          if(f3==3'b000) begin\n            e.RegWriteD=1; e.v_RegWriteD=1; e.ImmSrcD=3'b000; e.v_ImmSrcD=1;\n            e.ALUSrcAD=0; e.v_ALUSrcAD=1; e.ALUSrcBD=1; e.v_ALUSrcBD=1; e.MemRWD=2'b00; e.v_MemRWD=1;\n            e.ResultSrcD=3'b000; e.v_ResultSrcD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=1; e.v_JumpD=1;\n            e.ALUResultSrcD=1; e.v_ALUResultSrcD=1; e.ALUSelectD=3'b000; e.v_ALUSelectD=1;\n            e.SubArithD=0; e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n          end else begin\n            e.IllegalInstrD=1; e.v_IllegalInstrD=1; e.RegWriteD=0; e.v_RegWriteD=1;\n            e.MemRWD=2'b00; e.v_MemRWD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n          end\n        end\n        7'b1101111: begin\n          e.RegWriteD=1; e.v_RegWriteD=1; e.ImmSrcD=3'b011; e.v_ImmSrcD=1;\n          e.ALUSrcAD=1; e.v_ALUSrcAD=1; e.ALUSrcBD=1; e.v_ALUSrcBD=1; e.MemRWD=2'b00; e.v_MemRWD=1;\n          e.ResultSrcD=3'b000; e.v_ResultSrcD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=1; e.v_JumpD=1;\n          e.ALUResultSrcD=1; e.v_ALUResultSrcD=1; e.ALUSelectD=3'b000; e.v_ALUSelectD=1;\n          e.SubArithD=0; e.v_SubArithD=1; e.IllegalInstrD=0; e.v_IllegalInstrD=1;\n        end\n        default: begin\n          e.IllegalInstrD=1; e.v_IllegalInstrD=1; e.RegWriteD=0; e.v_RegWriteD=1;\n          e.MemRWD=2'b00; e.v_MemRWD=1; e.BranchD=0; e.v_BranchD=1; e.JumpD=0; e.v_JumpD=1;\n        end\n      endcase\n      ref_decode=e;\n    end\n  endfunction\n\n  task automatic c1(input [127:0] n,input logic a,e,v,input [31:0] instr); begin if(v) begin checks=checks+1; if(a!==e) begin failures=failures+1; $display(\"MISMATCH %0s instr=%h actual=%b expected=%b\",n,instr,a,e); end end end endtask\n  task automatic c2(input [127:0] n,input logic [1:0] a,e,input logic v,input [31:0] instr); begin if(v) begin checks=checks+1; if(a!==e) begin failures=failures+1; $display(\"MISMATCH %0s instr=%h actual=%b expected=%b\",n,instr,a,e); end end end endtask\n  task automatic c3(input [127:0] n,input logic [2:0] a,e,input logic v,input [31:0] instr); begin if(v) begin checks=checks+1; if(a!==e) begin failures=failures+1; $display(\"MISMATCH %0s instr=%h actual=%b expected=%b\",n,instr,a,e); end end end endtask\n\n  task automatic apply(input [31:0] instr,input [127:0] tag);\n    exp_t e;\n    begin\n      e=ref_decode(instr); InstrD=instr; #1;\n      c1({tag,\" RW\"},RegWriteD,e.RegWriteD,e.v_RegWriteD,instr);\n      c3({tag,\" IM\"},ImmSrcD,e.ImmSrcD,e.v_ImmSrcD,instr);\n      c1({tag,\" SA\"},ALUSrcAD,e.ALUSrcAD,e.v_ALUSrcAD,instr);\n      c1({tag,\" SB\"},ALUSrcBD,e.ALUSrcBD,e.v_ALUSrcBD,instr);\n      c2({tag,\" MR\"},MemRWD,e.MemRWD,e.v_MemRWD,instr);\n      c3({tag,\" RS\"},ResultSrcD,e.ResultSrcD,e.v_ResultSrcD,instr);\n      c1({tag,\" BR\"},BranchD,e.BranchD,e.v_BranchD,instr);\n      c1({tag,\" JP\"},JumpD,e.JumpD,e.v_JumpD,instr);\n      c1({tag,\" AR\"},ALUResultSrcD,e.ALUResultSrcD,e.v_ALUResultSrcD,instr);\n      c3({tag,\" AS\"},ALUSelectD,e.ALUSelectD,e.v_ALUSelectD,instr);\n      c1({tag,\" SU\"},SubArithD,e.SubArithD,e.v_SubArithD,instr);\n      c1({tag,\" IL\"},IllegalInstrD,e.IllegalInstrD,e.v_IllegalInstrD,instr);\n    end\n  endtask\n\n  initial begin\n    checks=0; failures=0; done=0; InstrD=32'h0;\n\n    // Representative and boundary coverage\n    apply(mk_r(7'b0000000,5'd3,5'd2,3'b000,5'd1,7'b0110011),\"add\");\n    apply(mk_r(7'b0100000,5'd3,5'd2,3'b000,5'd1,7'b0110011),\"sub\");\n    apply(mk_r(7'b0000000,5'd3,5'd2,3'b001,5'd1,7'b0110011),\"sll\");\n    apply(mk_r(7'b0000000,5'd3,5'd2,3'b010,5'd1,7'b0110011),\"slt\");\n    apply(mk_r(7'b0000000,5'd3,5'd2,3'b011,5'd1,7'b0110011),\"sltu\");\n    apply(mk_r(7'b0000000,5'd3,5'd2,3'b100,5'd1,7'b0110011),\"xor\");\n    apply(mk_r(7'b0000000,5'd3,5'd2,3'b101,5'd1,7'b0110011),\"srl\");\n    apply(mk_r(7'b0100000,5'd3,5'd2,3'b101,5'd1,7'b0110011),\"sra\");\n    apply(mk_r(7'b0000000,5'd3,5'd2,3'b110,5'd1,7'b0110011),\"or\");\n    apply(mk_r(7'b0000000,5'd3,5'd2,3'b111,5'd1,7'b0110011),\"and\");\n    apply(mk_r(7'b0100000,5'd3,5'd2,3'b010,5'd1,7'b0110011),\"r_il_slt\");\n    apply(mk_r(7'b0000001,5'd3,5'd2,3'b000,5'd1,7'b0110011),\"r_il_ext\");\n\n    apply(mk_i(12'h000,5'd2,3'b000,5'd1,7'b0010011),\"addi0\");\n    apply(mk_i(12'h800,5'd0,3'b010,5'd31,7'b0010011),\"slti_min\");\n    apply(mk_i(12'h7ff,5'd31,3'b011,5'd0,7'b0010011),\"sltiu_max\");\n    apply(mk_i(12'h055,5'd2,3'b100,5'd1,7'b0010011),\"xori\");\n    apply(mk_i({7'b0000000,5'd0},5'd2,3'b001,5'd1,7'b0010011),\"slli0\");\n    apply(mk_i({7'b0000000,5'd31},5'd2,3'b001,5'd1,7'b0010011),\"slli31\");\n    apply(mk_i({7'b0000000,5'd7},5'd2,3'b101,5'd1,7'b0010011),\"srli\");\n    apply(mk_i({7'b0100000,5'd7},5'd2,3'b101,5'd1,7'b0010011),\"srai\");\n    apply(mk_i(12'h0f0,5'd2,3'b110,5'd1,7'b0010011),\"ori\");\n    apply(mk_i(12'hf0f,5'd2,3'b111,5'd1,7'b0010011),\"andi\");\n    apply(mk_i({7'b0100000,5'd1},5'd2,3'b001,5'd1,7'b0010011),\"i_il_slli\");\n    apply(mk_i({7'b0010000,5'd1},5'd2,3'b101,5'd1,7'b0010011),\"i_il_shift\");\n\n    apply(mk_i(12'h000,5'd2,3'b000,5'd1,7'b0000011),\"lb\");\n    apply(mk_i(12'h001,5'd2,3'b001,5'd1,7'b0000011),\"lh\");\n    apply(mk_i(12'h7ff,5'd2,3'b010,5'd1,7'b0000011),\"lw\");\n    apply(mk_i(12'h800,5'd2,3'b100,5'd1,7'b0000011),\"lbu\");\n    apply(mk_i(12'h123,5'd2,3'b101,5'd1,7'b0000011),\"lhu\");\n    apply(mk_i(12'h123,5'd2,3'b011,5'd1,7'b0000011),\"load_il\");\n\n    apply(mk_s(12'h000,5'd1,5'd2,3'b000,7'b0100011),\"sb\");\n    apply(mk_s(12'h7ff,5'd1,5'd2,3'b001,7'b0100011),\"sh\");\n    apply(mk_s(12'h800,5'd1,5'd2,3'b010,7'b0100011),\"sw\");\n    apply(mk_s(12'h001,5'd1,5'd2,3'b011,7'b0100011),\"store_il\");\n\n    apply(mk_b(13'h0000,5'd2,5'd1,3'b000,7'b1100011),\"beq\");\n    apply(mk_b(13'h0002,5'd2,5'd1,3'b001,7'b1100011),\"bne\");\n    apply(mk_b(13'h1ffe,5'd2,5'd1,3'b100,7'b1100011),\"blt\");\n    apply(mk_b(13'h1000,5'd2,5'd1,3'b101,7'b1100011),\"bge\");\n    apply(mk_b(13'h0004,5'd2,5'd1,3'b110,7'b1100011),\"bltu\");\n    apply(mk_b(13'h0006,5'd2,5'd1,3'b111,7'b1100011),\"bgeu\");\n    apply(mk_b(13'h0000,5'd2,5'd1,3'b010,7'b1100011),\"br_il2\");\n    apply(mk_b(13'h0000,5'd2,5'd1,3'b011,7'b1100011),\"br_il3\");\n\n    apply(mk_u(20'h00000,5'd1,7'b0010111),\"auipc0\");\n    apply(mk_u(20'hfffff,5'd31,7'b0010111),\"auipcmax\");\n    apply(mk_u(20'h00000,5'd1,7'b0110111),\"lui0\");\n    apply(mk_u(20'h80000,5'd31,7'b0110111),\"luisign\");\n    apply(mk_i(12'h000,5'd2,3'b000,5'd1,7'b1100111),\"jalr\");\n    apply(mk_i(12'h123,5'd2,3'b001,5'd1,7'b1100111),\"jalr_il\");\n    apply(mk_j(21'h00000,5'd1,7'b1101111),\"jal0\");\n    apply(mk_j(21'h100000,5'd0,7'b1101111),\"jalmin\");\n    apply(mk_j(21'h0ffffe,5'd31,7'b1101111),\"jalmax\");\n\n    // Unsupported/system/extension opcodes\n    apply(32'h0000000f,\"fence\");\n    apply(32'h0000100f,\"fencei\");\n    apply(32'h00000073,\"ecall\");\n    apply(32'h00100073,\"ebreak\");\n    apply(32'h001110f3,\"csr\");\n    apply(32'h0000007f,\"badopc\");\n\n    done=1;\n    $display(\"SUMMARY checks=%0d failures=%0d\",checks,failures);\n    if(checks>0 && failures==0) begin $display(\"PASS\"); $finish; end\n    else begin $display(\"FAIL\"); $fatal(1,\"verification failed\"); end\n  end\n\n  initial begin\n    #1000;\n    if(!done) begin\n      $display(\"FAIL\");\n      $fatal(1,\"timeout\");\n    end\n  end\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 6541,
+      "prompt_tokens": 14953,
+      "total_tokens": 21494,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 8,
+        "engine_ttft_ms": 507,
+        "engine_ttlt_ms": 54492,
+        "pre_inference_ms": 113,
+        "service_tbt_ms": 8,
+        "service_ttft_ms": 664,
+        "service_ttlt_ms": 54639,
+        "user_visible_ttft_ms": 550
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260826104332-9a3b7626-default-r0-dp0-default"
+    }
+  }
+}

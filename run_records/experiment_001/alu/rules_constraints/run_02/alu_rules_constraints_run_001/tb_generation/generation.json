@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 2697,
+    "prompt_tokens": 1918,
+    "total_tokens": 4615,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 21,
+      "engine_ttft_ms": 354,
+      "engine_ttlt_ms": 56727,
+      "pre_inference_ms": 195,
+      "service_tbt_ms": 21,
+      "service_ttft_ms": 872,
+      "service_ttlt_ms": 57241,
+      "user_visible_ttft_ms": 677
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXPefa6rxr82empuAu5269fjkqGv",
+    "created": 1788802034,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "`timescale 1ns/1ps\n\nmodule alu_tb;\n\n  logic [31:0] A;\n  logic [31:0] B;\n  logic [2:0]  ALUSelect;\n  logic        SubArith;\n  logic [31:0] ALUResult;\n  logic [31:0] Sum;\n\n  integer checks;\n  integer failures;\n  integer done;\n\n  alu dut (\n    .A(A),\n    .B(B),\n    .ALUSelect(ALUSelect),\n    .SubArith(SubArith),\n    .ALUResult(ALUResult),\n    .Sum(Sum)\n  );\n\n  function automatic [31:0] exp_sum(\n    input logic [31:0] a,\n    input logic [31:0] b,\n    input logic        sub\n  );\n    begin\n      if (sub) exp_sum = a - b;\n      else     exp_sum = a + b;\n    end\n  endfunction\n\n  function automatic logic signed [31:0] to_s32(\n    input logic [31:0] x\n  );\n    begin\n      to_s32 = $signed(x);\n    end\n  endfunction\n\n  task automatic check_case(\n    input logic [31:0] a,\n    input logic [31:0] b,\n    input logic [2:0]  sel,\n    input logic        sub,\n    input logic        check_res,\n    input logic [31:0] exp_res,\n    input logic [31:0] exp_sum_v,\n    input [255:0]      name\n  );\n    begin\n      A = a;\n      B = b;\n      ALUSelect = sel;\n      SubArith = sub;\n      #1;\n\n      checks = checks + 1;\n      if (Sum !== exp_sum_v) begin\n        failures = failures + 1;\n        $display(\"Mismatch %0s SUM A=%h B=%h ALUSelect=%03b SubArith=%0b actual=%h expected=%h\",\n                 name, a, b, sel, sub, Sum, exp_sum_v);\n      end\n\n      if (check_res) begin\n        checks = checks + 1;\n        if (ALUResult !== exp_res) begin\n          failures = failures + 1;\n          $display(\"Mismatch %0s ALUResult A=%h B=%h ALUSelect=%03b SubArith=%0b actual=%h expected=%h\",\n                   name, a, b, sel, sub, ALUResult, exp_res);\n        end\n      end\n    end\n  endtask\n\n  initial begin : stimulus\n    logic [31:0] vals [0:7];\n    logic [31:0] shifts [0:7];\n    logic [31:0] a_v;\n    logic [31:0] b_v;\n    logic [31:0] res_v;\n    logic [31:0] sum_v;\n    logic [4:0]  shamt;\n    integer i;\n    integer j;\n    integer k;\n    integer sidx;\n\n    checks = 0;\n    failures = 0;\n    done = 0;\n\n    A = 32'h00000000;\n    B = 32'h00000000;\n    ALUSelect = 3'b000;\n    SubArith = 1'b0;\n    #1;\n\n    vals[0] = 32'h00000000;\n    vals[1] = 32'h00000001;\n    vals[2] = 32'hFFFFFFFF;\n    vals[3] = 32'h7FFFFFFF;\n    vals[4] = 32'h80000000;\n    vals[5] = 32'h0000000A;\n    vals[6] = 32'h00000003;\n    vals[7] = 32'h12345678;\n\n    shifts[0] = 32'h00000000;\n    shifts[1] = 32'h00000001;\n    shifts[2] = 32'h0000001F;\n    shifts[3] = 32'h00000020;\n    shifts[4] = 32'h0000003F;\n    shifts[5] = 32'hFFFFFFE0;\n    shifts[6] = 32'h00000005;\n    shifts[7] = 32'h1234569F;\n\n    // Sample usage and basic arithmetic/comparison examples\n    check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b0, 1'b1, 32'h0000000D, exp_sum(32'h0000000A, 32'h00000003, 1'b0), \"sample_add\");\n    check_case(32'h0000000A, 32'h00000003, 3'b000, 1'b1, 1'b1, 32'h00000007, exp_sum(32'h0000000A, 32'h00000003, 1'b1), \"sample_sub\");\n    check_case(32'hFFFFFFFF, 32'h00000001, 3'b010, 1'b1, 1'b1, 32'h00000001, exp_sum(32'hFFFFFFFF, 32'h00000001, 1'b1), \"sample_slt\");\n    check_case(32'hFFFFFFFF, 32'h00000001, 3'b011, 1'b1, 1'b1, 32'h00000000, exp_sum(32'hFFFFFFFF, 32'h00000001, 1'b1), \"sample_sltu\");\n    check_case(32'h80000000, 32'h00000001, 3'b101, 1'b1, 1'b1, 32'hC0000000, exp_sum(32'h80000000, 32'h00000001, 1'b1), \"sample_sra\");\n    check_case(32'h0000000F, 32'h0000001F, 3'b001, 1'b0, 1'b1, 32'h80000000, exp_sum(32'h0000000F, 32'h0000001F, 1'b0), \"sample_sll\");\n\n    // ADD/SUB modular wraparound and Sum independence\n    for (i = 0; i < 8; i = i + 1) begin\n      for (j = 0; j < 8; j = j + 1) begin\n        a_v = vals[i];\n        b_v = vals[j];\n\n        res_v = a_v + b_v;\n        sum_v = exp_sum(a_v, b_v, 1'b0);\n        check_case(a_v, b_v, 3'b000, 1'b0, 1'b1, res_v, sum_v, \"add\");\n\n        res_v = a_v - b_v;\n        sum_v = exp_sum(a_v, b_v, 1'b1);\n        check_case(a_v, b_v, 3'b000, 1'b1, 1'b1, res_v, sum_v, \"sub\");\n\n        if (to_s32(a_v) < to_s32(b_v)) res_v = 32'h00000001;\n        else                           res_v = 32'h00000000;\n        sum_v = exp_sum(a_v, b_v, 1'b1);\n        check_case(a_v, b_v, 3'b010, 1'b1, 1'b1, res_v, sum_v, \"slt\");\n\n        if (a_v < b_v) res_v = 32'h00000001;\n        else           res_v = 32'h00000000;\n        sum_v = exp_sum(a_v, b_v, 1'b1);\n        check_case(a_v, b_v, 3'b011, 1'b1, 1'b1, res_v, sum_v, \"sltu\");\n\n        res_v = a_v ^ b_v;\n        sum_v = exp_sum(a_v, b_v, 1'b0);\n        check_case(a_v, b_v, 3'b100, 1'b0, 1'b1, res_v, sum_v, \"xor\");\n\n        res_v = a_v | b_v;\n        sum_v = exp_sum(a_v, b_v, 1'b0);\n        check_case(a_v, b_v, 3'b110, 1'b0, 1'b1, res_v, sum_v, \"or\");\n\n        res_v = a_v & b_v;\n        sum_v = exp_sum(a_v, b_v, 1'b0);\n        check_case(a_v, b_v, 3'b111, 1'b0, 1'b1, res_v, sum_v, \"and\");\n      end\n    end\n\n    // Shift operations: exact use of B[4:0], including >31 values in B\n    for (i = 0; i < 8; i = i + 1) begin\n      a_v = vals[i];\n      for (sidx = 0; sidx < 8; sidx = sidx + 1) begin\n        b_v = shifts[sidx];\n        shamt = b_v[4:0];\n\n        res_v = a_v << shamt;\n        sum_v = exp_sum(a_v, b_v, 1'b0);\n        check_case(a_v, b_v, 3'b001, 1'b0, 1'b1, res_v, sum_v, \"sll\");\n\n        res_v = a_v >> shamt;\n        sum_v = exp_sum(a_v, b_v, 1'b0);\n        check_case(a_v, b_v, 3'b101, 1'b0, 1'b1, res_v, sum_v, \"srl\");\n\n        res_v = to_s32(a_v) >>> shamt;\n        sum_v = exp_sum(a_v, b_v, 1'b1);\n        check_case(a_v, b_v, 3'b101, 1'b1, 1'b1, res_v, sum_v, \"sra\");\n      end\n    end\n\n    // Interacting controls: Sum always follows SubArith, ALUResult only when specified\n    for (k = 0; k < 8; k = k + 1) begin\n      a_v = vals[k];\n      b_v = vals[7-k];\n      sum_v = exp_sum(a_v, b_v, 1'b1);\n      check_case(a_v, b_v, 3'b001, 1'b1, 1'b0, 32'h00000000, sum_v, \"unspec_sel001_sub1\");\n      sum_v = exp_sum(a_v, b_v, 1'b0);\n      check_case(a_v, b_v, 3'b010, 1'b0, 1'b0, 32'h00000000, sum_v, \"unspec_sel010_sub0\");\n      sum_v = exp_sum(a_v, b_v, 1'b0);\n      check_case(a_v, b_v, 3'b011, 1'b0, 1'b0, 32'h00000000, sum_v, \"unspec_sel011_sub0\");\n      sum_v = exp_sum(a_v, b_v, 1'b1);\n      check_case(a_v, b_v, 3'b100, 1'b1, 1'b0, 32'h00000000, sum_v, \"unspec_sel100_sub1\");\n      sum_v = exp_sum(a_v, b_v, 1'b1);\n      check_case(a_v, b_v, 3'b110, 1'b1, 1'b0, 32'h00000000, sum_v, \"unspec_sel110_sub1\");\n      sum_v = exp_sum(a_v, b_v, 1'b1);\n      check_case(a_v, b_v, 3'b111, 1'b1, 1'b0, 32'h00000000, sum_v, \"unspec_sel111_sub1\");\n    end\n\n    done = 1;\n    $display(\"SUMMARY checks=%0d failures=%0d\", checks, failures);\n    if (checks > 0 && failures == 0) begin\n      $display(\"PASS\");\n      $finish;\n    end\n    else begin\n      $display(\"FAIL\");\n      $fatal(1, \"verification failed\");\n    end\n  end\n\n  initial begin : watchdog\n    #5000;\n    if (!done) begin\n      $display(\"FAIL\");\n      $fatal(1, \"timeout\");\n    end\n  end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2697,
+      "prompt_tokens": 1918,
+      "total_tokens": 4615,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 21,
+        "engine_ttft_ms": 354,
+        "engine_ttlt_ms": 56727,
+        "pre_inference_ms": 195,
+        "service_tbt_ms": 21,
+        "service_ttft_ms": 872,
+        "service_ttlt_ms": 57241,
+        "user_visible_ttft_ms": 677
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260820135827-45614069-prefill-r0-dp0-prefill"
+    }
+  }
+}

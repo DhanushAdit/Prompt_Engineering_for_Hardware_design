@@ -1,0 +1,88 @@
+{
+  "requested_model": "gpt-5.4",
+  "returned_model": "gpt-5.4-2026-03-05",
+  "provider": "tamu",
+  "settings": {
+    "max_output_tokens": 8192
+  },
+  "usage": {
+    "completion_tokens": 2501,
+    "prompt_tokens": 7351,
+    "total_tokens": 9852,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 0
+    },
+    "latency_checkpoint": {
+      "engine_tbt_ms": 7,
+      "engine_ttft_ms": 207,
+      "engine_ttlt_ms": 16507,
+      "pre_inference_ms": 122,
+      "service_tbt_ms": 7,
+      "service_ttft_ms": 552,
+      "service_ttlt_ms": 16838,
+      "user_visible_ttft_ms": 430
+    }
+  },
+  "raw": {
+    "id": "chatcmpl-ELXQ6Sa0Mq61rL1KluPD4xvDA7J2p",
+    "created": 1788802062,
+    "model": "gpt-5.4-2026-03-05",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "`timescale 1ns/1ps\n\nmodule alu_tb;\n\n  logic [31:0] A;\n  logic [31:0] B;\n  logic [2:0]  ALUSelect;\n  logic        SubArith;\n  logic [31:0] ALUResult;\n  logic [31:0] Sum;\n\n  integer checks;\n  integer failures;\n  integer done;\n\n  alu dut (\n    .A(A),\n    .B(B),\n    .ALUSelect(ALUSelect),\n    .SubArith(SubArith),\n    .ALUResult(ALUResult),\n    .Sum(Sum)\n  );\n\n  function automatic [31:0] exp_sum_fn(\n    input [31:0] a,\n    input [31:0] b,\n    input        sub\n  );\n    begin\n      exp_sum_fn = sub ? (a - b) : (a + b);\n    end\n  endfunction\n\n  function automatic [31:0] exp_res_fn(\n    input [31:0] a,\n    input [31:0] b,\n    input [2:0]  sel,\n    input        sub\n  );\n    reg signed [31:0] sa;\n    reg signed [31:0] sb;\n    reg [4:0] shamt;\n    begin\n      sa = a;\n      sb = b;\n      shamt = b[4:0];\n      case ({sel,sub})\n        4'b0000: exp_res_fn = a + b;\n        4'b0001: exp_res_fn = a - b;\n        4'b0010: exp_res_fn = a << shamt;\n        4'b0101: exp_res_fn = (sa < sb) ? 32'h00000001 : 32'h00000000;\n        4'b0111: exp_res_fn = (a < b)  ? 32'h00000001 : 32'h00000000;\n        4'b1000: exp_res_fn = a ^ b;\n        4'b1010: exp_res_fn = a >> shamt;\n        4'b1011: exp_res_fn = $unsigned(sa >>> shamt);\n        4'b1100: exp_res_fn = a | b;\n        4'b1110: exp_res_fn = a & b;\n        default: exp_res_fn = 32'h00000000;\n      endcase\n    end\n  endfunction\n\n  task automatic run_case(\n    input [31:0] inA,\n    input [31:0] inB,\n    input [2:0]  inSel,\n    input        inSub,\n    input        res_specified\n  );\n    reg [31:0] exp_sum;\n    reg [31:0] exp_res;\n    begin\n      exp_sum = exp_sum_fn(inA, inB, inSub);\n      exp_res = exp_res_fn(inA, inB, inSel, inSub);\n\n      A = inA;\n      B = inB;\n      ALUSelect = inSel;\n      SubArith = inSub;\n      #1;\n\n      checks = checks + 1;\n      if (Sum !== exp_sum) begin\n        failures = failures + 1;\n        $display(\"Mismatch Sum A=%h B=%h ALUSelect=%03b SubArith=%b actual=%h expected=%h\",\n                 A, B, ALUSelect, SubArith, Sum, exp_sum);\n      end\n\n      if (res_specified) begin\n        checks = checks + 1;\n        if (ALUResult !== exp_res) begin\n          failures = failures + 1;\n          $display(\"Mismatch ALUResult A=%h B=%h ALUSelect=%03b SubArith=%b actual=%h expected=%h\",\n                   A, B, ALUSelect, SubArith, ALUResult, exp_res);\n        end\n      end\n    end\n  endtask\n\n  task automatic do_tests;\n    reg [31:0] vals [0:9];\n    reg [31:0] shv  [0:7];\n    integer i;\n    integer j;\n    integer s;\n    integer sub;\n    begin\n      // Boundary/example values\n      vals[0] = 32'h00000000;\n      vals[1] = 32'h00000001;\n      vals[2] = 32'hFFFFFFFF;\n      vals[3] = 32'h7FFFFFFF;\n      vals[4] = 32'h80000000;\n      vals[5] = 32'h0000000A;\n      vals[6] = 32'h00000003;\n      vals[7] = 32'h55555555;\n      vals[8] = 32'hAAAAAAAA;\n      vals[9] = 32'h12345678;\n\n      shv[0] = 32'h00000000;\n      shv[1] = 32'h00000001;\n      shv[2] = 32'h0000001F;\n      shv[3] = 32'h00000020;\n      shv[4] = 32'h0000003F;\n      shv[5] = 32'h12345660;\n      shv[6] = 32'h12345661;\n      shv[7] = 32'h1234567F;\n\n      // Sample usage\n      run_case(32'h0000000A, 32'h00000003, 3'b000, 1'b0, 1'b1);\n      run_case(32'h0000000A, 32'h00000003, 3'b000, 1'b1, 1'b1);\n      run_case(32'hFFFFFFFF, 32'h00000001, 3'b010, 1'b1, 1'b1);\n      run_case(32'hFFFFFFFF, 32'h00000001, 3'b011, 1'b1, 1'b1);\n      run_case(32'h80000000, 32'h00000001, 3'b101, 1'b1, 1'b1);\n      run_case(32'h0000000F, 32'h0000001F, 3'b001, 1'b0, 1'b1);\n\n      // Arithmetic/logical/compare operations and Sum independence\n      for (i = 0; i < 10; i = i + 1) begin\n        for (j = 0; j < 10; j = j + 1) begin\n          run_case(vals[i], vals[j], 3'b000, 1'b0, 1'b1);\n          run_case(vals[i], vals[j], 3'b000, 1'b1, 1'b1);\n          run_case(vals[i], vals[j], 3'b100, 1'b0, 1'b1);\n          run_case(vals[i], vals[j], 3'b100, 1'b1, 1'b0);\n          run_case(vals[i], vals[j], 3'b110, 1'b0, 1'b1);\n          run_case(vals[i], vals[j], 3'b110, 1'b1, 1'b0);\n          run_case(vals[i], vals[j], 3'b111, 1'b0, 1'b1);\n          run_case(vals[i], vals[j], 3'b111, 1'b1, 1'b0);\n          run_case(vals[i], vals[j], 3'b010, 1'b1, 1'b1);\n          run_case(vals[i], vals[j], 3'b010, 1'b0, 1'b0);\n          run_case(vals[i], vals[j], 3'b011, 1'b1, 1'b1);\n          run_case(vals[i], vals[j], 3'b011, 1'b0, 1'b0);\n        end\n      end\n\n      // Shift operations and B[4:0] masking\n      for (i = 0; i < 10; i = i + 1) begin\n        for (j = 0; j < 8; j = j + 1) begin\n          run_case(vals[i], shv[j], 3'b001, 1'b0, 1'b1);\n          run_case(vals[i], shv[j], 3'b001, 1'b1, 1'b0);\n          run_case(vals[i], shv[j], 3'b101, 1'b0, 1'b1);\n          run_case(vals[i], shv[j], 3'b101, 1'b1, 1'b1);\n        end\n      end\n\n      // Unspecified ALUResult combinations: only Sum is checked\n      for (s = 1; s <= 7; s = s + 1) begin\n        run_case(32'h89ABCDEF, 32'h10203040, s[2:0], 1'b1, (s == 3'b101));\n      end\n      run_case(32'h89ABCDEF, 32'h10203040, 3'b001, 1'b1, 1'b0);\n      run_case(32'h89ABCDEF, 32'h10203040, 3'b010, 1'b0, 1'b0);\n      run_case(32'h89ABCDEF, 32'h10203040, 3'b011, 1'b0, 1'b0);\n      run_case(32'h89ABCDEF, 32'h10203040, 3'b100, 1'b1, 1'b0);\n      run_case(32'h89ABCDEF, 32'h10203040, 3'b110, 1'b1, 1'b0);\n      run_case(32'h89ABCDEF, 32'h10203040, 3'b111, 1'b1, 1'b0);\n\n      // Interacting control sweep on one operand pair\n      for (sub = 0; sub < 2; sub = sub + 1) begin\n        for (s = 0; s < 8; s = s + 1) begin\n          case ({s[2:0],sub[0]})\n            4'b0000,4'b0001,4'b0010,4'b0101,4'b0111,4'b1000,4'b1010,4'b1011,4'b1100,4'b1110:\n              run_case(32'h80000001, 32'h7FFFFFFF, s[2:0], sub[0], 1'b1);\n            default:\n              run_case(32'h80000001, 32'h7FFFFFFF, s[2:0], sub[0], 1'b0);\n          endcase\n        end\n      end\n    end\n  endtask\n\n  initial begin\n    checks = 0;\n    failures = 0;\n    done = 0;\n    A = 32'h0;\n    B = 32'h0;\n    ALUSelect = 3'b000;\n    SubArith = 1'b0;\n\n    do_tests();\n\n    done = 1;\n    $display(\"SUMMARY checks=%0d failures=%0d\", checks, failures);\n    if (checks > 0 && failures == 0) begin\n      $display(\"PASS\");\n      $finish;\n    end else begin\n      $display(\"FAIL\");\n      $fatal(1, \"verification failed\");\n    end\n  end\n\n  initial begin\n    #5000;\n    if (!done) begin\n      $display(\"FAIL\");\n      $fatal(1, \"timeout\");\n    end\n  end\n\nendmodule",
+          "role": "assistant",
+          "annotations": []
+        },
+        "provider_specific_fields": {
+          "content_filter_results": {}
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 2501,
+      "prompt_tokens": 7351,
+      "total_tokens": 9852,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 0
+      },
+      "latency_checkpoint": {
+        "engine_tbt_ms": 7,
+        "engine_ttft_ms": 207,
+        "engine_ttlt_ms": 16507,
+        "pre_inference_ms": 122,
+        "service_tbt_ms": 7,
+        "service_ttft_ms": 552,
+        "service_ttlt_ms": 16838,
+        "user_visible_ttft_ms": 430
+      }
+    },
+    "service_tier": "default",
+    "prompt_filter_results": [
+      {
+        "prompt_index": 0,
+        "content_filter_results": {}
+      }
+    ],
+    "routing": {
+      "serving_pipereplica": "d20260818023416-13d43de4-default-r0-dp0-default"
+    }
+  }
+}
