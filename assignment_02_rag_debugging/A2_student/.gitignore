@@ -1,0 +1,8 @@
+# .gitignore: keep secrets and generated artifacts out of version control / submission.
+.env
+__pycache__/
+*.pyc
+# The saved .rag_index/ is tracked as Assignment 2 retrieval evidence.
+.rag_index_check/
+build/
+.DS_Store

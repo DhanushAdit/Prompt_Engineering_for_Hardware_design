@@ -1,0 +1,112 @@
+COMMAND 1:
+python -m rag.query "controller pcsrc branch logic" --index-dir .rag_index -k 3 --json
+
+RESULT 1:
+[
+  {
+    "source": "rag_dataset/module_specs/controller_pcsrc.md",
+    "kind": "module_specs",
+    "text": "# Project-specific controller PCSrc / branch logic (THIS core) `controller` instantiates `main_decoder` and `alu_decoder`, then computes `PCSrc` (take-branch/jump) from the `Branch[2:0]` code, `Zero` (ALU result == 0), `CmpResult` (signed/unsigned less-than from the ALU), and `Jump`: ```verilog case (Branch) 3'b100: PCSrc = Zero | Jump; // beq : taken when equal 3'b101: PCSrc = ~Zero | Jump; // bne : taken when not equal 3'b110: PCSrc = CmpResult | Jump; // blt : taken when a < b 3'b111: PCSrc = ~CmpResult | Zero | Jump; // bge : taken when a >= b 3'b001: PCSrc = CmpResult | Jump; // bltu 3'b011: PCSrc = ~CmpResult | Jump; // bgeu default: PCSrc = Jump; // jal, jalr, non-branch endcase ``` Notes specific to this core: - `bge` uses `~CmpResult | Zero` (greater-OR-equal must also fire on equality). - The `Branch` codes are the project-specific values from `main_decoder` (beq=100 \u2026), not any external convention. - Non-branch instructions fall through to `default`, so `PCSrc = Jump`. Common bug: mixing up `Zero`/`~Zero` (beq vs bne) or dropping the `| Zero` term in `bge`."
+  },
+  {
+    "source": "rag_dataset/module_specs/module_interfaces.md",
+    "kind": "module_specs",
+    "text": "# Module interfaces the datapath must instantiate (THIS core) The `datapath` instantiates seven modules and must connect to their EXACT ports. Wrong port names are the most common integration compile error (`port '...' is not a port of ...`). ## New Assignment 2 unit modules (interfaces fixed by their specs - same for everyone) ```systemverilog module pc_unit ( input logic clk, input logic reset, input logic PCSrc, input logic [31:0] PCTarget, output logic [31:0] PC, output logic [31:0] PCPlus4 ); module branch_unit ( input logic [31:0] A, input logic [31:0] B, input logic [2:0] Funct3, input logic Branch, input logic Jump, output logic BranchCond, output logic PCSrc ); module memory_access ( input logic [1:0] MemRW, input logic [2:0] Funct3, input logic [1:0] AddrLSB, input logic [31:0] StoreData, input logic [31:0] ReadData, output logic [31:0] WriteData, output logic [3:0] ByteEnable, output logic [31:0] LoadData ); ``` ## Assignment 1 modules (alu, regfile, extend, controller) These come from your own Assignment 1, so wire to the ports YOUR modules declare - do not rename them. The controller in this core exposes control"
+  },
+  {
+    "source": "rag_dataset/module_specs/datapath_integration.md",
+    "kind": "module_specs",
+    "text": "## PC / branch - `pc_plus4 = pc + 4`; taken branch or jump redirects: `pc_next = pc_sel ? target : pc_plus4`. - `pc_sel = (BranchD & take_branch) | JumpD;` target LSB forced to 0. Fix integration bugs by matching each mux select to the control-signal meaning above; do not change the component module interfaces."
+  }
+]
+
+COMMAND 2:
+python -m rag.query "datapath module interfaces ALUSrcBD immediate register" --index-dir .rag_index -k 3 --json
+
+RESULT 2:
+[
+  {
+    "source": "rag_dataset/module_specs/module_interfaces.md",
+    "kind": "module_specs",
+    "text": "regfile, extend, controller) These come from your own Assignment 1, so wire to the ports YOUR modules declare - do not rename them. The controller in this core exposes control signals such as `RegWriteD`, `ImmSrcD`, `ALUSrcAD`, `ALUSrcBD`, `MemRWD`, `ResultSrcD`, `BranchD`, `JumpD`, `ALUResultSrcD`, `ALUSelectD`, `SubArithD`, `IllegalInstrD`, driven from `InstrD`; the ALU takes operands `A`/`B` with `ALUSelect`/`SubArith` and returns `ALUResult`/`Sum`; `extend` takes `InstrD[31:7]` + `ImmSrcD` and returns `ImmExtD`; the register file uses `a1`/`a2`/`a3`/`wd3`/`we3` with reads `rd1`/`rd2`. Common bug: instantiating a module with guessed port names (e.g. `op`/`funct3` on the controller) instead of the names the module actually declares. Read each module header and match it exactly."
+  },
+  {
+    "source": "rag_dataset/module_specs/datapath_integration.md",
+    "kind": "module_specs",
+    "text": "# Single-cycle RV32I datapath integration (this core) How the top-level datapath (`riscv_single`) wires the components. Common integration bugs live here (mux selects swapped, wrong operand routed). ## ALU operand selects - `ALUSrcAD`: 0 => rs1 (`rf_rd1`); 1 => PC. Used as ALU A input. `alu_a = ALUSrcAD ? pc : rf_rd1;` - `ALUSrcBD`: 0 => rs2 (`rf_rd2`); 1 => **immediate** (`imm`). Used as ALU B input. `alu_b = ALUSrcBD ? imm : rf_rd2;` // when ALUSrcBD=1 the immediate MUST be selected Bug symptom if swapped: I-type ALU / loads / stores use rs2 instead of the immediate, so `addi`/`lw`/`sw` compute wrong values (e.g. `addi x1,x0,5` leaves x1=0). ## Writeback / result select - `ResultSrcD`: 000 => ALU/IEU result; 001 => load data (`dmem_rdata`). - `ALUResultSrcD`: 1 selects the alternate result \u2014 immediate for LUI, `pc+4` for JAL/JALR. - `rf_we = RegWriteD & ~IllegalInstrD;` x0 writes are ignored inside the regfile. ## PC / branch - `pc_plus4 = pc + 4`; taken branch or jump redirects: `pc_next = pc_sel ? target : pc_plus4`. - `pc_sel = (BranchD & take_branch) | JumpD;`"
+  },
+  {
+    "source": "rag_dataset/module_specs/module_interfaces.md",
+    "kind": "module_specs",
+    "text": "# Module interfaces the datapath must instantiate (THIS core) The `datapath` instantiates seven modules and must connect to their EXACT ports. Wrong port names are the most common integration compile error (`port '...' is not a port of ...`). ## New Assignment 2 unit modules (interfaces fixed by their specs - same for everyone) ```systemverilog module pc_unit ( input logic clk, input logic reset, input logic PCSrc, input logic [31:0] PCTarget, output logic [31:0] PC, output logic [31:0] PCPlus4 ); module branch_unit ( input logic [31:0] A, input logic [31:0] B, input logic [2:0] Funct3, input logic Branch, input logic Jump, output logic BranchCond, output logic PCSrc ); module memory_access ( input logic [1:0] MemRW, input logic [2:0] Funct3, input logic [1:0] AddrLSB, input logic [31:0] StoreData, input logic [31:0] ReadData, output logic [31:0] WriteData, output logic [3:0] ByteEnable, output logic [31:0] LoadData ); ``` ## Assignment 1 modules (alu, regfile, extend, controller) These come from your own Assignment 1, so wire to the ports YOUR modules declare - do not rename them. The controller in this core exposes control"
+  }
+]
+
+COMMAND 3:
+python -m rag.query "pc_unit synchronous reset PC plus 4" --index-dir .rag_index -k 3 --json
+
+RESULT 3:
+[
+  {
+    "source": "rag_dataset/verilog_bugs/reset_polarity.md",
+    "kind": "verilog_bugs",
+    "text": "# Bug: wrong reset polarity or missing reset in a flip-flop **Symptom:** registers never clear (or clear when they shouldn't); the design starts in `x` or a wrong state and never recovers. **Cause:** reset tested with the wrong polarity (`if (!rst)` when reset is active-high), reset left out of the sensitivity list for an async reset, or the reset branch assigning the wrong value. **Fix:** match the intended polarity and, for async reset, include it in the sensitivity list. For this core, `reset_ff` uses **active-high async reset**: ```verilog always @(posedge clk or posedge rst) if (rst) q <= 0; // active-high: clear when rst==1 else q <= d; ```"
+  },
+  {
+    "source": "rag_dataset/module_specs/datapath_integration.md",
+    "kind": "module_specs",
+    "text": "## PC / branch - `pc_plus4 = pc + 4`; taken branch or jump redirects: `pc_next = pc_sel ? target : pc_plus4`. - `pc_sel = (BranchD & take_branch) | JumpD;` target LSB forced to 0. Fix integration bugs by matching each mux select to the control-signal meaning above; do not change the component module interfaces."
+  },
+  {
+    "source": "rag_dataset/module_specs/module_interfaces.md",
+    "kind": "module_specs",
+    "text": "# Module interfaces the datapath must instantiate (THIS core) The `datapath` instantiates seven modules and must connect to their EXACT ports. Wrong port names are the most common integration compile error (`port '...' is not a port of ...`). ## New Assignment 2 unit modules (interfaces fixed by their specs - same for everyone) ```systemverilog module pc_unit ( input logic clk, input logic reset, input logic PCSrc, input logic [31:0] PCTarget, output logic [31:0] PC, output logic [31:0] PCPlus4 ); module branch_unit ( input logic [31:0] A, input logic [31:0] B, input logic [2:0] Funct3, input logic Branch, input logic Jump, output logic BranchCond, output logic PCSrc ); module memory_access ( input logic [1:0] MemRW, input logic [2:0] Funct3, input logic [1:0] AddrLSB, input logic [31:0] StoreData, input logic [31:0] ReadData, output logic [31:0] WriteData, output logic [3:0] ByteEnable, output logic [31:0] LoadData ); ``` ## Assignment 1 modules (alu, regfile, extend, controller) These come from your own Assignment 1, so wire to the ports YOUR modules declare - do not rename them. The controller in this core exposes control"
+  }
+]
+
+COMMAND 4:
+python -m rag.query "branch signed unsigned comparison RV32I" --index-dir .rag_index -k 3 --json
+
+RESULT 4:
+[
+  {
+    "source": "rag_dataset/verilog_bugs/signed_comparison.md",
+    "kind": "verilog_bugs",
+    "text": "# Bug: unsigned comparison used where signed is required (e.g. RISC-V SLT) **Symptom:** `SLT` / signed-less-than gives wrong result for negative operands (e.g. -1 < 1 returns 0 instead of 1). **Cause:** In Verilog, `<` on plain `reg`/`wire [31:0]` operands is *unsigned*. A negative two's-complement value has a large unsigned magnitude, so the compare is wrong. **Fix:** Compare as signed. Either declare signed nets, or cast: ```verilog result = ($signed(a) < $signed(b)) ? 32'd1 : 32'd0; // SLT result = (a < b) ? 32'd1 : 32'd0; // SLTU (unsigned) stays as-is ```"
+  },
+  {
+    "source": "rag_dataset/riscv_spec/immediate_encoding.md",
+    "kind": "riscv_spec",
+    "text": "# RV32I immediate encodings (exact bit layout) The immediate bits are scrambled differently for each instruction format. `instr` is the 32-bit instruction; the sign bit is always `instr[31]`. Exact layouts: - **I-type** (`addi`, `lw`, `jalr`): `imm = {sext(instr[31]), instr[31:20]}` - **S-type** (stores): `imm = {sext(instr[31]), instr[31:25], instr[11:7]}` - **B-type** (branches, `beq`/`bne`/...): the tricky one \u2014 `imm = {sext(instr[31]), instr[7], instr[30:25], instr[11:8], 1'b0}` Note the order: **bit 12 = instr[31], bit 11 = instr[7], bits 10:5 = instr[30:25], bits 4:1 = instr[11:8], bit 0 = 0.** `instr[7]` supplies bit 11 (NOT the low bits), and the least-significant bit is always 0 (2-byte aligned). - **J-type** (`jal`): `imm = {sext(instr[31]), instr[19:12], instr[20], instr[30:21], 1'b0}` - **U-type** (`lui`, `auipc`): `imm = {instr[31:12], 12'b0}` Common mistake: for B-type, placing `instr[7]` at the low end or keeping the fields in \"natural\" order. The correct Verilog is: ```verilog // B-type immext = {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0}; ```"
+  },
+  {
+    "source": "rag_dataset/riscv_spec/rv32i_alu_ops.md",
+    "kind": "riscv_spec",
+    "text": "# RV32I ALU operations (reference) Expected behavior of the core RV32I ALU operations (32-bit): | Op | Meaning | Notes | |------|------------------------|-------| | ADD | a + b | wraps mod 2^32 | | SUB | a - b | wraps mod 2^32 | | AND | a & b | bitwise | | OR | a \\| b | bitwise | | XOR | a ^ b | bitwise | | SLL | a << b[4:0] | shift amount is low 5 bits only | | SRL | a >> b[4:0] | logical (zero-fill) right shift | | SRA | a >>> b[4:0] | arithmetic (sign-extend) right shift; operand must be signed | | SLT | (signed)a < (signed)b | result is 1 or 0; **signed** compare | | SLTU | (unsigned)a < b | result is 1 or 0; **unsigned** compare | Common pitfalls: using an unsigned compare for SLT; using the full `b` as a shift amount instead of `b[4:0]`; using logical `>>` where arithmetic `>>>` is required."
+  }
+]
+
+COMMAND 5:
+python -m rag.query "memory access LB sign extension LBU byte enable" --index-dir .rag_index -k 3 --json
+
+RESULT 5:
+[
+  {
+    "source": "rag_dataset/module_specs/memory_addressing.md",
+    "kind": "module_specs",
+    "text": "# Project-specific memory addressing (THIS core) ## data_mem \u2014 word-addressed data RAM - 64 words of 32 bits (`MEM_SIZE=64`). **Word-addressed:** the byte address is shifted right by 2 and taken mod 64: index = `wr_addr[DATA_WIDTH-1:2] % 64`. - **Read is combinational**, **write is synchronous on `posedge clk`** (gated by `wr_en`). - Read and write use the SAME address port (`wr_addr`) in this design. ```verilog assign rd_data_mem = data_ram[wr_addr[31:2] % 64]; always @(posedge clk) if (wr_en) data_ram[wr_addr[31:2] % 64] <= wr_data; ``` ## instr_mem \u2014 word-addressed instruction ROM - 512 words; combinational read: `instr = instr_ram[instr_addr[31:2]]`. - Loaded from a hex file via `$readmemh` in an `initial` block. Common bug: indexing by the raw byte address instead of `addr[31:2]` (off by 4\u00d7), or using a blocking assignment / wrong clock edge for the write."
+  },
+  {
+    "source": "rag_dataset/riscv_spec/rv32i_alu_ops.md",
+    "kind": "riscv_spec",
+    "text": "# RV32I ALU operations (reference) Expected behavior of the core RV32I ALU operations (32-bit): | Op | Meaning | Notes | |------|------------------------|-------| | ADD | a + b | wraps mod 2^32 | | SUB | a - b | wraps mod 2^32 | | AND | a & b | bitwise | | OR | a \\| b | bitwise | | XOR | a ^ b | bitwise | | SLL | a << b[4:0] | shift amount is low 5 bits only | | SRL | a >> b[4:0] | logical (zero-fill) right shift | | SRA | a >>> b[4:0] | arithmetic (sign-extend) right shift; operand must be signed | | SLT | (signed)a < (signed)b | result is 1 or 0; **signed** compare | | SLTU | (unsigned)a < b | result is 1 or 0; **unsigned** compare | Common pitfalls: using an unsigned compare for SLT; using the full `b` as a shift amount instead of `b[4:0]`; using logical `>>` where arithmetic `>>>` is required."
+  },
+  {
+    "source": "rag_dataset/riscv_spec/immediate_encoding.md",
+    "kind": "riscv_spec",
+    "text": "# RV32I immediate encodings (exact bit layout) The immediate bits are scrambled differently for each instruction format. `instr` is the 32-bit instruction; the sign bit is always `instr[31]`. Exact layouts: - **I-type** (`addi`, `lw`, `jalr`): `imm = {sext(instr[31]), instr[31:20]}` - **S-type** (stores): `imm = {sext(instr[31]), instr[31:25], instr[11:7]}` - **B-type** (branches, `beq`/`bne`/...): the tricky one \u2014 `imm = {sext(instr[31]), instr[7], instr[30:25], instr[11:8], 1'b0}` Note the order: **bit 12 = instr[31], bit 11 = instr[7], bits 10:5 = instr[30:25], bits 4:1 = instr[11:8], bit 0 = 0.** `instr[7]` supplies bit 11 (NOT the low bits), and the least-significant bit is always 0 (2-byte aligned). - **J-type** (`jal`): `imm = {sext(instr[31]), instr[19:12], instr[20], instr[30:21], 1'b0}` - **U-type** (`lui`, `auipc`): `imm = {instr[31:12], 12'b0}` Common mistake: for B-type, placing `instr[7]` at the low end or keeping the fields in \"natural\" order. The correct Verilog is: ```verilog // B-type immext = {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0}; ```"
+  }
+]
+
+ANALYTICAL OBSERVATION:
+Overall, the retriever returned useful and semantically related information for the controller, datapath, and branch-comparison queries. The strongest results came from the project-specific module specifications and integration notes. The PC query also returned a reset-polarity bug note that describes an asynchronous reset, while the official pc_unit specification requires a synchronous reset, so retrieved context must be checked against the assignment specifications. The memory-access query produced only partially relevant results about memory addressing and general RV32I behavior rather than the exact LB/LBU byte-formatting rules. This shows that the RAG index is useful for locating related design knowledge, but retrieval results are not guaranteed to be complete or authoritative and must be validated before use.

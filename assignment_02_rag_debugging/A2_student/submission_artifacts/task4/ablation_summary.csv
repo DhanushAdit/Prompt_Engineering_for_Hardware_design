@@ -1,0 +1,6 @@
+part,arm,expected_runs,observed_runs,successful_runs,failed_runs,pass_rate_percent,mean_repairs_success_only,min_repairs_success_only,max_repairs_success_only,evidence_status
+A,baseline,3,3,0,3,0.0,,,,complete
+A,rag,3,3,1,2,33.333333333333336,0,0,0,complete
+A,rag_feedback,3,3,3,0,100.0,2.3333333333333335,1,5,complete
+B,rag,3,3,0,3,0.0,,,,complete
+B,rag_feedback,3,3,3,0,100.0,1.3333333333333333,1,2,complete

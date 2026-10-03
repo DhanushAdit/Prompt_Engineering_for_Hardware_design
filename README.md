@@ -1,93 +1,57 @@
 # Prompt Engineering for Hardware Design
 
-Personal research project: Phase 1
+ECEN 689 coursework exploring how language models generate and repair hardware designs. The work progresses from comparing prompting strategies for individual RTL blocks to retrieval-augmented debugging of a single-cycle RV32I processor.
 
-## Overview
+## Weekly work
 
-This repository explores prompt strategies for generating SystemVerilog RTL
-and self-checking testbenches with an LLM. Phase 1 covers four hardware blocks:
+The folders follow assignment order; each assignment represents a stage of the project.
 
-- ALU
-- Register file
-- Immediate extender
-- Controller
+| Stage | Topic | Work and evidence |
+|---|---|---|
+| [Assignment 1](assignment_01_prompt_engineering/) | Prompt engineering for RTL and testbench generation | ALU, register file, immediate extender, and controller; three prompt styles with two runs per block and style; generated RTL, testbenches, and verification records. |
+| [Assignment 2](assignment_02_rag_debugging/) | RAG and iterative tool feedback for hardware debugging | Retrieval knowledge base, generation and repair agent, processor integration, seeded bug repairs, ablation experiments, and final processor validation. |
 
-Each block is generated with three prompt styles, two independent runs per
-style, and bounded verification-driven repair.
-
-## Approach
-
-The workflow has three stages:
-
-1. **Phase A - RTL generation:** read the YAML specification and ask the model
-   for a complete SystemVerilog implementation.
-2. **Phase B - Testbench generation:** ask the model for an independent,
-   self-checking testbench with reference behavior and meaningful coverage.
-3. **Phase C - Repair and validation:** compile the RTL, run the instructor
-   sample tests, and provide diagnostics to the model only when a repair is
-   needed. The testbench is repaired only after the RTL passes the instructor
-   tests.
-
-The three prompt styles are `direct`, `rules_constraints`, and `template_fill`.
-The formal experiment contains 4 blocks x 3 styles x 2 runs = 24 initial
-generation runs. Final RTL/testbench pairs are retained after passing both
-instructor tests and the generated testbench.
-
-## Repository Structure
+## Repository layout
 
 ```text
 .
-|-- README.md
-|-- code/
-|   |-- run_experiment.py       Runs the 24-run experiment
-|   |-- prompt_templates/       Prompt styles and RTL guidance
-|   `-- A1_student/             Reproducible workflow and specifications
-|-- rtl_and_testbenches/
-|   |-- final/                  Selected RTL and testbenches
-|   `-- versions/               Generated versions and repair history
-`-- run_records/                Prompts, responses, logs, scores, and checks
+├── README.md
+├── assignment_01_prompt_engineering/
+│   ├── README.md
+│   ├── code/                   # Workflow, prompts, specifications, and setup
+│   ├── rtl_and_testbenches/     # Selected designs and generated versions
+│   └── run_records/             # Prompts, model responses, and verification logs
+└── assignment_02_rag_debugging/
+    ├── README.md
+    ├── 837004069_A2_Report.pdf  # Final analysis and plots
+    └── A2_student/
+        ├── agent/              # Generation, feedback, ranking, and repair
+        ├── rag/                # Indexing and retrieval
+        ├── rag_dataset/        # Retrieval documents
+        ├── .rag_index/         # Saved retrieval index
+        ├── rtl/                # Final processor RTL
+        ├── scripts/            # Module and processor verification
+        └── submission_artifacts/
+            ├── task1/          # Index and five sample retrieval queries
+            ├── task2/          # Agent source snapshots and smoke run
+            ├── task3/          # Generation, repairs, and bug reports
+            ├── task4/          # Ablation trials, RTL snapshots, and metrics
+            └── task5/          # Final processor validation transcripts
 ```
 
-## Reproduction
+## Getting started
 
-Use the provided conda environment or another Python 3.10+ environment with
-PyYAML installed.
+Clone the repository, then follow the README for the assignment you want to explore. Run assignment commands from the working directory stated in its README; the repository root is a navigation entry point.
+
+Both workflows use Python and Icarus Verilog. Model calls require a configured provider API key. Assignment 2 additionally uses Sentence Transformers and FAISS for retrieval; its environment files list the dependencies.
+
+For a local check of the saved Assignment 2 processor, with Icarus Verilog and Python available:
 
 ```bash
-conda activate ecen689-a1
-cd github_submission
-python3 -m pip install -r code/A1_student/requirements.txt
-bash code/A1_student/check_setup.sh
-export TAMUS_AI_CHAT_API_KEY="your_key_here"
+cd assignment_02_rag_debugging/A2_student
+bash scripts/run_all_sample.sh
 ```
 
-The setup check does not call the API. It verifies Python, PyYAML, Icarus
-Verilog, the packaged specifications, the workflow, and API-key visibility.
+This checks the saved RTL without making model calls. Generation and repair commands can replace working RTL, so use a separate working copy when reproducing experiments. Archived logs retain the original run paths and model outputs as evidence.
 
-Run the complete experiment with:
-
-```bash
-python3 code/run_experiment.py \
-  --output run_records/reproduction_001 \
-  --provider tamu
-```
-
-Use a new output directory for every new experiment. To run one block and one
-prompt style directly:
-
-```bash
-A1_PROMPT_STYLE=direct python3 code/A1_student/student_code/lab1.py \
-  --spec code/A1_student/specs/alu.yaml \
-  --out-dir run_records/single_alu \
-  --provider tamu
-```
-
-Replace `alu` with `regfile`, `extend`, or `controller`. Valid prompt styles
-are `direct`, `rules_constraints`, and `template_fill`.
-
-## Notes
-
-This phase focuses on comparing prompt styles and building a repeatable
-generation, verification, and repair loop. Detailed prompts, model responses,
-diagnostics, and validation records are retained under `run_records/`.
-API keys are intentionally not included in this repository.
+Assignment 1 contains the original project contents, preserved under its topic folder. Assignment 2 builds on that work by reusing the earlier processor blocks. Future assignments can be added as separate numbered topic folders with an entry in the table above.

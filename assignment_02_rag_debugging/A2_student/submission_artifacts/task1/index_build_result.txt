@@ -1,0 +1,22 @@
+Task 1: RAG index build
+Date: 2026-09-27
+Environment: ecen689-a1
+Working directory: A2_student/
+
+Command:
+python -m rag.build_index --dataset rag_dataset --index-dir .rag_index
+
+Result:
+{
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "chunk_count": 25,
+  "source_count": 23,
+  "index_dir": ".rag_index"
+}
+
+Generated files:
+- .rag_index/metadata.json
+- .rag_index/chunks.json
+- .rag_index/vectors.faiss
+
+The Hugging Face unauthenticated-request warning was informational; the command completed successfully.

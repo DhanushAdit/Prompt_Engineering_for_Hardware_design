@@ -1,0 +1,152 @@
+[
+  {
+    "chunk_id": "rag_dataset/module_specs/alu_control_encoding.md#0",
+    "source": "rag_dataset/module_specs/alu_control_encoding.md",
+    "text": "# Project-specific ALU control encoding (THIS core) The `alu_decoder` maps `funct3` to a 3-bit `ALUControl` code that the `alu` module consumes. **This encoding is specific to this design** and does NOT follow any external convention — use exactly these codes: | Operation | ALUControl | |-----------|-----------| | ADD | `3'b000` | | SUB | `3'b001` | | AND | `3'b010` | | OR | `3'b011` | | XOR | `3'b100` | | SLT | `3'b101` | | **SLL** | **`3'b110`** | | **SRL / SRA** | **`3'b111`** | `funct3` → `ALUControl` for R/I-type: `000`→ADD/SUB, `001`→SLL(`110`), `010`→SLT(`101`), `100`→XOR(`100`), `101`→SRL/SRA(`111`), `110`→OR(`011`), `111`→AND(`010`). Note the shifts: **SLL is `110` and SRL/SRA is `111`** in this core — not any other value. The `alu` module decodes these exact codes, so the decoder must match them.",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/alu_spec.md#0",
+    "source": "rag_dataset/module_specs/alu_spec.md",
+    "text": "# Module spec: alu **Ports** - `input [31:0] a, b` — operands - `input [3:0] op` — 0:ADD 1:SUB 2:AND 3:OR 4:XOR 5:SLL 6:SRL 7:SLT - `output [31:0] result` - `output zero` — high when `result == 0` **Expected behavior:** purely combinational; `result` follows `op` per the RV32I ALU reference. `SLT` (op=7) must be a **signed** less-than comparison. **Golden check:** `a=-1, b=1, op=7` must give `result=1` (since -1 < 1 signed).",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/controller_pcsrc.md#0",
+    "source": "rag_dataset/module_specs/controller_pcsrc.md",
+    "text": "# Project-specific controller PCSrc / branch logic (THIS core) `controller` instantiates `main_decoder` and `alu_decoder`, then computes `PCSrc` (take-branch/jump) from the `Branch[2:0]` code, `Zero` (ALU result == 0), `CmpResult` (signed/unsigned less-than from the ALU), and `Jump`: ```verilog case (Branch) 3'b100: PCSrc = Zero | Jump; // beq : taken when equal 3'b101: PCSrc = ~Zero | Jump; // bne : taken when not equal 3'b110: PCSrc = CmpResult | Jump; // blt : taken when a < b 3'b111: PCSrc = ~CmpResult | Zero | Jump; // bge : taken when a >= b 3'b001: PCSrc = CmpResult | Jump; // bltu 3'b011: PCSrc = ~CmpResult | Jump; // bgeu default: PCSrc = Jump; // jal, jalr, non-branch endcase ``` Notes specific to this core: - `bge` uses `~CmpResult | Zero` (greater-OR-equal must also fire on equality). - The `Branch` codes are the project-specific values from `main_decoder` (beq=100 …), not any external convention. - Non-branch instructions fall through to `default`, so `PCSrc = Jump`. Common bug: mixing up `Zero`/`~Zero` (beq vs bne) or dropping the `| Zero` term in `bge`.",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/datapath_integration.md#0",
+    "source": "rag_dataset/module_specs/datapath_integration.md",
+    "text": "# Single-cycle RV32I datapath integration (this core) How the top-level datapath (`riscv_single`) wires the components. Common integration bugs live here (mux selects swapped, wrong operand routed). ## ALU operand selects - `ALUSrcAD`: 0 => rs1 (`rf_rd1`); 1 => PC. Used as ALU A input. `alu_a = ALUSrcAD ? pc : rf_rd1;` - `ALUSrcBD`: 0 => rs2 (`rf_rd2`); 1 => **immediate** (`imm`). Used as ALU B input. `alu_b = ALUSrcBD ? imm : rf_rd2;` // when ALUSrcBD=1 the immediate MUST be selected Bug symptom if swapped: I-type ALU / loads / stores use rs2 instead of the immediate, so `addi`/`lw`/`sw` compute wrong values (e.g. `addi x1,x0,5` leaves x1=0). ## Writeback / result select - `ResultSrcD`: 000 => ALU/IEU result; 001 => load data (`dmem_rdata`). - `ALUResultSrcD`: 1 selects the alternate result — immediate for LUI, `pc+4` for JAL/JALR. - `rf_we = RegWriteD & ~IllegalInstrD;` x0 writes are ignored inside the regfile. ## PC / branch - `pc_plus4 = pc + 4`; taken branch or jump redirects: `pc_next = pc_sel ? target : pc_plus4`. - `pc_sel = (BranchD & take_branch) | JumpD;`",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/datapath_integration.md#1",
+    "source": "rag_dataset/module_specs/datapath_integration.md",
+    "text": "## PC / branch - `pc_plus4 = pc + 4`; taken branch or jump redirects: `pc_next = pc_sel ? target : pc_plus4`. - `pc_sel = (BranchD & take_branch) | JumpD;` target LSB forced to 0. Fix integration bugs by matching each mux select to the control-signal meaning above; do not change the component module interfaces.",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/load_store_encoding.md#0",
+    "source": "rag_dataset/module_specs/load_store_encoding.md",
+    "text": "# Project-specific load/store sizing (THIS core) Two modules handle sub-word memory access. Both are `sel`/`funct3`-indexed with fixed codes. ## store_extend — shapes store data by size (`sel[1:0]`) | sel | store | data out | |-----|-------|----------| | `10` | SW (word) | `y` (all 32 bits) | | `00` | SB (byte) | `{24'b0, y[7:0]}` | | `01` | SH (half) | `{16'b0, y[15:0]}` | | default | — | `y` | Note: **SW is `10`, not `00`** in this core; `00` is byte. ## sgn_zero_extend — extends loaded data by `funct3` | funct3 | load | ext_out | |--------|------|---------| | `000` | lb | sign-extend `read_data_mem[7:0]` → `{{24{bit7}}, [7:0]}` | | `001` | lh | sign-extend `read_data_mem[15:0]` → `{{16{bit15}}, [15:0]}` | | `100` | lbu | zero-extend byte → `{24'b0, [7:0]}` | | `101` | lhu | zero-extend half → `{16'b0, [15:0]}` | | `010` | lw | full word (`read_data_mem`) | Common bug: swapping sign- vs zero-extend (lb vs lbu, lh vs lhu), or using the wrong `funct3` code for a size.",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/main_decoder_encoding.md#0",
+    "source": "rag_dataset/module_specs/main_decoder_encoding.md",
+    "text": "# Project-specific main_decoder control word (THIS core) `main_decoder` drives a packed 16-bit `controls` bus, unpacked in this exact field order: ``` {RegWrite, ImmSrc[2:0], ALUSrc, MemWrite, ResultSrc[1:0], Branch[2:0], ALUOp[1:0], Jump, Jalr, unsign} ``` Per-opcode `controls` values used in this design (from op = instr[6:0]): | Instr | op | controls (16b) | |-------|-----|----------------| | lw | 0000011 | `1_000_1_0_01_000_00_0_0_0` | | sw | 0100011 | `0_001_1_1_00_000_00_0_0_0` | | R-type| 0110011 | `1_xxx_0_0_00_000_10_0_0_0` | | I-ALU | 0010011 | `1_000_1_0_00_000_10_0_0_0` (shift: ImmSrc=101; unsigned: unsign=1) | | jal | 1101111 | `1_011_0_0_10_000_00_1_0_0` | | jalr | 1100111 | `1_000_1_0_10_000_00_1_1_0` | | lui | 0110111 | `1_100_1_0_00_000_00_0_0_0` | | auipc | 0010111 | `1_100_1_0_11_000_00_0_0_0` | **Branch[2:0] codes (project-specific, set for op=1100011 by funct3):** beq=`100`, bne=`101`, blt=`110`, bge=`111`, bltu=`001`, bgeu=`011`. **ImmSrc[2:0]:** I=000, S=001, B=010, J=011, U=100, shift-uimm=101. **ResultSrc[1:0]:** ALU=00, mem=01, PC+4=10, imm/upper=11. Common bug: wrong field order in the unpack, or a wrong per-opcode value (e.g. ALUSrc/ MemWrite swapped). The unpack order above is fixed for this core.",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/memory_addressing.md#0",
+    "source": "rag_dataset/module_specs/memory_addressing.md",
+    "text": "# Project-specific memory addressing (THIS core) ## data_mem — word-addressed data RAM - 64 words of 32 bits (`MEM_SIZE=64`). **Word-addressed:** the byte address is shifted right by 2 and taken mod 64: index = `wr_addr[DATA_WIDTH-1:2] % 64`. - **Read is combinational**, **write is synchronous on `posedge clk`** (gated by `wr_en`). - Read and write use the SAME address port (`wr_addr`) in this design. ```verilog assign rd_data_mem = data_ram[wr_addr[31:2] % 64]; always @(posedge clk) if (wr_en) data_ram[wr_addr[31:2] % 64] <= wr_data; ``` ## instr_mem — word-addressed instruction ROM - 512 words; combinational read: `instr = instr_ram[instr_addr[31:2]]`. - Loaded from a hex file via `$readmemh` in an `initial` block. Common bug: indexing by the raw byte address instead of `addr[31:2]` (off by 4×), or using a blocking assignment / wrong clock edge for the write.",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/module_interfaces.md#0",
+    "source": "rag_dataset/module_specs/module_interfaces.md",
+    "text": "# Module interfaces the datapath must instantiate (THIS core) The `datapath` instantiates seven modules and must connect to their EXACT ports. Wrong port names are the most common integration compile error (`port '...' is not a port of ...`). ## New Assignment 2 unit modules (interfaces fixed by their specs - same for everyone) ```systemverilog module pc_unit ( input logic clk, input logic reset, input logic PCSrc, input logic [31:0] PCTarget, output logic [31:0] PC, output logic [31:0] PCPlus4 ); module branch_unit ( input logic [31:0] A, input logic [31:0] B, input logic [2:0] Funct3, input logic Branch, input logic Jump, output logic BranchCond, output logic PCSrc ); module memory_access ( input logic [1:0] MemRW, input logic [2:0] Funct3, input logic [1:0] AddrLSB, input logic [31:0] StoreData, input logic [31:0] ReadData, output logic [31:0] WriteData, output logic [3:0] ByteEnable, output logic [31:0] LoadData ); ``` ## Assignment 1 modules (alu, regfile, extend, controller) These come from your own Assignment 1, so wire to the ports YOUR modules declare - do not rename them. The controller in this core exposes control",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/module_interfaces.md#1",
+    "source": "rag_dataset/module_specs/module_interfaces.md",
+    "text": "regfile, extend, controller) These come from your own Assignment 1, so wire to the ports YOUR modules declare - do not rename them. The controller in this core exposes control signals such as `RegWriteD`, `ImmSrcD`, `ALUSrcAD`, `ALUSrcBD`, `MemRWD`, `ResultSrcD`, `BranchD`, `JumpD`, `ALUResultSrcD`, `ALUSelectD`, `SubArithD`, `IllegalInstrD`, driven from `InstrD`; the ALU takes operands `A`/`B` with `ALUSelect`/`SubArith` and returns `ALUResult`/`Sum`; `extend` takes `InstrD[31:7]` + `ImmSrcD` and returns `ImmExtD`; the register file uses `a1`/`a2`/`a3`/`wd3`/`we3` with reads `rd1`/`rd2`. Common bug: instantiating a module with guessed port names (e.g. `op`/`funct3` on the controller) instead of the names the module actually declares. Read each module header and match it exactly.",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/module_specs/mux_select_encoding.md#0",
+    "source": "rag_dataset/module_specs/mux_select_encoding.md",
+    "text": "# Project-specific mux select encodings (THIS core) All muxes are `sel`-indexed, `d0` first: - **mux2** (`sel` 1 bit): `y = sel ? d1 : d0`. - **mux3** (`sel[1:0]`): `y = sel[1] ? d2 : (sel[0] ? d1 : d0)` → sel 00=d0, 01=d1, 10=d2. (sel=11 also selects d2 in this implementation.) - **mux4** (`sel[1:0]`): 00=d0, 01=d1, 10=d2, 11=d3. Common bug: reversing the ternary (selecting `d0` when `sel` is high), or swapping the `sel[1]`/`sel[0]` priority so the wrong input is chosen for sel=10 vs 01.",
+    "kind": "module_specs"
+  },
+  {
+    "chunk_id": "rag_dataset/riscv_spec/immediate_encoding.md#0",
+    "source": "rag_dataset/riscv_spec/immediate_encoding.md",
+    "text": "# RV32I immediate encodings (exact bit layout) The immediate bits are scrambled differently for each instruction format. `instr` is the 32-bit instruction; the sign bit is always `instr[31]`. Exact layouts: - **I-type** (`addi`, `lw`, `jalr`): `imm = {sext(instr[31]), instr[31:20]}` - **S-type** (stores): `imm = {sext(instr[31]), instr[31:25], instr[11:7]}` - **B-type** (branches, `beq`/`bne`/...): the tricky one — `imm = {sext(instr[31]), instr[7], instr[30:25], instr[11:8], 1'b0}` Note the order: **bit 12 = instr[31], bit 11 = instr[7], bits 10:5 = instr[30:25], bits 4:1 = instr[11:8], bit 0 = 0.** `instr[7]` supplies bit 11 (NOT the low bits), and the least-significant bit is always 0 (2-byte aligned). - **J-type** (`jal`): `imm = {sext(instr[31]), instr[19:12], instr[20], instr[30:21], 1'b0}` - **U-type** (`lui`, `auipc`): `imm = {instr[31:12], 12'b0}` Common mistake: for B-type, placing `instr[7]` at the low end or keeping the fields in \"natural\" order. The correct Verilog is: ```verilog // B-type immext = {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0}; ```",
+    "kind": "riscv_spec"
+  },
+  {
+    "chunk_id": "rag_dataset/riscv_spec/rv32i_alu_ops.md#0",
+    "source": "rag_dataset/riscv_spec/rv32i_alu_ops.md",
+    "text": "# RV32I ALU operations (reference) Expected behavior of the core RV32I ALU operations (32-bit): | Op | Meaning | Notes | |------|------------------------|-------| | ADD | a + b | wraps mod 2^32 | | SUB | a - b | wraps mod 2^32 | | AND | a & b | bitwise | | OR | a \\| b | bitwise | | XOR | a ^ b | bitwise | | SLL | a << b[4:0] | shift amount is low 5 bits only | | SRL | a >> b[4:0] | logical (zero-fill) right shift | | SRA | a >>> b[4:0] | arithmetic (sign-extend) right shift; operand must be signed | | SLT | (signed)a < (signed)b | result is 1 or 0; **signed** compare | | SLTU | (unsigned)a < b | result is 1 or 0; **unsigned** compare | Common pitfalls: using an unsigned compare for SLT; using the full `b` as a shift amount instead of `b[4:0]`; using logical `>>` where arithmetic `>>>` is required.",
+    "kind": "riscv_spec"
+  },
+  {
+    "chunk_id": "rag_dataset/sim_messages/iverilog_common.md#0",
+    "source": "rag_dataset/sim_messages/iverilog_common.md",
+    "text": "# Common Icarus Verilog messages and what they mean - **`error: Unable to bind wire/reg/memory 'xyz'`** — a signal is used but never declared (typo, or missing port). Declare it, or fix the name. - **`error: Unknown module type: foo`** — you instantiated module `foo` but its source file was not passed to `iverilog`. Add the file to the compile command. - **`warning: implicit definition of wire 'sig'`** — you used `sig` without declaring it; Verilog auto-created a 1-bit wire. Usually a bug if you expected a bus. - **`error: reg 'x' is not a valid l-value ...`** — assigning to `x` in the wrong context (e.g. assigning a `wire` inside `always`, or a `reg` with `assign`). - **Simulation hangs / times out** — usually a missing `$finish`, or a combinational loop, or a clock that never toggles in the testbench.",
+    "kind": "sim_messages"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/bit_width_mismatch.md#0",
+    "source": "rag_dataset/verilog_bugs/bit_width_mismatch.md",
+    "text": "# Bug: bit-width mismatch / truncation **Symptom:** high bits are lost, a value wraps unexpectedly, or a wide result is silently truncated into a narrower net. Simulation shows a value that looks \"chopped.\" **Cause:** an assignment or port connection where the two sides have different widths, or a literal without an explicit width. Verilog silently truncates/zero-extends to the LHS width. **Fix:** make widths match explicitly. Size literals (`32'd1`, not `1` when width matters), declare intermediate nets at full width, and check port widths at instantiation. ```verilog wire [31:0] sum = a + b; // ok: full width wire [7:0] t = a + b; // BUG if a,b are 32-bit: top 24 bits dropped ```",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/blocking_nonblocking.md#0",
+    "source": "rag_dataset/verilog_bugs/blocking_nonblocking.md",
+    "text": "# Bug: blocking vs. non-blocking assignment misuse **Symptom:** Registers update in the wrong order, or a value is \"one cycle late\", or simulation and synthesis disagree. **Rule of thumb:** - Use **non-blocking** (`<=`) for sequential logic inside `always @(posedge clk)`. - Use **blocking** (`=`) for combinational logic inside `always @(*)`. ```verilog always @(posedge clk) q <= d; // sequential: non-blocking always @(*) y = a & b; // combinational: blocking ``` Mixing them (e.g. blocking assignments to a flip-flop) is a common source of race-like mismatches between simulation results.",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/case_default_fallthrough.md#0",
+    "source": "rag_dataset/verilog_bugs/case_default_fallthrough.md",
+    "text": "# Bug: missing case default / unhandled selector value **Symptom:** an output becomes `x` (or holds a stale value) for a selector value the `case` doesn't list; a testbench check on that value fails. **Cause:** a `case` with no `default`, so unlisted values leave the output unassigned (latch) or undefined. Common in decoders and muxes. **Fix:** always provide a `default`, and prefer a leading default assignment before the `case` for combinational blocks. ```verilog always @(*) begin out = 0; // safe default case (sel) 2'b00: out = a; 2'b01: out = b; default: out = 0; endcase end ```",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/operator_precedence.md#0",
+    "source": "rag_dataset/verilog_bugs/operator_precedence.md",
+    "text": "# Bug: operator precedence / logical-vs-bitwise confusion **Symptom:** a condition or result is subtly wrong — e.g. a branch taken at the wrong time, or a combined signal that's off. **Cause:** - Bitwise (`&`, `|`, `^`) vs logical (`&&`, `||`, `!`) operators used interchangeably. - Missing parentheses: `a & b == c` parses as `a & (b == c)` because `==` binds tighter than `&`. - Reduction operators (`&a`, `|a`, `^a`) confused with binary ones. **Fix:** parenthesize explicitly and use the intended operator class. ```verilog if ((a & mask) == expected) ... // not: if (a & mask == expected) assign taken = zero || jump; // logical OR of 1-bit control signals ```",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/register_x0_hardwired.md#0",
+    "source": "rag_dataset/verilog_bugs/register_x0_hardwired.md",
+    "text": "# Bug: register x0 not hardwired to zero (RISC-V register file) **Symptom:** reads of register x0 return whatever was last written, instead of 0. In RISC-V, register x0 is architecturally **hardwired to zero** — writes are ignored and reads always return 0. **Cause:** the register file returns `reg_array[addr]` directly for the read ports, without special-casing address 0. **Fix:** force the read data to 0 when the read address is 0: ```verilog assign rd_data1 = (rd_addr1 != 0) ? reg_file_arr[rd_addr1] : 0; assign rd_data2 = (rd_addr2 != 0) ? reg_file_arr[rd_addr2] : 0; ```",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/reset_polarity.md#0",
+    "source": "rag_dataset/verilog_bugs/reset_polarity.md",
+    "text": "# Bug: wrong reset polarity or missing reset in a flip-flop **Symptom:** registers never clear (or clear when they shouldn't); the design starts in `x` or a wrong state and never recovers. **Cause:** reset tested with the wrong polarity (`if (!rst)` when reset is active-high), reset left out of the sensitivity list for an async reset, or the reset branch assigning the wrong value. **Fix:** match the intended polarity and, for async reset, include it in the sensitivity list. For this core, `reset_ff` uses **active-high async reset**: ```verilog always @(posedge clk or posedge rst) if (rst) q <= 0; // active-high: clear when rst==1 else q <= d; ```",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/sensitivity_list.md#0",
+    "source": "rag_dataset/verilog_bugs/sensitivity_list.md",
+    "text": "# Bug: incomplete sensitivity list / accidental latch **Symptom:** combinational output is stale (doesn't update when an input changes), or synthesis infers an unintended latch. Simulation and synthesis may disagree. **Cause:** an `always` block meant to be combinational lists only some inputs (`always @(a)` instead of `always @(*)`), or a `case`/`if` that doesn't assign the output on every path (so it \"remembers\" its old value). **Fix:** use `always @(*)` for combinational logic, and assign the output on every branch (add a `default`, or a leading default assignment). ```verilog always @(*) begin y = 0; // default avoids a latch case (sel) 2'b01: y = a; 2'b10: y = b; endcase end ```",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/shift_amount.md#0",
+    "source": "rag_dataset/verilog_bugs/shift_amount.md",
+    "text": "# Bug: shift by full operand instead of low 5 bits; logical vs arithmetic shift **Symptom:** shift results are wrong for large shift amounts, or right shifts of negative numbers don't sign-extend (SRA behaves like SRL). **Cause (RV32I):** - The shift amount must be only the **low 5 bits** of the operand: `b[4:0]`. Using the full 32-bit `b` gives huge/zeroed results. - **SRL** (logical) zero-fills; **SRA** (arithmetic) sign-extends. SRA requires a signed operand or `>>>` on `$signed(...)`. **Fix:** ```verilog alu_out = a << b[4:0]; // SLL alu_out = a >> b[4:0]; // SRL (logical) alu_out = $signed(a) >>> b[4:0]; // SRA (arithmetic) ```",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/signed_comparison.md#0",
+    "source": "rag_dataset/verilog_bugs/signed_comparison.md",
+    "text": "# Bug: unsigned comparison used where signed is required (e.g. RISC-V SLT) **Symptom:** `SLT` / signed-less-than gives wrong result for negative operands (e.g. -1 < 1 returns 0 instead of 1). **Cause:** In Verilog, `<` on plain `reg`/`wire [31:0]` operands is *unsigned*. A negative two's-complement value has a large unsigned magnitude, so the compare is wrong. **Fix:** Compare as signed. Either declare signed nets, or cast: ```verilog result = ($signed(a) < $signed(b)) ? 32'd1 : 32'd0; // SLT result = (a < b) ? 32'd1 : 32'd0; // SLTU (unsigned) stays as-is ```",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/undeclared_and_port_mismatch.md#0",
+    "source": "rag_dataset/verilog_bugs/undeclared_and_port_mismatch.md",
+    "text": "# Bug: undeclared signal / port connection mismatch **Symptom (compile):** - `error: Unable to bind wire/reg/memory 'x'` — a signal is used but not declared. - `warning: implicit definition of wire 'x'` — Verilog auto-made a 1-bit wire from a typo. - `port 'p' is not a port of dut` — testbench/instantiation names a port the module lacks. **Cause:** a typo in a signal name, a missing declaration, or an instantiation whose port names/widths don't match the module definition. **Fix:** declare every signal; make instance port names match the module exactly. Prefer named port connections `.a(a)` over positional. For this course, module ports must match `RISCV_MODULE_CONTRACT.md` exactly, so the golden testbenches can bind.",
+    "kind": "verilog_bugs"
+  },
+  {
+    "chunk_id": "rag_dataset/verilog_bugs/wrong_bitwise_operator.md#0",
+    "source": "rag_dataset/verilog_bugs/wrong_bitwise_operator.md",
+    "text": "# Bug: wrong bitwise operator in the ALU (e.g. XOR coded as AND) **Symptom:** one ALU operation returns the wrong result while the others are fine — for example the XOR case returns `a & b` instead of `a ^ b`, so `0xAA ^ 0x55` gives `0x00` instead of `0xFF`. **Cause:** the wrong Verilog bitwise operator was used for that opcode: `&` (AND), `|` (OR), `^` (XOR), `~` (NOT) are easy to mix up. **Fix:** use the correct operator for the operation. For XOR: ```verilog alu_out <= a ^ b; // XOR (not a & b) ``` RV32I bitwise ops: AND = `a & b`, OR = `a | b`, XOR = `a ^ b`.",
+    "kind": "verilog_bugs"
+  }
+]

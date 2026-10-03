@@ -1,0 +1,24 @@
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Rebuildable simulator output and editor files
+build/
+*.vcd
+*.fst
+.DS_Store
+*~
+.idea/
+.vscode/
+
+# Duplicate submission archives; evidence logs and RTL snapshots are tracked
+*.zip

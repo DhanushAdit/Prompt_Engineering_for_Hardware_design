@@ -1,0 +1,16 @@
+{
+  "module": "datapath",
+  "arm": "baseline",
+  "provider": "tamu",
+  "model": "gpt-5.4",
+  "seed_rtl": null,
+  "iterations": [
+    {
+      "iteration": 0,
+      "status": "compile_error",
+      "returncode": 26
+    }
+  ],
+  "retrievals": [],
+  "final_status": "compile_error"
+}

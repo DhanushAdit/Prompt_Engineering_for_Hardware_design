@@ -1,0 +1,2 @@
+# Python's CSV writer emits CRLF; preserve archived metrics as generated.
+*.csv whitespace=cr-at-eol
