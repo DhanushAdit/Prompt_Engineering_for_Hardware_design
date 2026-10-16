@@ -1,0 +1,6 @@
+# Keep local credentials and machine-generated caches out of the submission.
+.env
+__pycache__/
+*.pyc
+build/
+.DS_Store

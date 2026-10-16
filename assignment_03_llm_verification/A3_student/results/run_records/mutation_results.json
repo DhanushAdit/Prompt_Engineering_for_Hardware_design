@@ -1,0 +1,1264 @@
+{
+  "families_detected": [
+    "branch_jump_target",
+    "flush_redirect",
+    "forwarding",
+    "load_use",
+    "x0_integrity"
+  ],
+  "families_missed": [],
+  "mutations": [
+    {
+      "description": "Give Writeback priority over a fresher matching Memory-stage producer for source A.",
+      "detected": true,
+      "detecting_tests": [
+        "seed_forwarding_priority",
+        "seed_forwarding_both_operands",
+        "seed_x0_integrity",
+        "seed_load_use_rs1",
+        "seed_load_use_rs2",
+        "seed_taken_branch_flush",
+        "seed_jal_flush",
+        "seed_jalr_odd_target",
+        "forwarding_rs1_mem_and_wb",
+        "forwarding_rs2_mem_and_wb",
+        "forwarding_mem_beats_wb",
+        "forwarding_both_operands_same_cycle",
+        "x0_integrity_write_then_consume",
+        "x0_integrity_compare_paths",
+        "load_use_rs1_and_rs2_consumers",
+        "load_use_rs2_subtract",
+        "flush_redirect_taken_branch",
+        "flush_redirect_untaken_then_jal",
+        "flush_redirect_jalr_link_delta",
+        "branch_jump_target_backward_loop",
+        "branch_jump_target_jal_forward_backward",
+        "branch_jump_target_jalr_odd_target"
+      ],
+      "family": "forwarding",
+      "mutation_status": "valid",
+      "name": "forwarding_priority_reversed",
+      "suite_result": {
+        "compile": {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "core_tb",
+            "-o",
+            "/tmp/a3-agent-bwi7183w/core.vvp",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/datapath_pipelined.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/regfile.sv"
+          ],
+          "datapath": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/datapath_pipelined.sv",
+          "output": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:14: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/alu.sv:21: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/alu.sv:49: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/alu.sv:51: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:23: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:27: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:31: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:35: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:40: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:43: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:47: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:73: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:83: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:84: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:85: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:86: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:90: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:91: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv:92: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv:9: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/alu.sv:15: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n",
+          "returncode": 0,
+          "status": "pass",
+          "submodules": [
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/forwarding_priority_reversed/core/submodules/regfile.sv"
+          ]
+        },
+        "failed": 22,
+        "passed": 0,
+        "tests": [
+          {
+            "expected_signature": "0x0000000c",
+            "name": "seed_forwarding_priority",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/seed_forwarding_priority.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "forwarding",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x0000002d",
+            "name": "seed_forwarding_both_operands",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/seed_forwarding_both_operands.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "forwarding",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_x0_integrity",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/seed_x0_integrity.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "x0_integrity",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x0000002b",
+            "name": "seed_load_use_rs1",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/seed_load_use_rs1.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005da8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "load_use",
+            "verdict": "FAIL timeout PC=00005da8"
+          },
+          {
+            "expected_signature": "0x0000003c",
+            "name": "seed_load_use_rs2",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/seed_load_use_rs2.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005da8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "load_use",
+            "verdict": "FAIL timeout PC=00005da8"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_taken_branch_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/seed_taken_branch_flush.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005da8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL timeout PC=00005da8"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_jal_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/seed_jal_flush.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005da8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL timeout PC=00005da8"
+          },
+          {
+            "expected_signature": "0x00000010",
+            "name": "seed_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/seed_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00000d78\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "branch_jump_target",
+            "verdict": "FAIL timeout PC=00000d78"
+          },
+          {
+            "expected_signature": "0x00000012",
+            "name": "forwarding_rs1_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/forwarding_rs1_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "forwarding",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x0000000e",
+            "name": "forwarding_rs2_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/forwarding_rs2_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "forwarding",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x00000016",
+            "name": "forwarding_mem_beats_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/forwarding_mem_beats_wb.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "forwarding",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "forwarding_both_operands_same_cycle",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/forwarding_both_operands_same_cycle.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "forwarding",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x00000007",
+            "name": "x0_integrity_write_then_consume",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/x0_integrity_write_then_consume.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "x0_integrity",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x00000002",
+            "name": "x0_integrity_compare_paths",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/x0_integrity_compare_paths.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "x0_integrity",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x00000037",
+            "name": "load_use_rs1_and_rs2_consumers",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/load_use_rs1_and_rs2_consumers.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005d90\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "load_use",
+            "verdict": "FAIL timeout PC=00005d90"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "load_use_rs2_subtract",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/load_use_rs2_subtract.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005da8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "load_use",
+            "verdict": "FAIL timeout PC=00005da8"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_taken_branch",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/flush_redirect_taken_branch.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_untaken_then_jal",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/flush_redirect_untaken_then_jal.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005dc0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL timeout PC=00005dc0"
+          },
+          {
+            "expected_signature": "0x00000011",
+            "name": "flush_redirect_jalr_link_delta",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/flush_redirect_jalr_link_delta.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005da8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL timeout PC=00005da8"
+          },
+          {
+            "expected_signature": "0x0000001e",
+            "name": "branch_jump_target_backward_loop",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/branch_jump_target_backward_loop.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005cd0\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "branch_jump_target",
+            "verdict": "FAIL timeout PC=00005cd0"
+          },
+          {
+            "expected_signature": "0x00000015",
+            "name": "branch_jump_target_jal_forward_backward",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/branch_jump_target_jal_forward_backward.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005d48\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "branch_jump_target",
+            "verdict": "FAIL timeout PC=00005d48"
+          },
+          {
+            "expected_signature": "0x0000000c",
+            "name": "branch_jump_target_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-bwi7183w/branch_jump_target_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nFAIL timeout PC=00005d90\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:55: $finish called at 60025000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "branch_jump_target",
+            "verdict": "FAIL timeout PC=00005d90"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Allow a Memory-stage instruction addressed to x0 to forward a nonzero internal result.",
+      "detected": true,
+      "detecting_tests": [
+        "seed_x0_integrity",
+        "x0_integrity_write_then_consume",
+        "x0_integrity_compare_paths"
+      ],
+      "family": "x0_integrity",
+      "mutation_status": "valid",
+      "name": "x0_forwarding_guard_removed",
+      "suite_result": {
+        "compile": {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "core_tb",
+            "-o",
+            "/tmp/a3-agent-ukr5cqc9/core.vvp",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/datapath_pipelined.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/regfile.sv"
+          ],
+          "datapath": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/datapath_pipelined.sv",
+          "output": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:14: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/alu.sv:21: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/alu.sv:49: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/alu.sv:51: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:23: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:27: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:31: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:35: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:40: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:43: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:47: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:73: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:83: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:84: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:85: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:86: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:90: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:91: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv:92: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv:9: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/alu.sv:15: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n",
+          "returncode": 0,
+          "status": "pass",
+          "submodules": [
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/x0_forwarding_guard_removed/core/submodules/regfile.sv"
+          ]
+        },
+        "failed": 3,
+        "passed": 19,
+        "tests": [
+          {
+            "expected_signature": "0x0000000c",
+            "name": "seed_forwarding_priority",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/seed_forwarding_priority.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000c cycles=8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 100000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000c cycles=8"
+          },
+          {
+            "expected_signature": "0x0000002d",
+            "name": "seed_forwarding_both_operands",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/seed_forwarding_both_operands.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000002d cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000002d cycles=10"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_x0_integrity",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/seed_x0_integrity.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=0000007c expected=00000001\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 90000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "x0_integrity",
+            "verdict": "FAIL signature got=0000007c expected=00000001"
+          },
+          {
+            "expected_signature": "0x0000002b",
+            "name": "seed_load_use_rs1",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/seed_load_use_rs1.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000002b cycles=11\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 130000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000002b cycles=11"
+          },
+          {
+            "expected_signature": "0x0000003c",
+            "name": "seed_load_use_rs2",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/seed_load_use_rs2.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000003c cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000003c cycles=12"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_taken_branch_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/seed_taken_branch_flush.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000001 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_jal_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/seed_jal_flush.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000001 cycles=9"
+          },
+          {
+            "expected_signature": "0x00000010",
+            "name": "seed_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/seed_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000010 cycles=13\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 150000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=00000010 cycles=13"
+          },
+          {
+            "expected_signature": "0x00000012",
+            "name": "forwarding_rs1_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/forwarding_rs1_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000012 cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=00000012 cycles=9"
+          },
+          {
+            "expected_signature": "0x0000000e",
+            "name": "forwarding_rs2_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/forwarding_rs2_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000e cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000e cycles=9"
+          },
+          {
+            "expected_signature": "0x00000016",
+            "name": "forwarding_mem_beats_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/forwarding_mem_beats_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000016 cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=00000016 cycles=12"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "forwarding_both_operands_same_cycle",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/forwarding_both_operands_same_cycle.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000a cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000a cycles=10"
+          },
+          {
+            "expected_signature": "0x00000007",
+            "name": "x0_integrity_write_then_consume",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/x0_integrity_write_then_consume.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=0000003e expected=00000007\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "x0_integrity",
+            "verdict": "FAIL signature got=0000003e expected=00000007"
+          },
+          {
+            "expected_signature": "0x00000002",
+            "name": "x0_integrity_compare_paths",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/x0_integrity_compare_paths.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000000 expected=00000002\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 130000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "x0_integrity",
+            "verdict": "FAIL signature got=00000000 expected=00000002"
+          },
+          {
+            "expected_signature": "0x00000037",
+            "name": "load_use_rs1_and_rs2_consumers",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/load_use_rs1_and_rs2_consumers.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000037 cycles=16\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 180000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=00000037 cycles=16"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "load_use_rs2_subtract",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/load_use_rs2_subtract.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000a cycles=13\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 150000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000000a cycles=13"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_taken_branch",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/flush_redirect_taken_branch.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000005 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000005 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_untaken_then_jal",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/flush_redirect_untaken_then_jal.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000005 cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000005 cycles=12"
+          },
+          {
+            "expected_signature": "0x00000011",
+            "name": "flush_redirect_jalr_link_delta",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/flush_redirect_jalr_link_delta.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000011 cycles=14\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000011 cycles=14"
+          },
+          {
+            "expected_signature": "0x0000001e",
+            "name": "branch_jump_target_backward_loop",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/branch_jump_target_backward_loop.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000001e cycles=21\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 230000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=0000001e cycles=21"
+          },
+          {
+            "expected_signature": "0x00000015",
+            "name": "branch_jump_target_jal_forward_backward",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/branch_jump_target_jal_forward_backward.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000015 cycles=18\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 200000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=00000015 cycles=18"
+          },
+          {
+            "expected_signature": "0x0000000c",
+            "name": "branch_jump_target_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-ukr5cqc9/branch_jump_target_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000c cycles=14\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=0000000c cycles=14"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Disable load-use hazard detection.",
+      "detected": true,
+      "detecting_tests": [
+        "seed_load_use_rs1",
+        "seed_load_use_rs2",
+        "load_use_rs1_and_rs2_consumers",
+        "load_use_rs2_subtract"
+      ],
+      "family": "load_use",
+      "mutation_status": "valid",
+      "name": "load_use_stall_disabled",
+      "suite_result": {
+        "compile": {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "core_tb",
+            "-o",
+            "/tmp/a3-agent-h9pt5nhh/core.vvp",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/datapath_pipelined.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/regfile.sv"
+          ],
+          "datapath": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/datapath_pipelined.sv",
+          "output": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:14: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/alu.sv:21: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/alu.sv:49: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/alu.sv:51: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:23: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:27: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:31: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:35: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:40: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:43: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:47: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:73: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:83: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:84: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:85: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:86: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:90: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:91: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv:92: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv:9: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/alu.sv:15: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n",
+          "returncode": 0,
+          "status": "pass",
+          "submodules": [
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/load_use_stall_disabled/core/submodules/regfile.sv"
+          ]
+        },
+        "failed": 4,
+        "passed": 18,
+        "tests": [
+          {
+            "expected_signature": "0x0000000c",
+            "name": "seed_forwarding_priority",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/seed_forwarding_priority.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000c cycles=8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 100000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000c cycles=8"
+          },
+          {
+            "expected_signature": "0x0000002d",
+            "name": "seed_forwarding_both_operands",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/seed_forwarding_both_operands.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000002d cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000002d cycles=10"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_x0_integrity",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/seed_x0_integrity.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=7\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 90000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000001 cycles=7"
+          },
+          {
+            "expected_signature": "0x0000002b",
+            "name": "seed_load_use_rs1",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/seed_load_use_rs1.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000041 expected=0000002b\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "load_use",
+            "verdict": "FAIL signature got=00000041 expected=0000002b"
+          },
+          {
+            "expected_signature": "0x0000003c",
+            "name": "seed_load_use_rs2",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/seed_load_use_rs2.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000072 expected=0000003c\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 130000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "load_use",
+            "verdict": "FAIL signature got=00000072 expected=0000003c"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_taken_branch_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/seed_taken_branch_flush.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000001 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_jal_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/seed_jal_flush.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000001 cycles=9"
+          },
+          {
+            "expected_signature": "0x00000010",
+            "name": "seed_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/seed_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000010 cycles=13\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 150000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=00000010 cycles=13"
+          },
+          {
+            "expected_signature": "0x00000012",
+            "name": "forwarding_rs1_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/forwarding_rs1_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000012 cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=00000012 cycles=9"
+          },
+          {
+            "expected_signature": "0x0000000e",
+            "name": "forwarding_rs2_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/forwarding_rs2_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000e cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000e cycles=9"
+          },
+          {
+            "expected_signature": "0x00000016",
+            "name": "forwarding_mem_beats_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/forwarding_mem_beats_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000016 cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=00000016 cycles=12"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "forwarding_both_operands_same_cycle",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/forwarding_both_operands_same_cycle.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000a cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000a cycles=10"
+          },
+          {
+            "expected_signature": "0x00000007",
+            "name": "x0_integrity_write_then_consume",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/x0_integrity_write_then_consume.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000007 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000007 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000002",
+            "name": "x0_integrity_compare_paths",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/x0_integrity_compare_paths.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000002 cycles=11\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 130000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000002 cycles=11"
+          },
+          {
+            "expected_signature": "0x00000037",
+            "name": "load_use_rs1_and_rs2_consumers",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/load_use_rs1_and_rs2_consumers.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000085 expected=00000037\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "load_use",
+            "verdict": "FAIL signature got=00000085 expected=00000037"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "load_use_rs2_subtract",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/load_use_rs2_subtract.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=ffffffbd expected=0000000a\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "load_use",
+            "verdict": "FAIL signature got=ffffffbd expected=0000000a"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_taken_branch",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/flush_redirect_taken_branch.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000005 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000005 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_untaken_then_jal",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/flush_redirect_untaken_then_jal.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000005 cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000005 cycles=12"
+          },
+          {
+            "expected_signature": "0x00000011",
+            "name": "flush_redirect_jalr_link_delta",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/flush_redirect_jalr_link_delta.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000011 cycles=14\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000011 cycles=14"
+          },
+          {
+            "expected_signature": "0x0000001e",
+            "name": "branch_jump_target_backward_loop",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/branch_jump_target_backward_loop.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000001e cycles=21\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 230000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=0000001e cycles=21"
+          },
+          {
+            "expected_signature": "0x00000015",
+            "name": "branch_jump_target_jal_forward_backward",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/branch_jump_target_jal_forward_backward.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000015 cycles=18\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 200000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=00000015 cycles=18"
+          },
+          {
+            "expected_signature": "0x0000000c",
+            "name": "branch_jump_target_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-h9pt5nhh/branch_jump_target_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000c cycles=14\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=0000000c cycles=14"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Do not flush the Decode instruction entering Execute after a redirect.",
+      "detected": true,
+      "detecting_tests": [
+        "seed_taken_branch_flush",
+        "seed_jal_flush",
+        "flush_redirect_taken_branch",
+        "flush_redirect_untaken_then_jal",
+        "flush_redirect_jalr_link_delta",
+        "branch_jump_target_jal_forward_backward",
+        "branch_jump_target_jalr_odd_target"
+      ],
+      "family": "flush_redirect",
+      "mutation_status": "valid",
+      "name": "redirect_execute_flush_disabled",
+      "suite_result": {
+        "compile": {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "core_tb",
+            "-o",
+            "/tmp/a3-agent-otkuixm1/core.vvp",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/datapath_pipelined.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/regfile.sv"
+          ],
+          "datapath": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/datapath_pipelined.sv",
+          "output": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:14: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/alu.sv:21: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/alu.sv:49: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/alu.sv:51: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:23: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:27: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:31: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:35: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:40: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:43: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:47: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:73: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:83: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:84: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:85: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:86: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:90: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:91: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv:92: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv:9: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/alu.sv:15: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n",
+          "returncode": 0,
+          "status": "pass",
+          "submodules": [
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/redirect_execute_flush_disabled/core/submodules/regfile.sv"
+          ]
+        },
+        "failed": 7,
+        "passed": 15,
+        "tests": [
+          {
+            "expected_signature": "0x0000000c",
+            "name": "seed_forwarding_priority",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/seed_forwarding_priority.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000c cycles=8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 100000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000c cycles=8"
+          },
+          {
+            "expected_signature": "0x0000002d",
+            "name": "seed_forwarding_both_operands",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/seed_forwarding_both_operands.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000002d cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000002d cycles=10"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_x0_integrity",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/seed_x0_integrity.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=7\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 90000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000001 cycles=7"
+          },
+          {
+            "expected_signature": "0x0000002b",
+            "name": "seed_load_use_rs1",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/seed_load_use_rs1.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000002b cycles=11\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 130000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000002b cycles=11"
+          },
+          {
+            "expected_signature": "0x0000003c",
+            "name": "seed_load_use_rs2",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/seed_load_use_rs2.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000003c cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000003c cycles=12"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_taken_branch_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/seed_taken_branch_flush.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000064 expected=00000001\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL signature got=00000064 expected=00000001"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_jal_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/seed_jal_flush.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000064 expected=00000001\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL signature got=00000064 expected=00000001"
+          },
+          {
+            "expected_signature": "0x00000010",
+            "name": "seed_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/seed_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000010 cycles=13\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 150000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=00000010 cycles=13"
+          },
+          {
+            "expected_signature": "0x00000012",
+            "name": "forwarding_rs1_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/forwarding_rs1_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000012 cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=00000012 cycles=9"
+          },
+          {
+            "expected_signature": "0x0000000e",
+            "name": "forwarding_rs2_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/forwarding_rs2_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000e cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000e cycles=9"
+          },
+          {
+            "expected_signature": "0x00000016",
+            "name": "forwarding_mem_beats_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/forwarding_mem_beats_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000016 cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=00000016 cycles=12"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "forwarding_both_operands_same_cycle",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/forwarding_both_operands_same_cycle.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000a cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000a cycles=10"
+          },
+          {
+            "expected_signature": "0x00000007",
+            "name": "x0_integrity_write_then_consume",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/x0_integrity_write_then_consume.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000007 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000007 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000002",
+            "name": "x0_integrity_compare_paths",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/x0_integrity_compare_paths.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000002 cycles=11\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 130000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000002 cycles=11"
+          },
+          {
+            "expected_signature": "0x00000037",
+            "name": "load_use_rs1_and_rs2_consumers",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/load_use_rs1_and_rs2_consumers.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000037 cycles=16\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 180000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=00000037 cycles=16"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "load_use_rs2_subtract",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/load_use_rs2_subtract.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000a cycles=13\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 150000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000000a cycles=13"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_taken_branch",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/flush_redirect_taken_branch.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000067 expected=00000005\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL signature got=00000067 expected=00000005"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_untaken_then_jal",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/flush_redirect_untaken_then_jal.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=0000004d expected=00000005\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL signature got=0000004d expected=00000005"
+          },
+          {
+            "expected_signature": "0x00000011",
+            "name": "flush_redirect_jalr_link_delta",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/flush_redirect_jalr_link_delta.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000059 expected=00000011\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "flush_redirect",
+            "verdict": "FAIL signature got=00000059 expected=00000011"
+          },
+          {
+            "expected_signature": "0x0000001e",
+            "name": "branch_jump_target_backward_loop",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/branch_jump_target_backward_loop.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000001e cycles=21\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 230000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=0000001e cycles=21"
+          },
+          {
+            "expected_signature": "0x00000015",
+            "name": "branch_jump_target_jal_forward_backward",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/branch_jump_target_jal_forward_backward.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000013 expected=00000015\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 200000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "branch_jump_target",
+            "verdict": "FAIL signature got=00000013 expected=00000015"
+          },
+          {
+            "expected_signature": "0x0000000c",
+            "name": "branch_jump_target_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-otkuixm1/branch_jump_target_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=0000003e expected=0000000c\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "branch_jump_target",
+            "verdict": "FAIL signature got=0000003e expected=0000000c"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Use the raw odd JALR sum instead of clearing target bit zero.",
+      "detected": true,
+      "detecting_tests": [
+        "seed_jalr_odd_target"
+      ],
+      "family": "branch_jump_target",
+      "mutation_status": "valid",
+      "name": "jalr_low_bit_not_cleared",
+      "suite_result": {
+        "compile": {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "core_tb",
+            "-o",
+            "/tmp/a3-agent-5szvn2r7/core.vvp",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/datapath_pipelined.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/regfile.sv"
+          ],
+          "datapath": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/datapath_pipelined.sv",
+          "output": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:10: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:11: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:12: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:13: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:14: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'InstrD[31:7]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/alu.sv:21: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/alu.sv:49: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/alu.sv:51: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'B[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:23: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:27: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:31: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:35: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:40: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:43: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:47: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'StoreData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:66: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:67: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:68: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:69: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:73: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:74: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:75: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:83: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:84: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:85: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:86: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:90: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'AddrLSB[1:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:91: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv:92: sorry: constant selects in always_* processes are not fully supported (the process will be sensitive to all bits in 'ReadData[31:0]').\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv:9: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/alu.sv:15: vvp.tgt sorry: Case unique/unique0 qualities are ignored.\n",
+          "returncode": 0,
+          "status": "pass",
+          "submodules": [
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/alu.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/branch_unit.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/controller.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/extend.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/memory_access.sv",
+            "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/run_records/mutants/jalr_low_bit_not_cleared/core/submodules/regfile.sv"
+          ]
+        },
+        "failed": 1,
+        "passed": 21,
+        "tests": [
+          {
+            "expected_signature": "0x0000000c",
+            "name": "seed_forwarding_priority",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/seed_forwarding_priority.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000c cycles=8\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 100000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000c cycles=8"
+          },
+          {
+            "expected_signature": "0x0000002d",
+            "name": "seed_forwarding_both_operands",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/seed_forwarding_both_operands.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000002d cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000002d cycles=10"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_x0_integrity",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/seed_x0_integrity.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=7\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 90000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000001 cycles=7"
+          },
+          {
+            "expected_signature": "0x0000002b",
+            "name": "seed_load_use_rs1",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/seed_load_use_rs1.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000002b cycles=11\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 130000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000002b cycles=11"
+          },
+          {
+            "expected_signature": "0x0000003c",
+            "name": "seed_load_use_rs2",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/seed_load_use_rs2.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000003c cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000003c cycles=12"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_taken_branch_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/seed_taken_branch_flush.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000001 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000001",
+            "name": "seed_jal_flush",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/seed_jal_flush.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000001 cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000001 cycles=9"
+          },
+          {
+            "expected_signature": "0x00000010",
+            "name": "seed_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/seed_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nFAIL signature got=00000011 expected=00000010\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:44: $finish called at 150000 (1ps)\n",
+            "returncode": 0,
+            "status": "fail",
+            "target_family": "branch_jump_target",
+            "verdict": "FAIL signature got=00000011 expected=00000010"
+          },
+          {
+            "expected_signature": "0x00000012",
+            "name": "forwarding_rs1_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/forwarding_rs1_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000012 cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=00000012 cycles=9"
+          },
+          {
+            "expected_signature": "0x0000000e",
+            "name": "forwarding_rs2_mem_and_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/forwarding_rs2_mem_and_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000e cycles=9\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 110000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000e cycles=9"
+          },
+          {
+            "expected_signature": "0x00000016",
+            "name": "forwarding_mem_beats_wb",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/forwarding_mem_beats_wb.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000016 cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=00000016 cycles=12"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "forwarding_both_operands_same_cycle",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/forwarding_both_operands_same_cycle.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000a cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "forwarding",
+            "verdict": "PASS signature=0000000a cycles=10"
+          },
+          {
+            "expected_signature": "0x00000007",
+            "name": "x0_integrity_write_then_consume",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/x0_integrity_write_then_consume.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000007 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000007 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000002",
+            "name": "x0_integrity_compare_paths",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/x0_integrity_compare_paths.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000002 cycles=11\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 130000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "x0_integrity",
+            "verdict": "PASS signature=00000002 cycles=11"
+          },
+          {
+            "expected_signature": "0x00000037",
+            "name": "load_use_rs1_and_rs2_consumers",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/load_use_rs1_and_rs2_consumers.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000037 cycles=16\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 180000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=00000037 cycles=16"
+          },
+          {
+            "expected_signature": "0x0000000a",
+            "name": "load_use_rs2_subtract",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/load_use_rs2_subtract.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000a cycles=13\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 150000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "load_use",
+            "verdict": "PASS signature=0000000a cycles=13"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_taken_branch",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/flush_redirect_taken_branch.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000005 cycles=10\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 120000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000005 cycles=10"
+          },
+          {
+            "expected_signature": "0x00000005",
+            "name": "flush_redirect_untaken_then_jal",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/flush_redirect_untaken_then_jal.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000005 cycles=12\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 140000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000005 cycles=12"
+          },
+          {
+            "expected_signature": "0x00000011",
+            "name": "flush_redirect_jalr_link_delta",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/flush_redirect_jalr_link_delta.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000011 cycles=14\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "flush_redirect",
+            "verdict": "PASS signature=00000011 cycles=14"
+          },
+          {
+            "expected_signature": "0x0000001e",
+            "name": "branch_jump_target_backward_loop",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/branch_jump_target_backward_loop.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000001e cycles=21\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 230000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=0000001e cycles=21"
+          },
+          {
+            "expected_signature": "0x00000015",
+            "name": "branch_jump_target_jal_forward_backward",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/branch_jump_target_jal_forward_backward.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=00000015 cycles=18\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 200000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=00000015 cycles=18"
+          },
+          {
+            "expected_signature": "0x0000000c",
+            "name": "branch_jump_target_jalr_odd_target",
+            "output": "WARNING: /home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:65: $readmemh(/tmp/a3-agent-5szvn2r7/branch_jump_target_jalr_odd_target.hex): Not enough words in the file for the requested range [0:1023].\nPASS signature=0000000c cycles=14\n/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/harness/core_tb.sv:41: $finish called at 160000 (1ps)\n",
+            "returncode": 0,
+            "status": "pass",
+            "target_family": "branch_jump_target",
+            "verdict": "PASS signature=0000000c cycles=14"
+          }
+        ]
+      }
+    }
+  ]
+}

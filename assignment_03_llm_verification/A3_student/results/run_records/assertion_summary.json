@@ -1,0 +1,257 @@
+{
+  "activation_probe": {
+    "case_results": {
+      "forward_a_mem_has_producer": {
+        "expected_fired": true,
+        "fired": [
+          "forward_a_mem_has_producer"
+        ]
+      },
+      "forward_a_wb_has_producer": {
+        "expected_fired": true,
+        "fired": [
+          "forward_a_wb_has_producer"
+        ]
+      },
+      "forward_b_mem_has_producer": {
+        "expected_fired": true,
+        "fired": [
+          "forward_b_mem_has_producer"
+        ]
+      },
+      "forward_b_wb_has_producer": {
+        "expected_fired": true,
+        "fired": [
+          "forward_b_wb_has_producer"
+        ]
+      },
+      "no_forward_x0_rs1": {
+        "expected_fired": true,
+        "fired": [
+          "forward_a_mem_has_producer",
+          "no_forward_x0_rs1"
+        ]
+      },
+      "no_forward_x0_rs2": {
+        "expected_fired": true,
+        "fired": [
+          "forward_b_mem_has_producer",
+          "no_forward_x0_rs2"
+        ]
+      },
+      "x0_read_rs1_zero": {
+        "expected_fired": true,
+        "fired": [
+          "x0_read_rs1_zero"
+        ]
+      },
+      "x0_read_rs2_zero": {
+        "expected_fired": true,
+        "fired": [
+          "x0_read_rs2_zero"
+        ]
+      }
+    },
+    "fired": [
+      "forward_a_mem_has_producer",
+      "forward_a_wb_has_producer",
+      "forward_b_mem_has_producer",
+      "forward_b_wb_has_producer",
+      "no_forward_x0_rs1",
+      "no_forward_x0_rs2",
+      "x0_read_rs1_zero",
+      "x0_read_rs2_zero"
+    ],
+    "missing": [],
+    "output": "PROBE_CASE x0_read_rs1_zero\nASSERT_FAIL x0_read_rs1_zero Rs1D=0 rd1D=00000001\nPROBE_END\nPROBE_CASE x0_read_rs2_zero\nASSERT_FAIL x0_read_rs2_zero Rs2D=0 rd2D=00000001\nPROBE_END\nPROBE_CASE no_forward_x0_rs1\nASSERT_FAIL no_forward_x0_rs1 Rs1E=0 ForwardAE=10\nASSERT_FAIL forward_a_mem_has_producer Rs1E=0 RdM=0 RegWriteM=0\nPROBE_END\nPROBE_CASE no_forward_x0_rs2\nASSERT_FAIL forward_b_mem_has_producer Rs2E=0 RdM=0 RegWriteM=0\nASSERT_FAIL no_forward_x0_rs2 Rs2E=0 ForwardBE=10\nPROBE_END\nPROBE_CASE forward_a_mem_has_producer\nASSERT_FAIL forward_a_mem_has_producer Rs1E=5 RdM=5 RegWriteM=0\nPROBE_END\nPROBE_CASE forward_a_wb_has_producer\nASSERT_FAIL forward_a_wb_has_producer Rs1E=5 RdW=5 RegWriteW=0\nPROBE_END\nPROBE_CASE forward_b_mem_has_producer\nASSERT_FAIL forward_b_mem_has_producer Rs2E=6 RdM=6 RegWriteM=0\nPROBE_END\nPROBE_CASE forward_b_wb_has_producer\nASSERT_FAIL forward_b_wb_has_producer Rs2E=6 RdW=6 RegWriteW=0\nPROBE_END\n/tmp/a3-assertion-probe-m69wvbpx/assertion_probe_tb.sv:56: $finish called at 110000 (1ps)\n",
+    "status": "pass"
+  },
+  "assertions_file": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results/assertions.sv",
+  "completion": true,
+  "correct_core_validation": {
+    "assertion_failures": [],
+    "compile_status": "pass",
+    "failed": 0,
+    "passed": 24,
+    "silent": true,
+    "tests": [
+      {
+        "assertion_failures": [],
+        "name": "seed_forwarding_priority",
+        "status": "pass",
+        "verdict": "PASS signature=0000000c cycles=8"
+      },
+      {
+        "assertion_failures": [],
+        "name": "seed_forwarding_both_operands",
+        "status": "pass",
+        "verdict": "PASS signature=0000002d cycles=10"
+      },
+      {
+        "assertion_failures": [],
+        "name": "seed_x0_integrity",
+        "status": "pass",
+        "verdict": "PASS signature=00000001 cycles=7"
+      },
+      {
+        "assertion_failures": [],
+        "name": "seed_load_use_rs1",
+        "status": "pass",
+        "verdict": "PASS signature=0000002b cycles=11"
+      },
+      {
+        "assertion_failures": [],
+        "name": "seed_load_use_rs2",
+        "status": "pass",
+        "verdict": "PASS signature=0000003c cycles=12"
+      },
+      {
+        "assertion_failures": [],
+        "name": "seed_taken_branch_flush",
+        "status": "pass",
+        "verdict": "PASS signature=00000001 cycles=10"
+      },
+      {
+        "assertion_failures": [],
+        "name": "seed_jal_flush",
+        "status": "pass",
+        "verdict": "PASS signature=00000001 cycles=9"
+      },
+      {
+        "assertion_failures": [],
+        "name": "seed_jalr_odd_target",
+        "status": "pass",
+        "verdict": "PASS signature=00000010 cycles=13"
+      },
+      {
+        "assertion_failures": [],
+        "name": "forwarding_rs1_mem_and_wb",
+        "status": "pass",
+        "verdict": "PASS signature=00000012 cycles=9"
+      },
+      {
+        "assertion_failures": [],
+        "name": "forwarding_rs2_mem_and_wb",
+        "status": "pass",
+        "verdict": "PASS signature=0000000e cycles=9"
+      },
+      {
+        "assertion_failures": [],
+        "name": "forwarding_mem_beats_wb",
+        "status": "pass",
+        "verdict": "PASS signature=00000016 cycles=12"
+      },
+      {
+        "assertion_failures": [],
+        "name": "forwarding_both_operands_same_cycle",
+        "status": "pass",
+        "verdict": "PASS signature=0000000a cycles=10"
+      },
+      {
+        "assertion_failures": [],
+        "name": "x0_integrity_write_then_consume",
+        "status": "pass",
+        "verdict": "PASS signature=00000007 cycles=10"
+      },
+      {
+        "assertion_failures": [],
+        "name": "x0_integrity_compare_paths",
+        "status": "pass",
+        "verdict": "PASS signature=00000002 cycles=11"
+      },
+      {
+        "assertion_failures": [],
+        "name": "load_use_rs1_and_rs2_consumers",
+        "status": "pass",
+        "verdict": "PASS signature=00000037 cycles=16"
+      },
+      {
+        "assertion_failures": [],
+        "name": "load_use_rs2_subtract",
+        "status": "pass",
+        "verdict": "PASS signature=0000000a cycles=13"
+      },
+      {
+        "assertion_failures": [],
+        "name": "flush_redirect_taken_branch",
+        "status": "pass",
+        "verdict": "PASS signature=00000005 cycles=10"
+      },
+      {
+        "assertion_failures": [],
+        "name": "flush_redirect_untaken_then_jal",
+        "status": "pass",
+        "verdict": "PASS signature=00000005 cycles=12"
+      },
+      {
+        "assertion_failures": [],
+        "name": "flush_redirect_jalr_link_delta",
+        "status": "pass",
+        "verdict": "PASS signature=00000011 cycles=14"
+      },
+      {
+        "assertion_failures": [],
+        "name": "branch_jump_target_backward_loop",
+        "status": "pass",
+        "verdict": "PASS signature=0000001e cycles=21"
+      },
+      {
+        "assertion_failures": [],
+        "name": "branch_jump_target_jal_forward_backward",
+        "status": "pass",
+        "verdict": "PASS signature=00000015 cycles=18"
+      },
+      {
+        "assertion_failures": [],
+        "name": "branch_jump_target_jalr_odd_target",
+        "status": "pass",
+        "verdict": "PASS signature=0000000c cycles=14"
+      },
+      {
+        "assertion_failures": [],
+        "name": "auipc_pc_relative_signature",
+        "status": "pass",
+        "verdict": "PASS signature=00001004 cycles=9"
+      },
+      {
+        "assertion_failures": [],
+        "name": "auipc_delta_with_jal_link",
+        "status": "pass",
+        "verdict": "PASS signature=00000008 cycles=10"
+      }
+    ]
+  },
+  "finished_utc": "2026-10-10T23:39:05.493679+00:00",
+  "global_call_budget": 20,
+  "prior_calls_used": 2,
+  "prompt_version": "task4-assertions-v1",
+  "provider": "tamu",
+  "requested_model": "protected.Claude-Opus-5",
+  "required_assertions": [
+    "x0_read_rs1_zero",
+    "x0_read_rs2_zero",
+    "no_forward_x0_rs1",
+    "no_forward_x0_rs2",
+    "forward_a_mem_has_producer",
+    "forward_a_wb_has_producer",
+    "forward_b_mem_has_producer",
+    "forward_b_wb_has_producer"
+  ],
+  "settings": {
+    "max_tokens": 16384,
+    "temperature": 0.0
+  },
+  "started_utc": "2026-10-10T23:38:50.613679+00:00",
+  "stop_reason": "assertions_valid",
+  "task": 4,
+  "task4_calls_used": 1,
+  "test_count": 24,
+  "token_usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "completion_tokens": 1606,
+    "prompt_tokens": 2077,
+    "total_tokens": 3683
+  },
+  "total_calls_used": 3
+}

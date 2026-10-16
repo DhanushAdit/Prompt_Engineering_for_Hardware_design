@@ -1,0 +1,65 @@
+{
+  "after": {
+    "bins_hit": 21,
+    "bins_total": 21,
+    "failing_tests": 0,
+    "hit": [
+      "OP_AUIPC",
+      "OP_BRANCH",
+      "OP_IMM",
+      "OP_JAL",
+      "OP_JALR",
+      "OP_LOAD",
+      "OP_LUI",
+      "OP_REG",
+      "OP_STORE",
+      "branch_not_taken",
+      "branch_taken",
+      "flush",
+      "fwdA_mem",
+      "fwdA_wb",
+      "fwdB_mem",
+      "fwdB_wb",
+      "jal",
+      "jalr",
+      "load_use_stall",
+      "no_control",
+      "no_forward"
+    ],
+    "missed": [],
+    "passing_tests": 24,
+    "percent": 100.0
+  },
+  "before": {
+    "bins_hit": 20,
+    "bins_total": 21,
+    "failing_tests": 0,
+    "hit": [
+      "OP_BRANCH",
+      "OP_IMM",
+      "OP_JAL",
+      "OP_JALR",
+      "OP_LOAD",
+      "OP_LUI",
+      "OP_REG",
+      "OP_STORE",
+      "branch_not_taken",
+      "branch_taken",
+      "flush",
+      "fwdA_mem",
+      "fwdA_wb",
+      "fwdB_mem",
+      "fwdB_wb",
+      "jal",
+      "jalr",
+      "load_use_stall",
+      "no_control",
+      "no_forward"
+    ],
+    "missed": [
+      "OP_AUIPC"
+    ],
+    "passing_tests": 22,
+    "percent": 95.24
+  }
+}

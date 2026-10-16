@@ -1,0 +1,28 @@
+(ecen689-a3) [dhanush_adithya@olympus-login A3_student]$ bash scripts/verify_task2.sh
+  [PASS] branch_jump_target_backward_loop.hex
+  [PASS] branch_jump_target_jal_forward_backward.hex
+  [PASS] branch_jump_target_jalr_odd_target.hex
+  [PASS] flush_redirect_jalr_link_delta.hex
+  [PASS] flush_redirect_taken_branch.hex
+  [PASS] flush_redirect_untaken_then_jal.hex
+  [PASS] forwarding_both_operands_same_cycle.hex
+  [PASS] forwarding_mem_beats_wb.hex
+  [PASS] forwarding_rs1_mem_and_wb.hex
+  [PASS] forwarding_rs2_mem_and_wb.hex
+  [PASS] load_use_rs1_and_rs2_consumers.hex
+  [PASS] load_use_rs2_subtract.hex
+  [PASS] seed_forwarding_both_operands.hex
+  [PASS] seed_forwarding_priority.hex
+  [PASS] seed_jal_flush.hex
+  [PASS] seed_jalr_odd_target.hex
+  [PASS] seed_load_use_rs1.hex
+  [PASS] seed_load_use_rs2.hex
+  [PASS] seed_taken_branch_flush.hex
+  [PASS] seed_x0_integrity.hex
+  [PASS] x0_integrity_compare_paths.hex
+  [PASS] x0_integrity_write_then_consume.hex
+
+22/22 tests pass your core
+coverage: 20/21 bins = 95%
+missed bins: OP_AUIPC
+(ecen689-a3) [dhanush_adithya@olympus-login A3_student]$

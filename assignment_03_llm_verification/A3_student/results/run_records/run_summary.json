@@ -1,0 +1,201 @@
+{
+  "calls_remaining": 19,
+  "calls_used": 1,
+  "completion": {
+    "all_mutation_families_detected": true,
+    "all_tests_pass_selected_core": true,
+    "llm_generated_valid_test": true,
+    "selected_core_compiled": true
+  },
+  "core_directory": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/core",
+  "finished_utc": "2026-10-10T21:25:21.891455+00:00",
+  "llm_test_count": 14,
+  "max_calls": 20,
+  "mutation_families_detected": [
+    "branch_jump_target",
+    "flush_redirect",
+    "forwarding",
+    "load_use",
+    "x0_integrity"
+  ],
+  "mutation_families_missed": [],
+  "output_directory": "/home/grads/d/dhanush_adithya/fall27/jv_llm/assignment-3/A3_student/results",
+  "provider": "tamu",
+  "requested_model": "protected.Claude-Opus-5",
+  "seed_test_count": 8,
+  "selected_core": {
+    "compile_status": "pass",
+    "failed": 0,
+    "passed": 22,
+    "tests": [
+      {
+        "expected_signature": "0x0000000c",
+        "name": "seed_forwarding_priority",
+        "status": "pass",
+        "target_family": "forwarding",
+        "verdict": "PASS signature=0000000c cycles=8"
+      },
+      {
+        "expected_signature": "0x0000002d",
+        "name": "seed_forwarding_both_operands",
+        "status": "pass",
+        "target_family": "forwarding",
+        "verdict": "PASS signature=0000002d cycles=10"
+      },
+      {
+        "expected_signature": "0x00000001",
+        "name": "seed_x0_integrity",
+        "status": "pass",
+        "target_family": "x0_integrity",
+        "verdict": "PASS signature=00000001 cycles=7"
+      },
+      {
+        "expected_signature": "0x0000002b",
+        "name": "seed_load_use_rs1",
+        "status": "pass",
+        "target_family": "load_use",
+        "verdict": "PASS signature=0000002b cycles=11"
+      },
+      {
+        "expected_signature": "0x0000003c",
+        "name": "seed_load_use_rs2",
+        "status": "pass",
+        "target_family": "load_use",
+        "verdict": "PASS signature=0000003c cycles=12"
+      },
+      {
+        "expected_signature": "0x00000001",
+        "name": "seed_taken_branch_flush",
+        "status": "pass",
+        "target_family": "flush_redirect",
+        "verdict": "PASS signature=00000001 cycles=10"
+      },
+      {
+        "expected_signature": "0x00000001",
+        "name": "seed_jal_flush",
+        "status": "pass",
+        "target_family": "flush_redirect",
+        "verdict": "PASS signature=00000001 cycles=9"
+      },
+      {
+        "expected_signature": "0x00000010",
+        "name": "seed_jalr_odd_target",
+        "status": "pass",
+        "target_family": "branch_jump_target",
+        "verdict": "PASS signature=00000010 cycles=13"
+      },
+      {
+        "expected_signature": "0x00000012",
+        "name": "forwarding_rs1_mem_and_wb",
+        "status": "pass",
+        "target_family": "forwarding",
+        "verdict": "PASS signature=00000012 cycles=9"
+      },
+      {
+        "expected_signature": "0x0000000e",
+        "name": "forwarding_rs2_mem_and_wb",
+        "status": "pass",
+        "target_family": "forwarding",
+        "verdict": "PASS signature=0000000e cycles=9"
+      },
+      {
+        "expected_signature": "0x00000016",
+        "name": "forwarding_mem_beats_wb",
+        "status": "pass",
+        "target_family": "forwarding",
+        "verdict": "PASS signature=00000016 cycles=12"
+      },
+      {
+        "expected_signature": "0x0000000a",
+        "name": "forwarding_both_operands_same_cycle",
+        "status": "pass",
+        "target_family": "forwarding",
+        "verdict": "PASS signature=0000000a cycles=10"
+      },
+      {
+        "expected_signature": "0x00000007",
+        "name": "x0_integrity_write_then_consume",
+        "status": "pass",
+        "target_family": "x0_integrity",
+        "verdict": "PASS signature=00000007 cycles=10"
+      },
+      {
+        "expected_signature": "0x00000002",
+        "name": "x0_integrity_compare_paths",
+        "status": "pass",
+        "target_family": "x0_integrity",
+        "verdict": "PASS signature=00000002 cycles=11"
+      },
+      {
+        "expected_signature": "0x00000037",
+        "name": "load_use_rs1_and_rs2_consumers",
+        "status": "pass",
+        "target_family": "load_use",
+        "verdict": "PASS signature=00000037 cycles=16"
+      },
+      {
+        "expected_signature": "0x0000000a",
+        "name": "load_use_rs2_subtract",
+        "status": "pass",
+        "target_family": "load_use",
+        "verdict": "PASS signature=0000000a cycles=13"
+      },
+      {
+        "expected_signature": "0x00000005",
+        "name": "flush_redirect_taken_branch",
+        "status": "pass",
+        "target_family": "flush_redirect",
+        "verdict": "PASS signature=00000005 cycles=10"
+      },
+      {
+        "expected_signature": "0x00000005",
+        "name": "flush_redirect_untaken_then_jal",
+        "status": "pass",
+        "target_family": "flush_redirect",
+        "verdict": "PASS signature=00000005 cycles=12"
+      },
+      {
+        "expected_signature": "0x00000011",
+        "name": "flush_redirect_jalr_link_delta",
+        "status": "pass",
+        "target_family": "flush_redirect",
+        "verdict": "PASS signature=00000011 cycles=14"
+      },
+      {
+        "expected_signature": "0x0000001e",
+        "name": "branch_jump_target_backward_loop",
+        "status": "pass",
+        "target_family": "branch_jump_target",
+        "verdict": "PASS signature=0000001e cycles=21"
+      },
+      {
+        "expected_signature": "0x00000015",
+        "name": "branch_jump_target_jal_forward_backward",
+        "status": "pass",
+        "target_family": "branch_jump_target",
+        "verdict": "PASS signature=00000015 cycles=18"
+      },
+      {
+        "expected_signature": "0x0000000c",
+        "name": "branch_jump_target_jalr_odd_target",
+        "status": "pass",
+        "target_family": "branch_jump_target",
+        "verdict": "PASS signature=0000000c cycles=14"
+      }
+    ]
+  },
+  "settings": {
+    "max_tokens": 16384,
+    "temperature": 0.0
+  },
+  "started_utc": "2026-10-10T21:23:33.341023+00:00",
+  "task": 2,
+  "test_count": 22,
+  "token_usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "completion_tokens": 9021,
+    "prompt_tokens": 1213,
+    "total_tokens": 10234
+  }
+}

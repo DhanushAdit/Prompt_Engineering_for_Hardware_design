@@ -1,0 +1,652 @@
+{
+  "bins_gained": [
+    "OP_AUIPC"
+  ],
+  "candidate_measurement": {
+    "compile_status": "pass",
+    "failed": 0,
+    "hit": [
+      "OP_AUIPC",
+      "OP_IMM",
+      "OP_JAL",
+      "OP_LUI",
+      "OP_REG",
+      "OP_STORE",
+      "flush",
+      "fwdA_mem",
+      "fwdB_wb",
+      "jal",
+      "no_control",
+      "no_forward"
+    ],
+    "missed": [
+      "OP_BRANCH",
+      "OP_JALR",
+      "OP_LOAD",
+      "branch_not_taken",
+      "branch_taken",
+      "fwdA_wb",
+      "fwdB_mem",
+      "jalr",
+      "load_use_stall"
+    ],
+    "passed": 2,
+    "tests": [
+      {
+        "coverage_bins": [
+          "OP_AUIPC",
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdB_wb",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "auipc_pc_relative_signature",
+        "status": "pass",
+        "verdict": "PASS signature=00001004 cycles=9"
+      },
+      {
+        "coverage_bins": [
+          "OP_AUIPC",
+          "OP_IMM",
+          "OP_JAL",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "jal",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "auipc_delta_with_jal_link",
+        "status": "pass",
+        "verdict": "PASS signature=00000008 cycles=10"
+      }
+    ]
+  },
+  "cumulative_measurement": {
+    "compile_status": "pass",
+    "failed": 0,
+    "hit": [
+      "OP_AUIPC",
+      "OP_BRANCH",
+      "OP_IMM",
+      "OP_JAL",
+      "OP_JALR",
+      "OP_LOAD",
+      "OP_LUI",
+      "OP_REG",
+      "OP_STORE",
+      "branch_not_taken",
+      "branch_taken",
+      "flush",
+      "fwdA_mem",
+      "fwdA_wb",
+      "fwdB_mem",
+      "fwdB_wb",
+      "jal",
+      "jalr",
+      "load_use_stall",
+      "no_control",
+      "no_forward"
+    ],
+    "missed": [],
+    "passed": 24,
+    "tests": [
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "seed_forwarding_priority",
+        "status": "pass",
+        "verdict": "PASS signature=0000000c cycles=8"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdA_wb",
+          "fwdB_mem",
+          "fwdB_wb",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "seed_forwarding_both_operands",
+        "status": "pass",
+        "verdict": "PASS signature=0000002d cycles=10"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_STORE",
+          "fwdA_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "seed_x0_integrity",
+        "status": "pass",
+        "verdict": "PASS signature=00000001 cycles=7"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LOAD",
+          "OP_LUI",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "fwdA_wb",
+          "fwdB_mem",
+          "load_use_stall",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "seed_load_use_rs1",
+        "status": "pass",
+        "verdict": "PASS signature=0000002b cycles=11"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LOAD",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "fwdB_mem",
+          "fwdB_wb",
+          "load_use_stall",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "seed_load_use_rs2",
+        "status": "pass",
+        "verdict": "PASS signature=0000003c cycles=12"
+      },
+      {
+        "coverage_bins": [
+          "OP_BRANCH",
+          "OP_IMM",
+          "OP_LUI",
+          "OP_STORE",
+          "branch_taken",
+          "flush",
+          "fwdA_mem",
+          "fwdB_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "seed_taken_branch_flush",
+        "status": "pass",
+        "verdict": "PASS signature=00000001 cycles=10"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_JAL",
+          "OP_LUI",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "jal",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "seed_jal_flush",
+        "status": "pass",
+        "verdict": "PASS signature=00000001 cycles=9"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_JAL",
+          "OP_JALR",
+          "OP_LUI",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "jal",
+          "jalr",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "seed_jalr_odd_target",
+        "status": "pass",
+        "verdict": "PASS signature=00000010 cycles=13"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdA_wb",
+          "fwdB_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "forwarding_rs1_mem_and_wb",
+        "status": "pass",
+        "verdict": "PASS signature=00000012 cycles=9"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdA_wb",
+          "fwdB_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "forwarding_rs2_mem_and_wb",
+        "status": "pass",
+        "verdict": "PASS signature=0000000e cycles=9"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdB_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "forwarding_mem_beats_wb",
+        "status": "pass",
+        "verdict": "PASS signature=00000016 cycles=12"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdA_wb",
+          "fwdB_mem",
+          "fwdB_wb",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "forwarding_both_operands_same_cycle",
+        "status": "pass",
+        "verdict": "PASS signature=0000000a cycles=10"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdB_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "x0_integrity_write_then_consume",
+        "status": "pass",
+        "verdict": "PASS signature=00000007 cycles=10"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdA_wb",
+          "fwdB_wb",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "x0_integrity_compare_paths",
+        "status": "pass",
+        "verdict": "PASS signature=00000002 cycles=11"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LOAD",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "fwdA_wb",
+          "fwdB_mem",
+          "fwdB_wb",
+          "load_use_stall",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "load_use_rs1_and_rs2_consumers",
+        "status": "pass",
+        "verdict": "PASS signature=00000037 cycles=16"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_LOAD",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "fwdA_wb",
+          "fwdB_mem",
+          "fwdB_wb",
+          "load_use_stall",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "load_use_rs2_subtract",
+        "status": "pass",
+        "verdict": "PASS signature=0000000a cycles=13"
+      },
+      {
+        "coverage_bins": [
+          "OP_BRANCH",
+          "OP_IMM",
+          "OP_LUI",
+          "OP_STORE",
+          "branch_taken",
+          "flush",
+          "fwdA_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "flush_redirect_taken_branch",
+        "status": "pass",
+        "verdict": "PASS signature=00000005 cycles=10"
+      },
+      {
+        "coverage_bins": [
+          "OP_BRANCH",
+          "OP_IMM",
+          "OP_JAL",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "branch_not_taken",
+          "flush",
+          "fwdA_mem",
+          "fwdA_wb",
+          "jal",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "flush_redirect_untaken_then_jal",
+        "status": "pass",
+        "verdict": "PASS signature=00000005 cycles=12"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_JAL",
+          "OP_JALR",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "jal",
+          "jalr",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "flush_redirect_jalr_link_delta",
+        "status": "pass",
+        "verdict": "PASS signature=00000011 cycles=14"
+      },
+      {
+        "coverage_bins": [
+          "OP_BRANCH",
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "branch_not_taken",
+          "branch_taken",
+          "flush",
+          "fwdA_mem",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "branch_jump_target_backward_loop",
+        "status": "pass",
+        "verdict": "PASS signature=0000001e cycles=21"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_JAL",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "jal",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "branch_jump_target_jal_forward_backward",
+        "status": "pass",
+        "verdict": "PASS signature=00000015 cycles=18"
+      },
+      {
+        "coverage_bins": [
+          "OP_IMM",
+          "OP_JAL",
+          "OP_JALR",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "jal",
+          "jalr",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "branch_jump_target_jalr_odd_target",
+        "status": "pass",
+        "verdict": "PASS signature=0000000c cycles=14"
+      },
+      {
+        "coverage_bins": [
+          "OP_AUIPC",
+          "OP_IMM",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "fwdA_mem",
+          "fwdB_wb",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "auipc_pc_relative_signature",
+        "status": "pass",
+        "verdict": "PASS signature=00001004 cycles=9"
+      },
+      {
+        "coverage_bins": [
+          "OP_AUIPC",
+          "OP_IMM",
+          "OP_JAL",
+          "OP_LUI",
+          "OP_REG",
+          "OP_STORE",
+          "flush",
+          "fwdA_mem",
+          "jal",
+          "no_control",
+          "no_forward"
+        ],
+        "name": "auipc_delta_with_jal_link",
+        "status": "pass",
+        "verdict": "PASS signature=00000008 cycles=10"
+      }
+    ]
+  },
+  "generated_tests": [
+    {
+      "description": "Two AUIPC instructions four bytes apart are differenced so a wrong PC base, wrong upper-immediate shift, or missing AUIPC add makes the signature differ from 4100.",
+      "expected_signature": "0x00001004",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0
+          ],
+          "op": "AUIPC"
+        },
+        {
+          "args": [
+            6,
+            4096
+          ],
+          "op": "AUIPC"
+        },
+        {
+          "args": [
+            1,
+            6,
+            5
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            1,
+            0
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "auipc_pc_relative_signature",
+      "origin": "coverage_llm_call_001",
+      "signature_reg": 1,
+      "target_family": "coverage",
+      "word_count": 7
+    },
+    {
+      "description": "Signature is the difference between a JAL link address and an earlier AUIPC PC value, so a bad AUIPC PC, bad link value, or failed flush of the skipped ADDI corrupts the expected result of 8.",
+      "expected_signature": "0x00000008",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0
+          ],
+          "op": "AUIPC"
+        },
+        {
+          "args": [
+            6,
+            8
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            1,
+            0,
+            -1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            6,
+            5
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "auipc_delta_with_jal_link",
+      "origin": "coverage_llm_call_001",
+      "signature_reg": 1,
+      "target_family": "coverage",
+      "word_count": 7
+    }
+  ],
+  "missing_before": [
+    "OP_AUIPC"
+  ],
+  "rejected_tests": [],
+  "retained_tests": [
+    "auipc_pc_relative_signature",
+    "auipc_delta_with_jal_link"
+  ],
+  "round": 1,
+  "validation_errors": []
+}

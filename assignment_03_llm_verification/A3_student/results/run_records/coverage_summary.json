@@ -1,0 +1,93 @@
+{
+  "added_tests": [
+    "auipc_pc_relative_signature",
+    "auipc_delta_with_jal_link"
+  ],
+  "after": {
+    "bins_hit": 21,
+    "bins_total": 21,
+    "failing_tests": 0,
+    "hit": [
+      "OP_AUIPC",
+      "OP_BRANCH",
+      "OP_IMM",
+      "OP_JAL",
+      "OP_JALR",
+      "OP_LOAD",
+      "OP_LUI",
+      "OP_REG",
+      "OP_STORE",
+      "branch_not_taken",
+      "branch_taken",
+      "flush",
+      "fwdA_mem",
+      "fwdA_wb",
+      "fwdB_mem",
+      "fwdB_wb",
+      "jal",
+      "jalr",
+      "load_use_stall",
+      "no_control",
+      "no_forward"
+    ],
+    "missed": [],
+    "passing_tests": 24,
+    "percent": 100.0
+  },
+  "before": {
+    "bins_hit": 20,
+    "bins_total": 21,
+    "failing_tests": 0,
+    "hit": [
+      "OP_BRANCH",
+      "OP_IMM",
+      "OP_JAL",
+      "OP_JALR",
+      "OP_LOAD",
+      "OP_LUI",
+      "OP_REG",
+      "OP_STORE",
+      "branch_not_taken",
+      "branch_taken",
+      "flush",
+      "fwdA_mem",
+      "fwdA_wb",
+      "fwdB_mem",
+      "fwdB_wb",
+      "jal",
+      "jalr",
+      "load_use_stall",
+      "no_control",
+      "no_forward"
+    ],
+    "missed": [
+      "OP_AUIPC"
+    ],
+    "passing_tests": 22,
+    "percent": 95.24
+  },
+  "finished_utc": "2026-10-10T23:27:24.783141+00:00",
+  "global_call_budget": 20,
+  "outcomes": [
+    "round 1: retained 2 tests and gained ['OP_AUIPC']"
+  ],
+  "provider": "tamu",
+  "requested_model": "protected.Claude-Opus-5",
+  "settings": {
+    "max_tokens": 16384,
+    "temperature": 0.0
+  },
+  "started_utc": "2026-10-10T23:27:11.487518+00:00",
+  "stop_reason": "coverage_complete",
+  "task": 3,
+  "task2_calls_used": 1,
+  "task3_calls_used": 1,
+  "token_usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "completion_tokens": 915,
+    "prompt_tokens": 4798,
+    "total_tokens": 5713
+  },
+  "total_calls_used": 2
+}

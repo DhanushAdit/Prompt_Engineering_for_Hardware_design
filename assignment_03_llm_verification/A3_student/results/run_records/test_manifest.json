@@ -1,0 +1,1847 @@
+{
+  "coverage_additions": [
+    "auipc_pc_relative_signature",
+    "auipc_delta_with_jal_link"
+  ],
+  "coverage_prompt_version": "task3-coverage-v2",
+  "prompt_version": "task2-v1",
+  "tests": [
+    {
+      "description": "Two in-flight writers require the fresher Memory-stage value.",
+      "expected_signature": "0x0000000c",
+      "instructions": [
+        {
+          "args": [
+            1,
+            0,
+            5
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            1,
+            7
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            2,
+            1,
+            0
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            2,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "seed_forwarding_priority",
+      "origin": "deterministic_seed",
+      "signature_reg": 2,
+      "target_family": "forwarding",
+      "word_count": 6
+    },
+    {
+      "description": "Exercises forwarding through both source operands at Memory and Writeback distances.",
+      "expected_signature": "0x0000002d",
+      "instructions": [
+        {
+          "args": [
+            3,
+            0,
+            9
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            4,
+            3,
+            3
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            0,
+            0,
+            0
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            4,
+            4
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            6,
+            5,
+            3
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            6,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "seed_forwarding_both_operands",
+      "origin": "deterministic_seed",
+      "signature_reg": 6,
+      "target_family": "forwarding",
+      "word_count": 8
+    },
+    {
+      "description": "A nonzero result addressed to x0 must not be forwarded.",
+      "expected_signature": "0x00000001",
+      "instructions": [
+        {
+          "args": [
+            0,
+            0,
+            123
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            0,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            5,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "seed_x0_integrity",
+      "origin": "deterministic_seed",
+      "signature_reg": 5,
+      "target_family": "x0_integrity",
+      "word_count": 5
+    },
+    {
+      "description": "An LW is immediately consumed through rs1.",
+      "expected_signature": "0x0000002b",
+      "instructions": [
+        {
+          "args": [
+            10,
+            0,
+            64
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            42
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            10,
+            6,
+            0
+          ],
+          "op": "SW"
+        },
+        {
+          "args": [
+            7,
+            10,
+            0
+          ],
+          "op": "LW"
+        },
+        {
+          "args": [
+            8,
+            7,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            8,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "seed_load_use_rs1",
+      "origin": "deterministic_seed",
+      "signature_reg": 8,
+      "target_family": "load_use",
+      "word_count": 8
+    },
+    {
+      "description": "An LW is immediately consumed through rs2.",
+      "expected_signature": "0x0000003c",
+      "instructions": [
+        {
+          "args": [
+            10,
+            0,
+            64
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            50
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            9,
+            0,
+            10
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            10,
+            9,
+            0
+          ],
+          "op": "SW"
+        },
+        {
+          "args": [
+            7,
+            10,
+            0
+          ],
+          "op": "LW"
+        },
+        {
+          "args": [
+            8,
+            6,
+            7
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            8,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "seed_load_use_rs2",
+      "origin": "deterministic_seed",
+      "signature_reg": 8,
+      "target_family": "load_use",
+      "word_count": 9
+    },
+    {
+      "description": "A taken branch must squash a wrong-path value consumed at the target.",
+      "expected_signature": "0x00000001",
+      "instructions": [
+        {
+          "args": [
+            1,
+            0,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            1,
+            8
+          ],
+          "op": "BEQ"
+        },
+        {
+          "args": [
+            2,
+            0,
+            99
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            3,
+            2,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            3,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "seed_taken_branch_flush",
+      "origin": "deterministic_seed",
+      "signature_reg": 3,
+      "target_family": "flush_redirect",
+      "word_count": 7
+    },
+    {
+      "description": "JAL redirects over a wrong-path producer consumed at the target.",
+      "expected_signature": "0x00000001",
+      "instructions": [
+        {
+          "args": [
+            5,
+            8
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            2,
+            0,
+            99
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            3,
+            2,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            3,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "seed_jal_flush",
+      "origin": "deterministic_seed",
+      "signature_reg": 3,
+      "target_family": "flush_redirect",
+      "word_count": 6
+    },
+    {
+      "description": "JALR must clear target bit zero; a target JAL link exposes an odd PC.",
+      "expected_signature": "0x00000010",
+      "instructions": [
+        {
+          "args": [
+            1,
+            0,
+            13
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            1,
+            0
+          ],
+          "op": "JALR"
+        },
+        {
+          "args": [
+            2,
+            0,
+            99
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            2,
+            4
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            3,
+            2,
+            0
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            3,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "seed_jalr_odd_target",
+      "origin": "deterministic_seed",
+      "signature_reg": 3,
+      "target_family": "branch_jump_target",
+      "word_count": 8
+    },
+    {
+      "description": "If rs1 forwarding from the Memory or Writeback stage is missing, the dependent ADDIs read stale zeros and the summed signature is wrong.",
+      "expected_signature": "0x00000012",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0,
+            7
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            5,
+            3
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            5,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            6,
+            7
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "forwarding_rs1_mem_and_wb",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "forwarding",
+      "word_count": 7
+    },
+    {
+      "description": "If rs2 forwarding fails, the SUB and the following ADD use stale operands so the signature differs from 14.",
+      "expected_signature": "0x0000000e",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0,
+            20
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            6
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            5,
+            6
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            0,
+            7
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "forwarding_rs2_mem_and_wb",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "forwarding",
+      "word_count": 7
+    },
+    {
+      "description": "Two in-flight writers target the same register, so if Writeback forwarding wins over Memory the signature becomes 11 instead of 22.",
+      "expected_signature": "0x00000016",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            0,
+            2
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            5,
+            0
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            6,
+            0,
+            10
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            20
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            0,
+            6
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            1,
+            1,
+            7
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "forwarding_mem_beats_wb",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "forwarding",
+      "word_count": 10
+    },
+    {
+      "description": "A single instruction needing simultaneous rs1 Writeback forwarding and rs2 Memory forwarding yields a wrong SLT result and corrupts the signature.",
+      "expected_signature": "0x0000000a",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0,
+            -3
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            8
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            5,
+            6
+          ],
+          "op": "SLT"
+        },
+        {
+          "args": [
+            8,
+            7,
+            6
+          ],
+          "op": "XOR"
+        },
+        {
+          "args": [
+            1,
+            8,
+            7
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "forwarding_both_operands_same_cycle",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "forwarding",
+      "word_count": 8
+    },
+    {
+      "description": "If a nonzero write to x0 sticks or is forwarded, the x0 reads through rs1 and rs2 produce 117 instead of 7.",
+      "expected_signature": "0x00000007",
+      "instructions": [
+        {
+          "args": [
+            0,
+            0,
+            55
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            0,
+            0
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            6,
+            0,
+            7
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            6,
+            0
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            5,
+            7
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "x0_integrity_write_then_consume",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "x0_integrity",
+      "word_count": 8
+    },
+    {
+      "description": "A discarded nonzero x0 write must keep SLTIU, ORI and SUB reading zero, otherwise the signature is not 2.",
+      "expected_signature": "0x00000002",
+      "instructions": [
+        {
+          "args": [
+            0,
+            0,
+            1234
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            0,
+            1
+          ],
+          "op": "SLTIU"
+        },
+        {
+          "args": [
+            6,
+            0,
+            0
+          ],
+          "op": "ORI"
+        },
+        {
+          "args": [
+            7,
+            5,
+            0
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            5,
+            6
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            1,
+            1,
+            7
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "x0_integrity_compare_paths",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "x0_integrity",
+      "word_count": 9
+    },
+    {
+      "description": "Missing load-use stalls let the rs1 consumer and the rs2 consumer read pre-load values, so the signature is not 55.",
+      "expected_signature": "0x00000037",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0,
+            64
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            25
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            6,
+            0
+          ],
+          "op": "SW"
+        },
+        {
+          "args": [
+            12,
+            0,
+            0
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            5,
+            0
+          ],
+          "op": "LW"
+        },
+        {
+          "args": [
+            8,
+            7,
+            5
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            10,
+            5,
+            0
+          ],
+          "op": "LW"
+        },
+        {
+          "args": [
+            11,
+            0,
+            10
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            1,
+            8,
+            11
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "load_use_rs1_and_rs2_consumers",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "load_use",
+      "word_count": 12
+    },
+    {
+      "description": "A SUB immediately after LW uses the loaded value as rs2, so a missing load stall makes the signature 13 instead of 10.",
+      "expected_signature": "0x0000000a",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0,
+            80
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            3
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            6,
+            0
+          ],
+          "op": "SW"
+        },
+        {
+          "args": [
+            7,
+            0,
+            12
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            8,
+            5,
+            0
+          ],
+          "op": "LW"
+        },
+        {
+          "args": [
+            9,
+            7,
+            8
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            9,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "load_use_rs2_subtract",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "load_use",
+      "word_count": 10
+    },
+    {
+      "description": "Two wrong-path instructions after a taken BEQ would overwrite the signature register with 99 or 199 instead of 5.",
+      "expected_signature": "0x00000005",
+      "instructions": [
+        {
+          "args": [
+            1,
+            0,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            0,
+            0,
+            12
+          ],
+          "op": "BEQ"
+        },
+        {
+          "args": [
+            1,
+            0,
+            99
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            1,
+            100
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            1,
+            4
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "flush_redirect_taken_branch",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "flush_redirect",
+      "word_count": 8
+    },
+    {
+      "description": "An untaken BEQ must not redirect and a JAL must flush its two shadow instructions, otherwise the signature is 90 or 93 instead of 5.",
+      "expected_signature": "0x00000005",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0,
+            2
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            0,
+            16
+          ],
+          "op": "BEQ"
+        },
+        {
+          "args": [
+            5,
+            5,
+            3
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            12
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            5,
+            0,
+            77
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            5,
+            88
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            5,
+            0
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "flush_redirect_untaken_then_jal",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "flush_redirect",
+      "word_count": 10
+    },
+    {
+      "description": "JAL and JALR shadow instructions must be flushed and both link values must be exact, otherwise the link difference plus x6 is not 17.",
+      "expected_signature": "0x00000011",
+      "instructions": [
+        {
+          "args": [
+            5,
+            8
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            6,
+            0,
+            99
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            5
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            5,
+            20
+          ],
+          "op": "JALR"
+        },
+        {
+          "args": [
+            6,
+            0,
+            77
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            6,
+            77
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            7,
+            5
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            1,
+            6
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "flush_redirect_jalr_link_delta",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "flush_redirect",
+      "word_count": 11
+    },
+    {
+      "description": "A wrong negative branch target or offset scaling changes the loop trip count so the accumulated signature is not 30.",
+      "expected_signature": "0x0000001e",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0,
+            3
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            0
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            6,
+            10
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            5,
+            -1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            5,
+            0,
+            -8
+          ],
+          "op": "BNE"
+        },
+        {
+          "args": [
+            1,
+            6,
+            0
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "branch_jump_target_backward_loop",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "branch_jump_target",
+      "word_count": 9
+    },
+    {
+      "description": "Forward and backward JAL targets plus link values must be exact, otherwise the link delta plus accumulator is not 21.",
+      "expected_signature": "0x00000015",
+      "instructions": [
+        {
+          "args": [
+            5,
+            16
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            6,
+            0,
+            1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            6,
+            2
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            12
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            6,
+            0,
+            7
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            8,
+            -12
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            1,
+            7,
+            5
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            1,
+            6
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "branch_jump_target_jal_forward_backward",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "branch_jump_target",
+      "word_count": 11
+    },
+    {
+      "description": "JALR must clear bit zero of the computed odd target to land past the wrong-path instruction, otherwise the signature is not 12.",
+      "expected_signature": "0x0000000c",
+      "instructions": [
+        {
+          "args": [
+            5,
+            8
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            6,
+            0,
+            -1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            6,
+            0,
+            0
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            7,
+            5,
+            17
+          ],
+          "op": "JALR"
+        },
+        {
+          "args": [
+            6,
+            0,
+            50
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            7,
+            5
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            1,
+            6
+          ],
+          "op": "ADD"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "branch_jump_target_jalr_odd_target",
+      "origin": "llm_call_001",
+      "signature_reg": 1,
+      "target_family": "branch_jump_target",
+      "word_count": 10
+    },
+    {
+      "description": "Two AUIPC instructions four bytes apart are differenced so a wrong PC base, wrong upper-immediate shift, or missing AUIPC add makes the signature differ from 4100.",
+      "expected_signature": "0x00001004",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0
+          ],
+          "op": "AUIPC"
+        },
+        {
+          "args": [
+            6,
+            4096
+          ],
+          "op": "AUIPC"
+        },
+        {
+          "args": [
+            1,
+            6,
+            5
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            1,
+            1,
+            0
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "auipc_pc_relative_signature",
+      "origin": "coverage_llm_call_001",
+      "signature_reg": 1,
+      "target_family": "coverage",
+      "word_count": 7
+    },
+    {
+      "description": "Signature is the difference between a JAL link address and an earlier AUIPC PC value, so a bad AUIPC PC, bad link value, or failed flush of the skipped ADDI corrupts the expected result of 8.",
+      "expected_signature": "0x00000008",
+      "instructions": [
+        {
+          "args": [
+            5,
+            0
+          ],
+          "op": "AUIPC"
+        },
+        {
+          "args": [
+            6,
+            8
+          ],
+          "op": "JAL"
+        },
+        {
+          "args": [
+            1,
+            0,
+            -1
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            1,
+            6,
+            5
+          ],
+          "op": "SUB"
+        },
+        {
+          "args": [
+            31,
+            0
+          ],
+          "op": "LUI"
+        },
+        {
+          "args": [
+            31,
+            31,
+            256
+          ],
+          "op": "ADDI"
+        },
+        {
+          "args": [
+            31,
+            1,
+            0
+          ],
+          "op": "SW"
+        }
+      ],
+      "name": "auipc_delta_with_jal_link",
+      "origin": "coverage_llm_call_001",
+      "signature_reg": 1,
+      "target_family": "coverage",
+      "word_count": 7
+    }
+  ],
+  "validation_errors": []
+}
